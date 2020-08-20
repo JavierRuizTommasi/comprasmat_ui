@@ -1,0 +1,19 @@
+.jumbotron {
+    background-color: white;
+    color: black;
+    padding-top: 20px;
+}
+
+hr {
+    background-color: gray;
+}
+
+/* .card-img-top {
+    width: 100%;
+    height: 15vw;
+    object-fit: cover; 
+} */
+
+/* .embed-responsive .card-img-top {
+    object-fit: cover;
+} */

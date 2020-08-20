@@ -1,0 +1,19 @@
+.jumbotron {
+    background-color: white;
+    color: black;
+    padding-top: 0px;
+    padding-bottom:0px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+img {
+    margin-right: 5px;
+}
+.nav-item {
+    color: white;
+}
+
+#cuentaNavbarDropdown {
+    color: white;
+}

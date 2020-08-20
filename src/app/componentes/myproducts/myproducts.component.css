@@ -1,0 +1,15 @@
+.jumbotron {
+    background-color: white;
+    color: black;
+    padding-top: 20px;
+}
+
+hr {
+    background-color:#333;
+}
+
+.my_checkbox {
+    width: 15px;
+    height: 15px;
+}
+

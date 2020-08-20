@@ -1,0 +1,127 @@
+<div class="jumbotron">
+  <img src="../../assets/logo.png">
+</div>
+
+  <nav class="navbar navbar-expand-lg navbar-toggler-md navbar-dark bg-primary sticky-top">
+
+   <!-- <a class="navbar-brand" routerLink="/">{{title}}</a> -->
+   <a class="navbar-brand" href="index.html">
+     {{esp ? 'Compras' : 'Purchases'}}
+     <!-- <img src="../../assets/logo.jpg" width="40" height="40"> -->
+   </a>
+
+   <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+   </button>
+
+   <!-- <div class="spacer"></div> -->
+
+   <div class="collapse navbar-collapse" id="navbarNav">
+      <div class="navbar-nav mr-auto ml-2 text-center">
+          <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/inicio" routerLinkActive="active">{{esp ? 'Inicio' : 'Home'}}</a>
+          <!-- <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/licitaciones" routerLinkActive="active">{{esp ? 'Licitaciones' : 'Tenders'}}</a> -->
+          <!-- <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/usuarios" routerLinkActive="active">Usuarios</a> -->
+
+          <a class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="tendersNavbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{esp ? 'Licitaciones' : 'Tenders'}}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/licitaciones">{{esp ? 'Activas' : 'Actives'}}</a>
+              <ng-container *ngIf="cuenta">
+                <ng-container *ngIf="cuenta.perfil!=4">
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/licitaciones">{{esp ? 'Licitaciones' : 'Tenders'}}</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/ofertas">{{esp ? 'Ofertas' : 'Offers'}}</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/muestras">{{esp ? 'Muestras' : 'Samples'}}</a>
+                </ng-container>
+                <ng-container *ngIf="cuenta.perfil==4">
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/ofertas">{{esp ? 'Mis Ofertas' : 'My Offers'}}</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/muestras">{{esp ? 'Mis Muestras' : 'My Samples'}}</a>
+                </ng-container>
+              </ng-container>
+            </div>
+          </a>
+
+          <a class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="productsNavbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{esp ? 'Productos' : 'Products'}}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/productos">{{esp ? 'Productos' : 'Products'}}</a>
+              <!-- <ng-container *ngIf="cuenta">
+                <ng-container *ngIf="cuenta.perfil==4"> -->
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/seleccion">{{esp ? 'Seleccionar Productos' : 'Product Selection'}}</a>
+                <!-- </ng-container>
+              </ng-container> -->
+              <!-- <ng-container *ngIf="cuenta">
+                <ng-container *ngIf="cuenta.perfil==4"> -->
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/myproducts">{{esp ? 'Mis Productos' : 'My Products'}}</a>
+                <!-- </ng-container>
+              </ng-container> -->
+            </div>
+          </a>
+
+          <a class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="mensajesNavbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{esp ? 'Comunicacion' : 'Communication'}}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/mensajes">{{esp ? 'Mis Mensajes' : 'My Messages'}}</a>
+              <ng-container *ngIf="cuenta">
+                <ng-container *ngIf="cuenta.perfil<=3">
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/mailtoprov">{{esp ? 'Mails a Proveedores' : 'Mails to Suppliers'}}</a>
+                </ng-container>
+              </ng-container>
+            </div>
+          </a>
+
+          <!-- <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/productos" routerLinkActive="active">{{esp ? 'Productos' : 'Products'}}</a> -->
+
+          <ng-container *ngIf="cuenta">
+            <ng-container *ngIf="cuenta.perfil!=4">
+              <!-- <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/seleccion" routerLinkActive="active">{{esp ? 'Seleccion' : 'Selection'}}</a> -->
+              <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/usuarios" routerLinkActive="active">{{esp ? 'Usuarios' : 'Users'}}</a>
+            </ng-container>
+          </ng-container>
+      </div>
+      
+      <div class="d-flex justify-content-center">     
+          <ng-container *ngIf="cuenta"> 
+            <!-- <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/inicio" routerLinkActive="active">{{cuenta.nombre}}</a>
+            <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/logout" routerLinkActive="active">Logout</a> -->
+            <a class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="cuentaNavbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{cuenta.nombre}}
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/cuenta">{{esp ? 'Cuenta' : 'My Account'}}</a>
+                <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/changepass">{{esp ? 'Password' : 'Password'}}</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/logout">{{esp ? 'Salir' : 'Logout'}}</a>
+              </div>
+            </a>
+          </ng-container>
+          <ng-container *ngIf="!cuenta" > 
+            <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/register" routerLinkActive="active">{{esp ? 'Registrase' : 'Register'}}</a>
+            <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/login" routerLinkActive="active">{{esp ? 'Ingreso' : 'Login'}}</a>
+          </ng-container>
+          <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" role="button" routerLinkActive="active" (click)="changeLang()">
+            <!-- <img src="../../assets/f3.jpg" width="20" height="20"> -->
+            <!-- <img src="../../assets/uk.png" width="20" height="20"> -->
+            <img *ngIf="esp" src="../../assets/uk.png" width="20" height="20">
+            <img *ngIf="!esp" src="../../assets/spain.png" width="20" height="20">
+          </a>
+      </div>
+
+  </div>
+
+</nav>
+

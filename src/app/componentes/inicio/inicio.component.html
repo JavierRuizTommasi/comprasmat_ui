@@ -1,0 +1,123 @@
+<div class="jumbotron pr-0 pl-0">
+    <!-- card -->
+    <section class="container-fluid mt3 pr-0 pl-0">
+        <div class="card-collumns">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-8 col-md-12 mb-4">
+                        <div class="card">
+                        <!-- <div class="card mb-4 mr-4" style="width:800px"> -->
+                        <!-- <img class="card-img-top embed-responsive-item img-fluid" src="../../assets/img/cards/licitaciones.jpg" alt="..."> -->
+                        <!-- <h5 class="card-header bg-primary text-white">{{esp ? 'Licitaciones' : 'Tenders'}}</h5> -->
+                        <div class="card-body overflow-auto">
+                            <table class="table">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <!-- <th>Id</th> -->
+                                        <th scope="col">#</th>
+                                        <th scope="col">{{esp ? 'Producto' : 'Product'}}</th>
+                                        <th scope="col">{{esp ? 'Cantidad' : 'Quantity'}}</th>
+                                        <th scope="col">{{esp ? 'Inicio' : 'Start'}}</th>
+                                        <th scope="col">{{esp ? 'Fin' : 'End'}}</th>
+                                        <th scope="col">{{esp ? 'Estado' : 'State'}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngFor="let tender of tenders;index as i">
+                                    <tr>
+                                        <!-- <td>{{tender._id}}</td> -->
+                                        <th scope="col">{{tender.licitacion}}</th>
+                                        <td>{{tender.descrip}}</td>
+                                        <td>{{tender.cantidad}} {{tender.unidad}}</td>
+                                        <td>{{tender.fecha.substring(0,10)}}</td>
+                                        <td>{{tender.finaliza.substring(0,10)}}</td>
+                                        <td *ngIf="tender.estado==1">{{esp ? 'Activa' : 'Active'}}</td>
+                                        <td *ngIf="tender.estado==2">{{esp ? 'Finalizada' : 'Ended'}}</td>
+                                        <td *ngIf="tender.estado==3">{{esp ? 'Adjudicada' : 'Assigned'}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <ng-container *ngIf="notDone">
+                                <div class="d-flex justify-content-center">
+                                  <div class="spinner-border m-5" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                  </div>
+                                </div>
+                            </ng-container>
+                        
+                            <h5 class="card-title">{{esp ? 'Licitaciones Activas' : 'Active Tenders'}}</h5>
+                            <p class="card-text">Consulte la lista de Licitaciones abiertas y elija en la que quiera hacer su oferta.</p>
+                            <!-- <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit vero quis architecto eius illo aperiam! Laborum at porro magnam, natus fuga mollitia tempora doloribus aut eligendi laudantium? Facere, et at.</p> -->
+                            <a class="btn btn-primary stretched-link" routerLink="/licitaciones" routerLinkActive="active">{{esp ? 'Ver mas' : 'See more'}}</a>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12 mb-4">
+                        <div class="card">
+                            <!--<div class="card" style="width:500px"> -->
+                            <img class="card-img-top embed-responsive-item img-fluid" src="../../assets/img/cards/productos.jpg" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">{{esp ? 'Productos' : 'Products'}}</h5>
+                                <p class="card-text">Lista completa de Productos para licitar.</p>
+                                <a class="btn btn-primary stretched-link" routerLink="/productos" routerLinkActive="active">{{esp ? 'Ver mas' : 'See more'}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ng-container *ngIf="cuenta">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 mb-4">
+                        <div class="card">
+                            <!-- <div class="card mb-4" style="width:500px"> -->
+                            <img class="card-img-top embed-responsive-item img-fluid" src="../../assets/img/cards/yes-no.jpg" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">{{esp ? 'Seleccion de Productos' : 'Product Selection'}}</h5>
+                                <p class="card-text">Seleccione los Productos sobre los que desee recibir notificaciones de nuevas Licitaciones.</p>
+                                <a class="btn btn-primary stretched-link" routerLink="/seleccion" routerLinkActive="active">{{esp ? 'Ver mas' : 'See more'}}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12 mb-4">
+                        <div class="card">
+                            <!-- <div class="card mb-4" style="width:500px"> -->
+                            <img class="card-img-top embed-responsive-item img-fluid" src="../../assets/img/cards/descuentos.jpg" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">{{esp ? 'Ofertas' : 'Offers'}}</h5>
+                                <p class="card-text">Seleccione los Productos sobre los que desee recibir notificaciones de nuevas Licitaciones.</p>
+                                <a class="btn btn-primary stretched-link" routerLink="/ofertas" routerLinkActive="active">{{esp ? 'Ver mas' : 'See more'}}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12 mb-4">
+                        <div class="card">
+                            <!-- <div class="card mb-4" style="width:500px"> -->
+                            <img class="card-img-top embed-responsive-item img-fluid" src="../../assets/img/cards/muestras.jpg" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">{{esp ? 'Muestras' : 'Samples'}}</h5>
+                                <p class="card-text">Ingrese las Muestras de cada Oferta y verifique los resultados de Laboratorio.</p>
+                                <a class="btn btn-primary stretched-link" routerLink="/muestras" routerLinkActive="active">{{esp ? 'Ver mas' : 'See more'}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </ng-container> 
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 mb-4">
+                        <div class="card">
+                            <!-- <div class="card mb-4" style="width:500px"> -->
+                            <img class="card-img-top embed-responsive-item img-fluid" src="../../assets/img/cards/mensajes.png" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">{{esp ? 'Mensajes' : 'Messages'}}</h5>
+                                <p class="card-text">Comuniquece con nosotros para saber más acerca de las Licitaciones, Ofertas, Muestras y Resultados.</p>
+                                <a class="btn btn-primary stretched-link" routerLink="/mensajes" routerLinkActive="active">{{esp ? 'Ver mas' : 'See more'}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

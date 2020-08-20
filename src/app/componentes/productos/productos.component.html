@@ -1,0 +1,185 @@
+<div class="jumbotron"> 
+  <form [formGroup]="fs" >
+    <div class="form-group mb-2">
+      <div class="row">
+          <div class="col-sm-8 col-md-8">
+            <h5>{{esp ? 'Productos' : 'Products'}}</h5>
+          </div>
+          <div class="col-sm-4 col-md-4">
+            <ngb-alert class="mt-2" *ngIf="siAlert" [type]="alertType" (close)="!siAlert">{{msgAlert}}</ngb-alert>
+          </div>
+      </div>
+      <hr>
+
+      <div class="row">
+        <div class="col-sm-6 col-md-6 mb-2">
+          <input type="text" class="form-control" formControlName="fdescrip" placeholder="Search..." id="fdescrip" [(ngModel)]="searchTerm">
+        </div>
+
+        <ng-container *ngIf="cuenta">
+          <div *ngIf="cuenta.perfil<=2" class="col-sm-6 col-md-6 mb-2 d-flex justify-content-end">
+            <button type="btn" 
+              class="btn btn-primary" 
+              (click)="openModal(editProductoModal, producto, 'A')">{{esp ? 'Nuevo Producto' : 'New Product'}}
+              <img src="../../assets/img/plus-white.png" width="25" alt="">
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </form>
+
+  <!-- Productos -->
+  <ng-container class="mt-2">
+    <div class="table-responsive">
+      <table class="table" >
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">{{esp ? 'Descripcion' : 'Description'}}</th>
+              <th scope="col">{{esp ? 'Unidad' : 'Unity'}}</th>
+              <th scope="col">{{esp ? 'Rubro' : 'Category'}}</th>
+              <th scope="col">{{esp ? 'SubRubro' : 'SubCategory'}}</th>
+              <th scope="col">{{esp ? 'Activo' : 'Active'}}</th>
+              <th scope="col">{{esp ? 'Acciones' : 'Action'}}</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let producto of filterProducts;index as i">
+            <tr>
+              <th scope="col">{{producto.codigo}}</th>
+              <td>{{producto.descrip}}</td>
+              <td>{{producto.unidad}}</td>
+              <td>{{producto.rubro}}</td>
+              <td>{{producto.subrubro}}</td>
+              <ng-container *ngIf="producto.activo; then conCheck; else sinoBlanck"></ng-container>
+              <ng-template #conCheck>
+                <td>
+                  <img src="../../assets/img/checked.png" width="23" alt="">
+                </td>
+              </ng-template>
+              <ng-template #sinoBlanck>
+                <td>
+                </td>
+              </ng-template>
+              <td class="d-flex justify-content-between">
+                <ng-container *ngIf="cuenta">
+                  <ng-container *ngIf="cuenta.perfil<=2">
+                    <button type="btn" class="btn btn-outline-light btn-sm mr-1" data-toggle="tooltip" title="New" (click)="openModal(editProductoModal, producto, 'M')">                
+                      <img src="../../assets/img/pencil.png" width="25" alt="">
+                    </button>
+                    <button type="btn" class="btn btn-outline-light btn-sm" data-toggle="tooltip" title="Delete" (click)="openModal(editProductoModal, producto, 'B')">                  
+                      <img src="../../assets/img/tacho.png" width="25" alt="">
+                    </button>
+                  </ng-container>
+                </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-container *ngIf="notDone">
+          <div class="d-flex justify-content-center">
+            <div class="spinner-border m-5" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <!-- Modal Producto Nuevo-->
+      <ng-template #editProductoModal let-modal>
+        <div class="modal-header">
+          <h5 class="modal-title" *ngIf="this.strTipo == 'A'">{{esp ? 'Nuevo' : 'New'}}</h5>
+          <h5 class="modal-title" *ngIf="this.strTipo == 'B'">{{esp ? 'Borrar' : 'Delete'}}</h5>
+          <h5 class="modal-title" *ngIf="this.strTipo == 'M'">{{esp ? 'Modificar' : 'Update'}}</h5>
+          <button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form [formGroup]="f" (ngSubmit)="onSubmit()">
+            <div class="form-group row">
+              <label for="codigo" class="col-sm-3 col-form-label">{{esp ? 'Codigo' : 'Code'}}</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" formControlName="codigo" id="codigo" [readOnly]="this.strTipo == 'B'">
+                <!-- Error -->
+                <div *ngIf="f.controls.codigo.errors && f.controls.codigo.dirty" class="alert alert-danger mt-0">
+                  <div *ngIf="f.controls.codigo.errors.required">Required</div>
+                  <div *ngIf="f.controls.codigo.errors.pattern">Only Digits (0-9 Max 10)</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="descrip" class="col-sm-3 col-form-label">{{esp ? 'Descripcion' : 'Description'}}</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" formControlName="descrip" id="descrip" [readOnly]="this.strTipo == 'B'">
+                <!-- Error -->
+                <div *ngIf="f.controls.descrip.errors && f.controls.descrip.dirty" class="alert alert-danger mt-0">
+                  <div *ngIf="f.controls.descrip.errors.required">Required</div>
+                  <div *ngIf="f.controls.descrip.errors.pattern">Only Uppercase Characters (Max 50)</div>
+                </div>
+              </div>  
+            </div>
+
+            <div class="form-group row">
+              <label for="unidad" class="col-sm-3 col-form-label">{{esp ? 'Unidad' : 'Unity'}}</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" formControlName="unidad" id="unidad" [readOnly]="this.strTipo == 'B'">
+                <!-- Error -->
+                <div *ngIf="f.controls.unidad.errors && f.controls.unidad.dirty" class="alert alert-danger mt-0">
+                  <div *ngIf="f.controls.unidad.errors.required">Required</div>
+                  <div *ngIf="f.controls.unidad.errors.pattern">Onl Uppercase Characters (Max 2)</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="rubro" class="col-sm-3 col-form-label">{{esp ? 'Rubro' : 'Category'}}</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" formControlName="rubro" id="rubro" [readOnly]="this.strTipo == 'B'">
+                <!-- Error -->
+                <div *ngIf="f.controls.rubro.errors && f.controls.rubro.dirty" class="alert alert-danger mt-0">
+                  <div *ngIf="f.controls.rubro.errors.required">Required</div>
+                  <div *ngIf="f.controls.rubro.errors.pattern">Only Uppercase Characters (Max 30)</div>
+                </div>
+              </div>  
+            </div>
+
+            <div class="form-group row">
+              <label for="subrubro" class="col-sm-3 col-form-label">{{esp ? 'SubRubro' : 'SubCategory'}}</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" formControlName="subrubro" id="subrubro" [readOnly]="this.strTipo == 'B'">
+              </div>  
+            </div>
+
+            <div *ngIf="this.strTipo !== 'B' && this.strTipo !== 'P'" class="form-group row">
+              <label for="activo" class="col-sm-3 col-form-label">{{esp ? 'Activo' : 'Active'}}</label>
+              <div class="ml-2 mt-1">
+                <input type="checkbox" class="my_checkbox" formControlName="activo" id="activo">
+              </div>  
+            </div>
+    
+            <div class="modal-footer">
+              <div *ngIf="this.strTipo === 'B'">
+                <button type="submit" class="btn btn-primary">{{esp ? 'Borrar' : 'Delete'}}</button>
+              </div>
+              <div *ngIf="this.strTipo !== 'B'">
+                <button type="submit" class="btn btn-primary" [disabled]="!f.valid">{{esp ? 'Guardar' : 'Save'}}</button>
+              </div>
+              <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">{{esp ? 'Cancelar' : 'Cancel'}}</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- <hr>
+        <pre>{{f.controls.codigo.errors | json}}</pre>
+        <hr>
+        <hr>
+        <pre>{{f.controls.descrip.errors | json}}</pre>
+        <hr> -->
+
+    </ng-template>
+
+</div>

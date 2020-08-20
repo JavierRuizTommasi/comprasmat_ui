@@ -1,0 +1,108 @@
+<div class="jumbotron"> 
+    <form [formGroup]="f">
+        <div class="form-group mb-2">
+            <div class="row">
+                <div class="col-sm-8 col-md-8">
+                    <h5>{{esp ? 'Mis Productos' : 'My Products'}}</h5>
+                </div>
+                <div class="col-sm-4 col-md-4">
+                    <ngb-alert *ngIf="siGrabo" type="success" (close)="siGrabo=false">{{msgGrabo}}</ngb-alert>
+                    <ngb-alert *ngIf="siError" type="warning" (close)="siError=false">{{msgError}}</ngb-alert>
+                </div>
+            </div>
+            <hr>
+    
+            <ng-container *ngIf="cuenta">
+                <!-- <div class="row">
+                    <h3 for="descrip" class="col-md-2 col-form-label">{{esp ? 'Descripcion' : 'Descrip'}}</h3> 
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" formControlName="fdescrip" placeholder="Search..." id="fdescrip">
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <h3 for="rubro" class="col-md-2 col-form-label">{{esp ? 'Rubro' : 'Category'}}</h3>
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" formControlName="frubro" placeholder="Search..." id="frubro">
+                    </div>
+                </div> -->
+                <div class="row">
+                    <!-- <h3 for="subrubro" class="col-md-2 mt-2 col-form-label">{{esp ? 'SubRubro' : 'SubCategory'}}</h3>
+                    <div class="col-md-5 mt-2">
+                        <input type="text" class="form-control" formControlName="fsubrubro" placeholder="Search..." id="fsubrubro">
+                    </div> -->
+                    <div class="col-sm-6 col-md-6 mb-2">
+                        <input type="text" class="form-control" formControlName="fdescrip" placeholder="Search..." id="fdescrip" [(ngModel)]="searchTerm">
+                    </div>
+                    <div class="col-sm-6 col-md-6 mb-2 d-flex justify-content-end">
+                        <button type="btn" 
+                            class="btn btn-danger" 
+                            (click)="borrarMyProd()"
+                            [disabled]="!isSomeCheckBoxChecked()">
+                            {{esp ? 'Borrar Seleccion' : 'Delete Selection'}}
+                        </button>
+                    </div>
+                </div>
+    
+                <!-- <div class="col-md-8">
+                    <div class="row">
+                        <h3 class="col-form-label mr-2">Producto:</h3>
+                        <select formControlName="producto" class="mr-2">
+                            <option *ngFor="let producto of productos" [ngValue]="producto">{{producto.descrip}}</option>
+                        </select>
+                        <button type="btn" class="btn btn-primary btn-sm" (click)="onAccion(producto, 'A')">Agregar Nuevo
+                            <img src="../../assets/img/plus-white.png" width="25" alt="">
+                        </button>
+                </div>
+                </div> -->
+            </ng-container>
+        </div>
+    </form>
+
+    <!-- Productos -->
+    <ng-container *ngIf="cuenta" class="mt-2">
+        <div class="table-responsive">
+            <!-- <form> -->
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">
+                                <input class="my_checkbox" 
+                                    type="checkbox" 
+                                    [checked]="isAllCheckBoxChecked()" 
+                                    (change)="checkAllCheckBox($event)"/>
+                            </th>
+                            <th scope="col">#</th>
+                            <th scope="col">{{esp ? 'Descripcion' : 'Descrip'}}</th>
+                            <th scope="col">{{esp ? 'Rubro' : 'Category'}}</th>
+                            <th scope="col">{{esp ? 'SubRubro' : 'SubCategory'}}</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let myproduct of filterProducts; index as i;">
+                        <tr>
+                            <td>
+                                <input class="my_checkbox"
+                                    type="checkbox" 
+                                    value={{myproduct.id}}
+                                    [(ngModel)]="filterProducts[i].checked"
+                                    [ngModelOptions]="{standalone: true}"/>
+                            </td>
+                            <th scope="row">{{myproduct.codigo}}</th>
+                            <td>{{myproduct.descrip}}</td>
+                            <td>{{myproduct.rubro}}</td>
+                            <td>{{myproduct.subrubro}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ng-container *ngIf="notDone">
+                    <div class="d-flex justify-content-center">
+                      <div class="spinner-border m-5" role="status">
+                        <span class="sr-only">Loading...</span>
+                      </div>
+                    </div>
+                </ng-container>
+            <!-- </form> -->
+        </div>
+    </ng-container>
+</div>
+
+

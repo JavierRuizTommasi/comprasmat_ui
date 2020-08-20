@@ -1,0 +1,255 @@
+<div class="jumbotron"> 
+  <div class="form-group">
+      <div class="row">
+          <div class="col-md-8">
+            <h5>{{esp ? 'Usuarios' : 'Users'}}</h5>
+          </div>
+          <div class="col-md-4">
+            <ngb-alert class="mt-2" *ngIf="siAlert" [type]="alertType" (close)="!siAlert">{{msgAlert}}</ngb-alert>
+            <!-- <ngb-alert *ngIf="siGrabo" type="success" (close)="siGrabo=false">{{msgGrabo}}</ngb-alert> -->
+          </div>
+      </div>
+      <hr>
+  
+      <div class="col-md-8">
+        <div class="row">
+        <button type="btn" class="btn btn-primary btn-sm" (click)="openModal(editUsuarioModal, user, 'A')">{{esp ? 'Nuevo Usuario' : 'New User'}}
+          <img src="../../assets/img/plus-white.png" width="25" alt="">
+        </button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="container mt-4 overflow-auto">
+      <table class="table" >
+        <thead class="thead-light">
+          <tr>
+            <!-- <th>Id</th> -->
+            <th>{{esp ? 'Usuario' : 'User'}}</th>
+            <th>{{esp ? 'Nombre' : 'Name'}}</th>
+            <th>{{esp ? 'Email' : 'Email'}}</th>
+            <th>{{esp ? 'Peril' : 'Profile'}}</th>
+            <th>{{esp ? 'Activo' : 'Active'}}</th>
+            <th>{{esp ? 'Acciones' : 'Acctions'}}</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let usuario of usuarios;index as i">
+          <tr>
+            <!-- <td>{{usuario._id}}</td> -->
+            <td>{{usuario.usuario}}</td>
+            <td>{{usuario.nombre}}</td>
+            <td>{{usuario.email}}</td>
+            <td *ngIf="usuario.perfil==0">{{esp ? 'Administrador' : 'Administrator'}}</td>
+            <td *ngIf="usuario.perfil==1">{{esp ? 'Auditor' : 'Auditor'}}</td>
+            <td *ngIf="usuario.perfil==2">{{esp ? 'Compras' : 'Purchase'}}</td>
+            <td *ngIf="usuario.perfil==3">{{esp ? 'Laboratorio' : 'Laboratory'}}</td>
+            <td *ngIf="usuario.perfil==4">{{esp ? 'Proveedor' : 'Supplier'}}</td>
+            <ng-container *ngIf="usuario.activo; then conCheck; else sinoBlanck"></ng-container>
+            <ng-template #conCheck>
+              <td>
+                <img src="../../assets/img/checked.png" width="23" alt="">
+              </td>
+            </ng-template>
+            <ng-template #sinoBlanck>
+              <td>
+              </td>
+            </ng-template>
+            <td class="d-flex justify-content-between">
+              <button type="btn" class="btn btn-outline-light btn-sm mr-2" (click)="openModal(editUsuarioModal, usuario, 'M')">                
+                <img src="../../assets/img/pencil.png" width="25" alt="">
+              </button>
+              <button type="btn" class="btn btn-outline-light btn-sm" (click)="openModal(editUsuarioModal, usuario, 'B')">                  
+                <img src="../../assets/img/tacho.png" width="25" alt="">
+              </button>
+              <button type="btn" class="btn btn-outline-light btn-sm" (click)="openModal(editUsuarioModal, usuario, 'P')">                  
+                <img src="../../assets/img/key.png" width="25" alt="">
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <ng-container *ngIf="notDone">
+        <div class="d-flex justify-content-center">
+          <div class="spinner-border m-5" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </ng-container>
+  </div>
+
+  <ng-template #editUsuarioModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title" *ngIf="this.strTipo == 'A'">{{esp ? 'Nuevo' : 'New'}}</h5>
+      <h5 class="modal-title" *ngIf="this.strTipo == 'B'">{{esp ? 'Borrar' : 'Delete'}}</h5>
+      <h5 class="modal-title" *ngIf="this.strTipo == 'M'">{{esp ? 'Modificar' : 'Update'}}</h5>
+      <h5 class="modal-title" *ngIf="this.strTipo == 'P'">Password</h5>
+      <button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <form [formGroup]="f" (ngSubmit)="onSubmit()">
+        <div class="form-group row">
+          <label for="usuario" class="col-sm-3 col-form-label">{{esp ? 'Usuario' : 'User'}}</label>
+          <div class="col-sm-9">
+              <input type="text" class="form-control" formControlName="usuario" id="usuario" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
+              <!-- Error -->
+              <div *ngIf="f.controls.usuario.errors && f.controls.usuario.dirty" class="alert alert-danger mt-0">
+                <div *ngIf="f.controls.usuario.errors.required">Required</div>
+                <div *ngIf="f.controls.usuario.errors.pattern">Whitout spaces (Max=10)</div>
+              </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="nombre" class="col-sm-3 col-form-label">{{esp ? 'Nombres' : 'Name'}}</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" formControlName="nombre" id="nombre" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
+          </div>  
+        </div>
+
+        <div *ngIf="this.strTipo !== 'P'" class="form-group row">
+          <label for="contacto" class="col-sm-3 col-form-label">{{esp ? 'Contacto' : 'Contact'}}</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" formControlName="contacto" id="contacto" [readOnly]="this.strTipo == 'B'">
+          </div>  
+        </div>
+
+        <div class="form-group row">
+          <label for="email" class="col-sm-3 col-form-label">Email</label>
+          <div class="col-sm-9">
+            <input type="email" class="form-control" formControlName="email" id="email" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
+          </div>  
+        </div>
+
+        <div *ngIf="this.strTipo == 'P'" class="form-group row">
+          <label for="pass" class="col-sm-3 col-form-label">Password</label>
+          <div class="col-sm-9">
+            <input type="password" class="form-control" formControlName="pass" id="pass">
+            <!-- Error -->
+            <div *ngIf="f.controls.pass.errors && f.controls.pass.dirty" class="alert alert-danger mt-0">
+              <div *ngIf="f.controls.pass.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+              <div *ngIf="f.controls.pass.errors.pattern">Must contains digits, lowercase an uppercase characters (Min=6 / Max=20)</div>
+            </div>
+          </div>  
+        </div>
+
+        <div *ngIf="this.strTipo == 'P'" class="form-group row">
+          <label for="confpass" class="col-sm-3 col-form-label">{{esp ? 'Confirmar' : 'Confirm'}}</label>
+          <div class="col-sm-9">
+            <input type="password" class="form-control" formControlName="confpass" id="confpass">
+            <!-- Error -->
+            <div *ngIf="f.controls.confpass.errors && f.controls.confpass.dirty" class="alert alert-danger mt-0">
+              <div *ngIf="f.controls.confpass.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+              <div *ngIf="f.controls.confpass.errors.pattern">Must contains digits, lowercase an uppercase characters (Min=6 / Max=20)</div>
+              <div *ngIf="f.controls.confpass.errors.mustMatch">Passwords must match</div>
+            </div>
+          </div>  
+        </div>
+
+        <div *ngIf="this.strTipo !== 'P'" class="form-group row">
+          <label for="proveedor" class="col-sm-3 col-form-label">{{esp ? 'Proveedor' : 'Supplier'}}</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" formControlName="proveedor" id="proveedor" [readOnly]="this.strTipo == 'B'">
+          </div>  
+        </div>
+
+        <div *ngIf="this.strTipo !== 'P'" class="form-group row">
+          <label for="contacto2" class="col-sm-3 col-form-label">{{esp ? 'Contacto 2' : 'Contact 2'}}</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" formControlName="contacto2" id="contacto2" [readOnly]="this.strTipo == 'B'">
+          </div>  
+        </div>
+
+        <div *ngIf="this.strTipo !== 'P'" class="form-group row">
+          <label for="email2" class="col-sm-3 col-form-label">Email 2</label>
+          <div class="col-sm-9">
+            <input type="email" class="form-control" formControlName="email2" id="email2" [readOnly]="this.strTipo == 'B'">
+          </div>  
+        </div>
+
+        <div *ngIf="this.strTipo !== 'P'" class="form-group row">
+          <label for="contacto3" class="col-sm-3 col-form-label">{{esp ? 'Contacto 3' : 'Contact 3'}}</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" formControlName="contacto3" id="contacto3" [readOnly]="this.strTipo == 'B'">
+          </div>  
+        </div>
+
+        <div *ngIf="this.strTipo !== 'P'" class="form-group row">
+          <label for="email3" class="col-sm-3 col-form-label">Email 3</label>
+          <div class="col-sm-9">
+            <input type="email" class="form-control" formControlName="email3" id="email3" [readOnly]="this.strTipo == 'B'">
+          </div>  
+        </div>
+
+        <div *ngIf="this.strTipo !== 'P'" class="form-group row">
+          <label for="contacto4" class="col-sm-3 col-form-label">{{esp ? 'Contacto 4' : 'Contact 4'}}</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" formControlName="contacto4" id="contacto4" [readOnly]="this.strTipo == 'B'">
+          </div>  
+        </div>
+
+        <div *ngIf="this.strTipo !== 'P'" class="form-group row">
+          <label for="email4" class="col-sm-3 col-form-label">Email 4</label>
+          <div class="col-sm-9">
+            <input type="email" class="form-control" formControlName="email4" id="email4" [readOnly]="this.strTipo == 'B'">
+          </div>  
+        </div>
+
+        <div *ngIf="this.strTipo !== 'P'" class="form-group row">
+          <label for="laguage" class="col-sm-3 col-form-label">{{esp ? 'Idioma' : 'Language'}}</label>
+          <div class="col-sm-9">
+            <!-- <input type="text" class="form-control" formControlName="language" id="language" [readOnly]="this.strTipo == 'B'"> -->
+            <select class="custom-select" formControlName="language" id="language" required="required">
+              <option selected>{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
+              <option value="es">{{esp ? 'Español' : 'Spanish'}}</option>
+              <option value="en">{{esp ? 'Ingles' : 'English'}}</option>
+            </select>
+          </div>  
+        </div>
+
+        <div *ngIf="this.strTipo !== 'P'" class="form-group row">
+          <label for="perfil" class="col-sm-3 col-form-label">{{esp ? 'Perfil' : 'Profile'}}</label>
+          <div class="col-sm-9">
+            <!-- <input type="perfil" class="form-control" formControlName="perfil" id="perfil" [readOnly]="this.strTipo == 'B'"> -->
+            <select class="custom-select" formControlName="perfil" id="perfil" required="required">
+              <option selected>{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
+              <option value=0>{{esp ? 'Administrador' : 'Administrator'}}</option>
+              <option value=1>{{esp ? 'Auditor' : 'Auditor'}}</option>
+              <option value=2>{{esp ? 'Laboratorio' : 'Laboratory'}}</option>
+              <option value=3>{{esp ? 'Compras' : 'Purchases'}}</option>
+              <option value=4>{{esp ? 'Proveedor' : 'Supplier'}}</option>
+            </select>
+          </div>  
+        </div>
+
+        <div *ngIf="this.strTipo !== 'B' && this.strTipo !== 'P'" class="form-group row">
+          <label for="activo" class="col-sm-3 col-form-label">{{esp ? 'Activo' : 'Active'}}</label>
+          <div class="ml-2 mt-1">
+            <input type="checkbox" class="my_checkbox" formControlName="activo" id="activo">
+          </div>  
+        </div>
+
+        <div class="modal-footer">
+          <div *ngIf="this.strTipo === 'B'">
+            <button type="submit" class="btn btn-primary" [disabled]="!f.valid">{{esp ? 'Borrar' : 'Delete'}}</button>
+          </div>
+          <div *ngIf="this.strTipo !== 'B'">
+            <button type="submit" class="btn btn-primary" [disabled]="!f.valid">{{esp ? 'Guardar' : 'Save'}}</button>
+          </div>
+          <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">{{esp ? 'Cancelar' : 'Cancel'}}</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- <hr>
+    <pre>{{f.controls.pass.errors | json}}</pre>
+    <hr>
+    <hr>
+    <pre>{{f.controls.confpass.errors | json}}</pre>
+    <hr> -->
+
+  </ng-template>
+</div>
+

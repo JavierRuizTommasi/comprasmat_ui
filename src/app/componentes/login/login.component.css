@@ -1,0 +1,13 @@
+.jumbotron {
+    background-color: white;
+    color: black;
+
+}
+
+hr {
+    background-color: gray;
+}
+
+.card {
+    width: 20rem;
+}

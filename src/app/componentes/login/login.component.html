@@ -1,0 +1,69 @@
+<div class="jumbotron"> 
+    <!-- <h2>Login</h2>
+    <hr> -->
+
+    <section class="conteiner">
+        <div *ngIf="notificacion" class="mt-0 mb-0">
+            <!-- <div class="col-sm-12"> -->
+            <ngb-alert *ngIf="esp" type="warning">
+                <p><strong>Bienvenido!!! - </strong>Cuenta Activada</p> 
+            </ngb-alert>
+            <ngb-alert *ngIf="!esp" type="warning">
+                <p><strong>Welcome!!! - </strong>Account activated</p> 
+            </ngb-alert>
+        </div>  
+        <div class="d-flex justify-content-center ">
+            <div class="card">
+                <h5 class="card-header">{{esp ? 'Ingreso' : 'Log in'}}</h5>
+                <div class="card-body">
+                    <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+                    <form [formGroup]="f">
+                        <div class="form-group mb-0">
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <input type="email" class="form-control" formControlName="email" id="email" placeholder="it@proagrolab.com.ar" required="required"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <input type="password" class="form-control" formControlName="password" id="password" placeholder="password" required="required"/>
+                                </div>
+                            </div>
+                            <div>
+                                <ngb-alert class="mt-2" *ngIf="siAlert" [type]="alertType" (close)="!siAlert">{{msgAlert}}</ngb-alert>
+                                <!-- <ngb-alert *ngIf="siError" type="success" (close)="siError=false">{{msgError}}</ngb-alert> -->
+                                <div class="d-flex justify-content-between">    
+                                    <a class="mt-2" routerLink="/register">{{esp ? 'Registro' : 'Register'}}</a>
+                                    <button type="button" class="btn btn-primary" (click)="login()">{{esp ? 'Ingreso' : 'Log in'}}</button>
+                                </div>
+                            </div>
+                            <div *ngIf="siInactivo" class="form-group row mt-4 mb-0">
+                                <div class="col-sm-12">
+                                <ngb-alert *ngIf="esp" type="warning" close="!siInactivo">
+                                    <p><strong>Atención!!!</strong> - Despues de Registrarse ud. recibó un email para activar su cuenta de usuario.</p> 
+                                    <p>Verifique la casilla de Spam en caso de que no lo encuentre en su Buzón, .</p>
+                                </ngb-alert>
+                                <ngb-alert *ngIf="!esp" type="warning" close="!siInactivo">
+                                    <p><strong>Atention!!!</strong> - After your Registration you have received an email to activate your user account.</p>
+                                    <p>Verify the Spam folder in case you don't find it on your Mailbox.</p>
+                                </ngb-alert>
+                                <div>    
+                                    <button type="button" class="btn btn-primary" (click)="enviarEmail(this.f.controls.email.value)">{{esp ? 'Reenviar el Email' : 'Resend the Email'}}</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- <hr> -->
+                    <!-- <p><u>Estado del campo nombre del formulario reactivo</u></p>
+                    <pre>{{f.controls.email.errors | json}}</pre>
+                
+                    <hr>
+                    <p><u>Datos del formulario reactivo</u></p>
+                    <pre>{{f.value | json}}</pre> -->
+                
+                </div>
+            </div>
+        </div>
+    </section> 
+</div>
