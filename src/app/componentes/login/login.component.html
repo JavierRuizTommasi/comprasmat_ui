@@ -21,12 +21,20 @@
                         <div class="form-group mb-0">
                             <div class="form-group row">
                                 <div class="col-sm-12">
-                                    <input type="email" class="form-control" formControlName="email" id="email" placeholder="it@proagrolab.com.ar" required="required"/>
+                                    <mat-form-field color='primary'>
+                                        <mat-label>Email</mat-label>
+                                        <input matInput type="email" class="form-control" formControlName="email" id="email" required="required">
+                                    </mat-form-field>
+                                  <!-- <input type="email" class="form-control" formControlName="email" id="email" placeholder="it@proagrolab.com.ar" required="required"/> -->
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-sm-12">
-                                    <input type="password" class="form-control" formControlName="password" id="password" placeholder="password" required="required"/>
+                                    <mat-form-field>
+                                        <mat-label>Password</mat-label>
+                                        <input matInput type="password" class="form-control" formControlName="password" id="password" required="required">
+                                    </mat-form-field>
+                                    <!-- <input type="password" class="form-control" formControlName="password" id="password" placeholder="password" required="required"/> -->
                                 </div>
                             </div>
                             <div>
@@ -34,7 +42,7 @@
                                 <!-- <ngb-alert *ngIf="siError" type="success" (close)="siError=false">{{msgError}}</ngb-alert> -->
                                 <div class="d-flex justify-content-between">    
                                     <a class="mt-2" routerLink="/register">{{esp ? 'Registro' : 'Register'}}</a>
-                                    <button type="button" class="btn btn-primary" (click)="login()">{{esp ? 'Ingreso' : 'Log in'}}</button>
+                                    <button mat-button class="btn btn-primary" (click)="login()">{{esp ? 'Ingreso' : 'Log in'}}</button>
                                 </div>
                             </div>
                             <div *ngIf="siInactivo" class="form-group row mt-4 mb-0">

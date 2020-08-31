@@ -1,4 +1,8 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core'
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
+
 import { Cuenta } from 'src/app/models/Cuenta'
 import { ComunicacionService } from 'src/app/servicios/comunicacion.service'
 import { Language } from 'src/app/models/Language'
@@ -6,25 +10,32 @@ import { LanguageService } from 'src/app/servicios/language.service'
 import { Router } from '@angular/router'
 
 @Component({
-  selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  selector: 'app-mainnavbar',
+  templateUrl: './mainnavbar.component.html',
+  styleUrls: ['./mainnavbar.component.css']
 })
-export class NavbarComponent implements OnInit {
-  title = 'Purchases'
-  public cuenta: Cuenta
+export class MainnavbarComponent {
+    @Input() deviceXs: boolean
 
-  public esp: boolean
-  public lang: Language = {esp: true}
+    isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
+    .pipe(
+      map(result => result.matches),
+      shareReplay()
+    );
 
-  @Output() actualizaLang = new EventEmitter()
+    public cuenta: Cuenta
 
-  constructor(
-    private comunicacionService: ComunicacionService,
-    private languageService: LanguageService,
-    private router: Router,
-     ) {
-  }
+    public esp: boolean
+    public lang: Language = {esp: true}
+  
+    @Output() actualizaLang = new EventEmitter()
+  
+    constructor(
+      private breakpointObserver: BreakpointObserver,
+      private comunicacionService: ComunicacionService,
+      private languageService: LanguageService,
+      private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
@@ -68,4 +79,5 @@ export class NavbarComponent implements OnInit {
     this.languageService.esp$.next(this.lang)
     this.actualizaLang.emit(this.lang)
   }
+
 }
