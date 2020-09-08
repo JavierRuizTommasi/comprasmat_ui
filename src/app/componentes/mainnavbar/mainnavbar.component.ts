@@ -14,7 +14,7 @@ import { Router } from '@angular/router'
   templateUrl: './mainnavbar.component.html',
   styleUrls: ['./mainnavbar.component.css']
 })
-export class MainnavbarComponent {
+export class MainnavbarComponent implements OnInit{
     @Input() deviceXs: boolean
 
     isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -27,7 +27,6 @@ export class MainnavbarComponent {
 
     public esp: boolean
     public lang: Language = {esp: true}
-  
     @Output() actualizaLang = new EventEmitter()
   
     constructor(

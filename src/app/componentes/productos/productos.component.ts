@@ -66,6 +66,10 @@ export class ProductosComponent implements OnInit {
     private router: Router
     ) {
 
+      if (!this.usuariosService.isLogin()) {
+        this.router.navigateByUrl('/login')
+      }
+  
       this.fs = fbs.group({
         fdescrip: ['']
       })

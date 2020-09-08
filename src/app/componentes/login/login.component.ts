@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
   @Output() actualizaCuenta = new EventEmitter()
 
   public esp: boolean
-  public lang: Language
+  public lang: Language = {esp: true}
   @Output() actualizaLang = new EventEmitter()
 
   idCuenta: string
@@ -128,6 +128,7 @@ export class LoginComponent implements OnInit {
 
       this.languageService.esp$.subscribe((lang: Language) => {
         this.esp = lang.esp
+        // console.log(this.esp)
       })
   }
 
@@ -135,7 +136,7 @@ export class LoginComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       // console.log(params);
       this.notificacion = params['notification'];
-      console.log(this.notificacion);
+      // console.log(this.notificacion);
     })
     
     this.freset()

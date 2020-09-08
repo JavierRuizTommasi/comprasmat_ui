@@ -2,7 +2,8 @@
   <img class="mt-2" src="../../assets/logo2.png">
 </div>
 
-<mat-sidenav-container class="sidenav-container" (backdropClick)="drawer.close()">
+<!-- <mat-sidenav-container class="sidenav-container" (backdropClick)="drawer.close()"> -->
+<mat-sidenav-container class="sidenav-container" [hasBackdrop]="true">
   <mat-sidenav #drawer class="sidenav" fixedInViewport="true" role="navigation"> 
     <mat-toolbar (click)="drawer.close()">Menu</mat-toolbar>
     <!-- [mode]="(isHandset$ | async) ? 'over' : 'side'" -->

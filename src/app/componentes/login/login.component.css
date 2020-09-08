@@ -1,13 +1,9 @@
 .jumbotron {
     background-color: white;
     color: black;
-
 }
 
-hr {
-    background-color: gray;
-}
-
-.card {
+mat-card {
     width: 20rem;
 }
+

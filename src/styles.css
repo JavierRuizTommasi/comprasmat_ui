@@ -1,4 +1,73 @@
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Roboto, "Arial", sans-serif; }
+
+/*Change text in autofill textbox*/
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    /* -webkit-box-shadow: 0 0 0px 1000px #fff inset; */
+}
+
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.mat-table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1rem;
+    display: table;
+    border-collapse: collapse;
+    margin: 0px;
+}
+
+.mat-row,
+.mat-header-row {
+    display: table-row;
+}
+
+.mat-cell,
+.mat-header-cell {
+    word-wrap: initial;
+    display: table-cell;
+    padding: 0px 5px;
+    line-break: unset;
+    width: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.container-btn-new {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+    
+#newbutton {
+    margin-bottom: 1rem; 
+    width: 90%;
+    /* margin: auto; */
+    cursor: pointer;
+}
+
+.my_checkbox {
+    width:5vw;
+    height:5vh;
+}
+
+.mat-form-field {
+    font-size: 14px;
+    width: 100%;
+    margin: 0 auto;
+    display: block;
+    /* margin-top: 1rem; */
+}
+  
+  

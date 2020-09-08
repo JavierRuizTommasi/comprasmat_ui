@@ -1,4 +1,4 @@
-<div class="jumbotron"> 
+<div class="jumbotron mt-5"> 
     <!-- <h2>Login</h2>
     <hr> -->
 
@@ -13,52 +13,45 @@
             </ngb-alert>
         </div>  
         <div class="d-flex justify-content-center ">
-            <div class="card">
-                <h5 class="card-header">{{esp ? 'Ingreso' : 'Log in'}}</h5>
-                <div class="card-body">
+            <mat-card>
+                <mat-card-title>{{esp ? 'Ingreso' : 'Log in'}}</mat-card-title>
+                <mat-card-content>
                     <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
                     <form [formGroup]="f">
-                        <div class="form-group mb-0">
-                            <div class="form-group row">
-                                <div class="col-sm-12">
-                                    <mat-form-field color='primary'>
-                                        <mat-label>Email</mat-label>
-                                        <input matInput type="email" class="form-control" formControlName="email" id="email" required="required">
-                                    </mat-form-field>
-                                  <!-- <input type="email" class="form-control" formControlName="email" id="email" placeholder="it@proagrolab.com.ar" required="required"/> -->
-                                </div>
+                        <mat-form-field>
+                            <mat-label>Email</mat-label>
+                            <input matInput type="email" formControlName="email" id="email">
+                            <mat-error *ngIf="f.controls.email.errors">{{esp ? 'Email invalido' : 'Invalid Email'}}</mat-error>
+                        </mat-form-field>
+                        <div class="form-group row">
+                            <mat-form-field class="col-sm-12">
+                                <mat-label>Password</mat-label>
+                                <input matInput type="password" formControlName="password" id="password">
+                                <mat-error *ngIf="f.controls.password.errors">{{esp ? 'Requerida' : 'Required'}}</mat-error>
+                            </mat-form-field>
+                            <!-- <input type="password" class="form-control" formControlName="password" id="password" placeholder="password" required="required"/> -->
+                        </div>
+                        <div>
+                            <ngb-alert class="mt-2" *ngIf="siAlert" [type]="alertType" (close)="!siAlert">{{msgAlert}}</ngb-alert>
+                            <!-- <ngb-alert *ngIf="siError" type="success" (close)="siError=false">{{msgError}}</ngb-alert> -->
+                            <div class="d-flex justify-content-between">    
+                                <a mat-button color="primary" routerLink="/register">{{esp ? 'Registro' : 'Register'}}</a>
+                                <button mat-raised-button color="primary" (click)="login()">{{esp ? 'Ingreso' : 'Log in'}}</button>
                             </div>
-                            <div class="form-group row">
-                                <div class="col-sm-12">
-                                    <mat-form-field>
-                                        <mat-label>Password</mat-label>
-                                        <input matInput type="password" class="form-control" formControlName="password" id="password" required="required">
-                                    </mat-form-field>
-                                    <!-- <input type="password" class="form-control" formControlName="password" id="password" placeholder="password" required="required"/> -->
-                                </div>
+                        </div>
+                        <div *ngIf="siInactivo" class="form-group row mt-4 mb-0">
+                            <div class="col-sm-12">
+                            <ngb-alert *ngIf="esp" type="warning" close="!siInactivo">
+                                <p><strong>Atención!!!</strong> - Despues de Registrarse ud. recibó un email para activar su cuenta de usuario.</p> 
+                                <p>Verifique la casilla de Spam en caso de que no lo encuentre en su Buzón, .</p>
+                            </ngb-alert>
+                            <ngb-alert *ngIf="!esp" type="warning" close="!siInactivo">
+                                <p><strong>Atention!!!</strong> - After your Registration you have received an email to activate your user account.</p>
+                                <p>Verify the Spam folder in case you don't find it on your Mailbox.</p>
+                            </ngb-alert>
+                            <div>    
+                                <button mat-raised-button color="primary" (click)="enviarEmail(this.f.controls.email.value)">{{esp ? 'Reenviar el Email' : 'Resend the Email'}}</button>
                             </div>
-                            <div>
-                                <ngb-alert class="mt-2" *ngIf="siAlert" [type]="alertType" (close)="!siAlert">{{msgAlert}}</ngb-alert>
-                                <!-- <ngb-alert *ngIf="siError" type="success" (close)="siError=false">{{msgError}}</ngb-alert> -->
-                                <div class="d-flex justify-content-between">    
-                                    <a class="mt-2" routerLink="/register">{{esp ? 'Registro' : 'Register'}}</a>
-                                    <button mat-button class="btn btn-primary" (click)="login()">{{esp ? 'Ingreso' : 'Log in'}}</button>
-                                </div>
-                            </div>
-                            <div *ngIf="siInactivo" class="form-group row mt-4 mb-0">
-                                <div class="col-sm-12">
-                                <ngb-alert *ngIf="esp" type="warning" close="!siInactivo">
-                                    <p><strong>Atención!!!</strong> - Despues de Registrarse ud. recibó un email para activar su cuenta de usuario.</p> 
-                                    <p>Verifique la casilla de Spam en caso de que no lo encuentre en su Buzón, .</p>
-                                </ngb-alert>
-                                <ngb-alert *ngIf="!esp" type="warning" close="!siInactivo">
-                                    <p><strong>Atention!!!</strong> - After your Registration you have received an email to activate your user account.</p>
-                                    <p>Verify the Spam folder in case you don't find it on your Mailbox.</p>
-                                </ngb-alert>
-                                <div>    
-                                    <button type="button" class="btn btn-primary" (click)="enviarEmail(this.f.controls.email.value)">{{esp ? 'Reenviar el Email' : 'Resend the Email'}}</button>
-                                </div>
-                                </div>
                             </div>
                         </div>
                     </form>
@@ -70,8 +63,8 @@
                     <p><u>Datos del formulario reactivo</u></p>
                     <pre>{{f.value | json}}</pre> -->
                 
-                </div>
-            </div>
+                </mat-card-content>
+            </mat-card>
         </div>
     </section> 
 </div>

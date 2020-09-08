@@ -81,6 +81,10 @@ export class SamplesComponent implements OnInit {
     private samplesService: SamplesService,
     private router: Router) {
 
+      if (!this.usuariosService.isLogin()) {
+        this.router.navigateByUrl('/login')
+      }
+  
       this.f = fb.group({
         id: [''],
         muestra: ['',

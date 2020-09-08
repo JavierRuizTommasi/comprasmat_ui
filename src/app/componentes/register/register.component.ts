@@ -5,7 +5,6 @@ import { UsuariosService, IUsuario, IUsuUtp } from 'src/app/servicios/usuarios.s
 import { Usuarios } from 'src/app/models/Usuarios'
 import { Language } from 'src/app/models/Language'
 import { LanguageService } from 'src/app/servicios/language.service'
-import { lang } from 'moment';
 
 @Component({
   selector: 'app-register',
@@ -14,7 +13,8 @@ import { lang } from 'moment';
 })
 export class RegisterComponent implements OnInit {
 
-esp: boolean
+public esp: boolean
+public lang: Language = {esp: true}
 
 strTipo: string
 idIdx: string

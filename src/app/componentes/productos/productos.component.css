@@ -1,18 +1,29 @@
 .jumbotron {
     background-color: white;
     color: black;
-    padding-top: 20px;
+    width: 98%;
+    margin: auto;
+    margin-top: 1rem;
+    padding: 0;
 }
 
 hr {
     background-color:#333;
 }
 
-/* tr:nth-of-type(odd) {
-    background-color: lightcyan;
-} */
-
 .my_checkbox {
     width:5vw;
     height:5vh;
 }
+
+.mat-form-field {
+    font-size: 14px;
+    width: 100%;
+    margin: 0 auto;
+    display: block;
+    /* margin-top: 1rem; */
+}
+
+
+  
+  

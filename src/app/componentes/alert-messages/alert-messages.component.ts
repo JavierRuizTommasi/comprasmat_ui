@@ -1,4 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
+import { Language } from 'src/app/models/Language'
+import { LanguageService } from 'src/app/servicios/language.service'
+import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog'
+
+export interface DialogData {
+  tipo: string;
+  mensaje: string;
+}
 
 @Component({
   selector: 'app-alert-messages',
@@ -7,9 +15,28 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AlertMessagesComponent implements OnInit {
 
-  constructor() { }
+  esp: boolean
+  public lang: Language = {esp: true}
+
+  constructor(
+    private languageService: LanguageService,
+    public dialogRef: MatDialogRef<AlertMessagesComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: {tipo: string,  mensaje: string}
+    ) {     
+      console.log('Constructor')
+
+      this.languageService.esp$.subscribe((lang: Language) => {
+        this.esp = lang.esp
+      })
+
+  }
 
   ngOnInit(): void {
+    console.log('Init')
+  }
+
+  onClickNo(): void {
+    this.dialogRef.close()
   }
 
 }

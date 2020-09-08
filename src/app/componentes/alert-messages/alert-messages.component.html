@@ -1,1 +1,27 @@
-<p>alert-messages works!</p>
+<ng-container *ngIf="data.tipo=='Confirma'" >
+    <!-- <h2 mat-dialog-title>{{esp ? 'Confirma?' : 'Confirm?'}}</h2> -->
+    <h2 mat-dialog-title>{{data.mensaje}}</h2>
+    <mat-dialog-content class="mat-typography">
+        <!-- <p>{{data.mensaje}}</p> -->
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+        <button mat-button mat-dialog-close (click)="onClickNo()">No</button>
+        <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Si</button>
+    </mat-dialog-actions>
+</ng-container>
+
+
+<ng-container *ngIf="data.tipo=='Aviso'" >
+    <!-- <h2 mat-dialog-title>{{esp ? 'Confirma?' : 'Confirm?'}}</h2> -->
+    <!-- <h2 mat-dialog-title>{{data.mensaje}}</h2> -->
+    <mat-dialog-content>
+        <h2>{{data.mensaje}}</h2>
+        <br>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+        <button mat-button mat-dialog-close (click)="onClickNo()">
+            <mat-icon>done_outline</mat-icon>
+        </button>
+    </mat-dialog-actions>
+    <br>
+</ng-container>

@@ -9,6 +9,7 @@ import { ProductosService } from 'src/app/servicios/productos.service'
 import { Productos } from 'src/app/models/Products'
 import { Language } from 'src/app/models/Language'
 import { LanguageService } from 'src/app/servicios/language.service'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-seleccion',
@@ -59,8 +60,13 @@ export class SeleccionComponent implements OnInit {
     private languageService: LanguageService,
     private myproductsService: MyProductsService,
     private productosService: ProductosService,
-    private usuariosService: UsuariosService)
+    private usuariosService: UsuariosService,
+    private router: Router)
     { 
+      if (!this.usuariosService.isLogin()) {
+        this.router.navigateByUrl('/login')
+      }
+  
       this.f = fb.group({
         fdescrip: [''],
         frubro: [''],

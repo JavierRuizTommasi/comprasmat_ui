@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { BrowserModule } from '@angular/platform-browser';
+
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
@@ -7,8 +7,11 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
 import { RouterModule } from '@angular/router'
 import { FlexLayoutModule } from '@angular/flex-layout'
 
+import { BrowserModule } from '@angular/platform-browser';
+import { platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './modulos/material.module'
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 
 // Componentes
 import { AppComponent } from './app.component'
@@ -26,7 +29,11 @@ import { ChangepassComponent } from './componentes/changepass/changepass.compone
 import { OfertasComponent } from './componentes/ofertas/ofertas.component'
 import { SeleccionComponent } from './componentes/seleccion/seleccion.component';
 import { SamplesComponent } from './componentes/samples/samples.component';
+
+import { AlertMessagesComponent } from './componentes/alert-messages/alert-messages.component'
+
 import { MainnavbarComponent } from './componentes/mainnavbar/mainnavbar.component';
+import { MatUsersComponent } from './componentes/mat-users/mat-users.component';
 
 // Servicios
 import { AuthInterceptor } from './servicios/auth.interceptor'
@@ -59,7 +66,9 @@ import Rutas from './routes';
     OfertasComponent,
     SeleccionComponent,
     SamplesComponent,
-    MainnavbarComponent
+    MainnavbarComponent,
+    MatUsersComponent,
+    AlertMessagesComponent
   ],
   imports: [
     CommonModule,
@@ -72,6 +81,9 @@ import Rutas from './routes';
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule.forRoot(Rutas.config()),
+  ],
+  entryComponents: [    
+    AlertMessagesComponent
   ],
   providers: [
     ProductosService,
@@ -86,7 +98,8 @@ import Rutas from './routes';
     MensajesService,
     TendersService,
     OffersService,
-    SamplesService
+    SamplesService,
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'legacy' } }
   ],
   bootstrap: [AppComponent]
 })

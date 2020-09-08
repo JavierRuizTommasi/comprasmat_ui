@@ -8,11 +8,15 @@ hr {
     background-color: gray;
 }
 
-.card {
-    width: 30rem;
+mat-card {
+    width: 20rem;
 }
 
-.my_checkbox {
+mat-form-field {
+    width: 100%;
+}
+
+/* .my_checkbox {
     width:5vw;
     height:5vh;
-}
+} */
