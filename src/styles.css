@@ -27,8 +27,14 @@ input:-webkit-autofill:active {
     margin: 0px;
 }
 
-.mat-row,
-.mat-header-row {
+.mat-header-cell, .mat-header-row, .mat-header-cell-def {
+    display: table-row;
+    background-color: lightcyan;
+    font-weight:bold;
+    font-size: 16px;
+}
+
+.mat-row {
     display: table-row;
 }
 
@@ -39,20 +45,27 @@ input:-webkit-autofill:active {
     padding: 0px 5px;
     line-break: unset;
     width: auto;
-    white-space: nowrap;
+    white-space: wrap;
     overflow: hidden;
     vertical-align: middle;
 }
 
 .container-btn-new {
     display: flex;
-    justify-content: center;
-    margin-bottom: 1rem;
+    justify-content: flex-end;
+    margin-left: auto;
 }
     
 #newbutton {
     margin-bottom: 1rem; 
-    width: 90%;
+    /* width: 90%; */
+    /* margin: auto; */
+    cursor: pointer;
+}
+
+#filterbutton {
+    margin-bottom: 1rem; 
+    /* width: 90%; */
     /* margin: auto; */
     cursor: pointer;
 }
@@ -70,4 +83,15 @@ input:-webkit-autofill:active {
     /* margin-top: 1rem; */
 }
   
-  
+/* .mat-checkbox-frame,
+.mat-checkbox-background,
+.mat-checkbox-anim-unchecked-checked
+.mat-checkbox-anim-checked-unchecked {
+    margin: 2px 8px auto 0;
+    transform: scale(2);
+} */
+
+.mat-checkbox-inner-container {
+    margin-top: 8px !important;
+    margin-right: 10px !important;
+}

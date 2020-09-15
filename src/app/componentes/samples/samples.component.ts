@@ -1,4 +1,7 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Cuenta } from 'src/app/models/Cuenta'
 import { ComunicacionService } from 'src/app/servicios/comunicacion.service'
 import { UsuariosService } from 'src/app/servicios/usuarios.service'
@@ -7,21 +10,29 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { Router } from '@angular/router'
 import { Language } from 'src/app/models/Language'
 import { LanguageService } from 'src/app/servicios/language.service'
-import { TendersService } from 'src/app/servicios/tenders.service'
-import { Tenders } from 'src/app/models/Tenders';
-import { OffersService } from 'src/app/servicios/offers.service'
-import { Offers } from 'src/app/models/Offers';
 import { SamplesService } from 'src/app/servicios/samples.service'
 import { Samples } from 'src/app/models/Samples';
+import { ProductosService } from 'src/app/servicios/productos.service'
+import { Productos } from 'src/app/models/Products'
 import * as moment from 'moment'
-import { Observable } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog'
+import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
+import { arEstadosMuestras } from 'src/app/models/EstadosMuestras'
 
 @Component({
   selector: 'app-samples',
   templateUrl: './samples.component.html',
   styleUrls: ['./samples.component.css']
 })
-export class SamplesComponent implements OnInit {
+export class SamplesComponent implements AfterViewInit, OnInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator
+  @ViewChild(MatSort) sort: MatSort
+  @ViewChild(MatTable) table: MatTable<Samples>
+
+  dataSource: MatTableDataSource<Samples> = new MatTableDataSource<Samples>()
+
+  /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
+  displayedColumns: string[] = ['muestra', 'usuario', 'descrip', 'fecha', 'estado', 'actions']
 
   strTipo: string
   idIdx: string
@@ -37,68 +48,39 @@ export class SamplesComponent implements OnInit {
   sample: Samples
   sampUpt: Samples
 
-  tenders: Tenders[] = [] 
-  offers: Offers [] = []
-
-  filterSamples: Samples[] = []
-  
-  private _searchTerm: string
-  private _searchUsu: string
-  
-  get searchTerm(): string {
-    return this._searchTerm
-  }
-  set searchTerm(value: string) {
-    this._searchTerm = value
-    this.filterSamples = this.filtroSamples(value, this.searchUsu)
-  }
-
-  get searchUsu(): string {
-    return this._searchUsu
-  }
-  set searchUsu(value: string) {
-    this._searchUsu = value
-    this.filterSamples = this.filtroSamples(this.searchTerm, value)
-  }
+  products: Productos[] = []
 
   f: FormGroup
-  fs: FormGroup
 
   siGrabo: boolean
   msgGrabo: string
 
   notDone: boolean = true
 
+  estadosMuestras = arEstadosMuestras
+
+  filterValues = {}
+  filterSelectObj = []
+
   constructor(
     private fb: FormBuilder,
-    private fbs: FormBuilder,
     private comunicacionService: ComunicacionService,
     private modalService: NgbModal,
     private languageService: LanguageService,
     private usuariosService: UsuariosService,
-    private offersService: OffersService,
-    private tenderService: TendersService,
     private samplesService: SamplesService,
-    private router: Router) {
+    private productosService: ProductosService,
+    private router: Router,
+    public dialog: MatDialog
+    ) {
 
       if (!this.usuariosService.isLogin()) {
         this.router.navigateByUrl('/login')
       }
   
-      this.f = fb.group({
+        this.f = fb.group({
         id: [''],
-        muestra: ['',
-          Validators.compose([
-          Validators.required
-        ])],
-        oferta: ['',
-          Validators.compose([
-          Validators.required
-        ])],
-        licitacion: [{value: '', disabled: true},
-          Validators.compose([
-          Validators.required
-        ])],
+        muestra: [''],
         usuario: [{value: '', disabled: true},
           Validators.compose([
           Validators.required
@@ -145,37 +127,43 @@ export class SamplesComponent implements OnInit {
         detalle: ['']
       })
   
-      this.fs = fbs.group({
-        fdescrip: [''],
-        fuser: ['']
-      })
-  
       this.languageService.esp$.subscribe((lang: Language) => {
         this.esp = lang.esp
       })
   
-  }
+      this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
+        this.cuenta = cuenta
+      })
+
+      this.filterSelectObj = [
+        {
+          name: 'USUARIO',
+          nameeng: 'USER',
+          columnProp: 'usuario',
+          options: []
+        },
+        {
+          name: 'PRODUCTO',
+          nameeng: 'PRODUCT',
+          columnProp: 'descrip',
+          options: []
+        }
+      ]
+    }
 
   ngOnInit(): void {
-    // this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
-    //   this.cuenta = cuenta
-    // })
-
-    console.log('isLogin', this.usuariosService.isLogin())
     this.pedirDatos()
-
   }
 
-  // getUserData() {
-  //   return new Promise (resolve => {
-  //   const user: any = this.usuariosService.checkUsuario()
-  //   console.log(user.user)
-  //   resolve(user)
-  //     // .subscribe(resp => {
-  //     //   console.log(resp)
-  //     //   return resp
-  //   })
-  // }
+  ngAfterViewInit() {
+  // console.log(this.dataSource)
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.table.dataSource = this.dataSource;
+
+    // Overrride default filter behaviour of Material Datatable
+    this.dataSource.filterPredicate = this.createFilter()
+  }
 
   async getUserData() {
     const resp: any = await this.usuariosService.checkUsuario().toPromise()
@@ -195,8 +183,9 @@ export class SamplesComponent implements OnInit {
     const user = await this.getUserData()
     this.checkCuenta(user)
 
-    await this.pedirTenders(user)
-    await this.pedirOffers(user)
+    // await this.pedirTenders(user)
+    // await this.pedirOffers(user)
+    await this.pedirProducts(user)
     await this.pedirSamples(user)
 
     this.notDone = false
@@ -213,13 +202,11 @@ export class SamplesComponent implements OnInit {
       // console.log(user)
       this.cuenta = user
       this.esp = (this.cuenta.language === 'es')
-
     }
     else {
       console.log('no logueado')
       this.usuariosService.removeToken()
-      this.cuenta = undefined
-      this.esp = this.languageService.checkLang()
+      this.router.navigateByUrl('/login')
     }
 
     this.comunicacionService.cuenta$.next(this.cuenta)
@@ -236,71 +223,36 @@ export class SamplesComponent implements OnInit {
   async pedirSamples(user) {
     console.log('Samples')
     // console.log(user)
+    let resp: any
     if (user) {
       if (user.perfil === 4) {
         console.log('Proveedor', user.perfil)
-        const resp: any = await this.samplesService.findMySamples(user.usuario).toPromise()
-        this.samples = resp.Samples
+        resp = await this.samplesService.findMySamples(user.usuario).toPromise()
       } else {
         console.log('Todos', user.perfil)
-        const resp: any = await this.samplesService.getSamples().toPromise()
-        this.samples = resp.Samples
+        resp = await this.samplesService.getSamples().toPromise()
       }
-      // .subscribe((resp: any) => {
-      console.log(this.samples)
-      //   this.samples = resp.Samples
 
-      // console.log(user)
-      this.searchUsu = undefined
-      if(user) {
-        if (user.perfil === 4) {
-          this.fs.patchValue({
-            fuser: user.usuario
-          })  
-          this.searchUsu = user.usuario
-        } 
-      }
-      console.log('filtro')
-      this.searchTerm = undefined
-      this.filtroSamples(this.searchTerm, this.searchUsu)
+      this.dataSource.data = resp.Samples
+      this.dataSource.sort = this.sort
+      this.dataSource.paginator = this.paginator
+      this.table.dataSource = this.dataSource
 
+      // this.samples = resp.Samples
+      console.log(this.dataSource)
+
+      this.filterSelectObj.filter((o) => {
+        o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
+      })
     }
   }
 
-  async pedirOffers(user) {
-    console.log('Offers')
-    if (user) {
-      if (user.perfil === 4) {
-        const resp: any = await this.offersService.findMyOffers(user.usuario).toPromise()
-        this.offers = resp.Offers
-      } else {
-        const resp: any = await this.offersService.getOffers().toPromise()
-        this.offers = resp.Offers
-      }
-
-      // .subscribe((resp: any) => {
-      console.log(this.offers)
-      //   this.offers = resp.Offers
-      // })
-    }
-
-  }
-      
-  async pedirTenders(user) {
-    console.log('Tenders')
-    if (user) {
-      const resp: any = await this.tenderService.getTenders().toPromise()
-      this.tenders = resp.Tenders
-      //   .subscribe((resp: any) => {
-      console.log(this.tenders)
-      //     this.tenders = resp.Tenders
-      //   })
-    }
-
-  }
-
-  removeAlert(): void {
-    this.siGrabo = false
+  async pedirProducts(user) {
+      this.productosService.getProductos()
+      .subscribe((resp: any) => {
+        // console.log(resp)
+        this.products = resp.Products
+      })
   }
 
   openModal(targetModal, sample, strTipoParam) {
@@ -315,8 +267,6 @@ export class SamplesComponent implements OnInit {
       this.f.patchValue({
         id: '',
         muestra: 0,
-        oferta: 0,
-        licitacion: 0,
         usuario: this.cuenta.usuario,
         email: this.cuenta.email,
         proveedor: this.cuenta.proveedor,
@@ -336,8 +286,6 @@ export class SamplesComponent implements OnInit {
       this.f.patchValue({
         id: sample._id,
         muestra: sample.muestra,
-        oferta: sample.oferta,
-        licitacion: sample.licitacion,
         usuario: sample.usuario,
         email: sample.email,
         proveedor: sample.proveedor,
@@ -353,8 +301,14 @@ export class SamplesComponent implements OnInit {
         estado: sample.estado,
         detalle: sample.detalle
       })
-      if (strTipoParam === 'B') this.f.disable()
     }
+
+    if (strTipoParam === 'B') {
+      this.f.disable()
+    } else {
+      this.f.enable()
+    }
+
   }
 
   onSubmit() {
@@ -366,8 +320,6 @@ export class SamplesComponent implements OnInit {
     this.idIdx = this.f.controls.id.value
     this.sampUpt = {
       muestra: this.f.controls.muestra.value,
-      oferta: this.f.controls.oferta.value,
-      licitacion: this.f.controls.licitacion.value,
       usuario: this.f.controls.usuario.value,
       email: this.f.controls.email.value,
       proveedor: this.f.controls.proveedor.value,
@@ -404,8 +356,9 @@ export class SamplesComponent implements OnInit {
     this.samplesService.addSample(this.sampUpt)
       .subscribe((sample: Samples) => {
         console.log('Alta:', sample)
-        this.siGrabo = true
-        this.msgGrabo = this.esp ? 'Muestra Grabada!' : 'Sample Saved!'
+        if (sample) {
+          this.alertMsg()
+        }
         this.pedirDatos()
       })
 
@@ -415,12 +368,12 @@ export class SamplesComponent implements OnInit {
     this.samplesService.deleteSample(this.idIdx)
      .subscribe((sample: Samples) => {
        console.log('Baja:', sample)
-       this.siGrabo = true
-       this.msgGrabo = this.esp ? 'Muestra Borrada!' : 'Sample Deleted'
-       this.pedirDatos()
-      })
+       if (sample) {
+        this.alertMsg()
+      }
+      this.pedirDatos()
+    })
 
-    setTimeout(() => this.removeAlert(), 3000)
   }
 
   modificarMuestra() {
@@ -428,69 +381,141 @@ export class SamplesComponent implements OnInit {
     this.samplesService.putSample(this.idIdx, this.sampUpt)
       .subscribe((sample: Samples) => {
       console.log('Modif:', sample)
-      this.siGrabo = true
-      this.msgGrabo = this.esp ? 'Muestra Modificada!' : 'Sample Updated!'
+      if (sample) {
+        this.alertMsg()
+      }
       this.pedirDatos()
     })
   
-    setTimeout(() => this.removeAlert(), 3000)
   }
 
-  changeOferta(ev) {
+  changeProduct(ev) {
     // console.log(ev)
-    this.f.get('oferta').setValue(ev.target.value, {
+    this.f.get('producto').setValue(ev.target.value, {
       onlySelf: true
     })
-   
-    for(const offer of this.offers){
-      if (offer.oferta == ev.target.value){
-        console.log('Igual', offer.oferta)
-        // result.push(offer)
+    
+    console.log(ev.target.value)
 
-        this.f.get('proveedor').setValue((offer.proveedor), {
-          onlySelf: true
-        })
-    
-        this.f.get('provenom').setValue((offer.provenom), {
-          onlySelf: true
-        })
-    
-        this.f.get('licitacion').setValue((offer.licitacion), {
-          onlySelf: true
-        })
-    
-        this.f.get('producto').setValue((offer.producto), {
-          onlySelf: true
-        })
-    
-        this.f.get('descrip').setValue((offer.descrip), {
-          onlySelf: true
-        })
-    
-        // this.f.get('cantidad').setValue((offer.cantidad), {
+    for(const product of this.products){
+      if (product.codigo == ev.target.value){
+        // console.log('Igual')
+        // result.push(product)
+
+        // this.f.get('producto').setValue((product.codigo), {
         //   onlySelf: true
         // })
     
-        // this.f.get('unidad').setValue((offer.unidad), {
+        this.f.get('descrip').setValue((product.descrip), {
+          onlySelf: true
+        })
+    
+        // this.f.get('costo').setValue((product.costo), {
+        //   onlySelf: true
+        // })
+    
+        // this.f.get('cantidad').setValue((product.cantidad), {
+        //   onlySelf: true
+        // })
+    
+        // this.f.get('unidad').setValue((product.unidad), {
         //   onlySelf: true
         // })
     
       }
     }
 
-    // console.log(result)
+    console.log(this.f.controls)
 
   }
+  
+  alertMsg(): void {
+    let strConfMsg = ''
+    switch (this.strTipo) {
+      case 'A':
+        // Alta
+        strConfMsg = this.esp ? 'Muestra Creada!' : 'Sample Created!' 
+        break
+      case 'B':
+        // Baja
+        strConfMsg = this.esp ? 'Muestra Borrada!' : 'Sample Deleted!' 
+        break
+      case 'M':
+        // Modificar
+        strConfMsg = this.esp ? 'Muestra Modificada!' : 'Sample Updated!' 
+        break
+      default:
+        break
+    }
+    
+    const dialogRef = this.dialog.open(AlertMessagesComponent, {
+      width: '300px',
+      data: {tipo: 'Aviso', mensaje: strConfMsg}
+    })
+  
+  }
 
-  filtroSamples(searchProd: string, searchUsu: string) {
-    // console.log(searchProd)
-    // console.log(searchUsu)
-    if (typeof searchProd === 'undefined' && typeof searchUsu === 'undefined') return this.samples  
-    if (typeof searchProd === 'undefined' && typeof searchUsu !== 'undefined') return this.samples.filter(sample => sample.usuario.toLowerCase().indexOf(searchUsu.toLowerCase()) >- 1) 
-    if (typeof searchProd !== 'undefined' && typeof searchUsu === 'undefined') return this.samples.filter(sample => sample.descrip.toLowerCase().indexOf(searchProd.toLowerCase()) >- 1) 
-    if (typeof searchProd !== 'undefined' && typeof searchUsu !== 'undefined') { 
-      return this.samples.filter(sample => ((sample.descrip.toLowerCase().indexOf(searchProd.toLowerCase()) >- 1) && (sample.usuario.toLowerCase().indexOf(searchUsu.toLowerCase()) >- 1))
-      )}
+    getFilterObject(fullObj, key) {
+      const uniqChk = []
+      fullObj.filter((obj) => {
+        if (!uniqChk.includes(obj[key])) {
+          uniqChk.push(obj[key])
+        }
+        return obj
+      })
+      return uniqChk
+    }
+
+  // Called on Filter change
+  filterChange(filter, event) {
+    //let filterValues = {}
+    this.filterValues[filter.columnProp] = event.target.value.trim().toLowerCase()
+    this.dataSource.filter = JSON.stringify(this.filterValues)
+  }
+
+  // Custom filter method fot Angular Material Datatable
+  createFilter() {
+    let filterFunction = function (data: any, filter: string): boolean {
+      let searchTerms = JSON.parse(filter);
+      let isFilterSet = false;
+      for (const col in searchTerms) {
+        if (searchTerms[col].toString() !== '') {
+          isFilterSet = true;
+        } else {
+          delete searchTerms[col];
+        }
+      }
+
+      console.log(searchTerms);
+
+      let nameSearch = () => {
+        let found = false;
+        if (isFilterSet) {
+          for (const col in searchTerms) {
+            searchTerms[col].trim().toLowerCase().split(' ').forEach(word => {
+              if (data[col].toString().toLowerCase().indexOf(word) != -1 && isFilterSet) {
+                found = true
+              }
+            });
+          }
+          return found
+        } else {
+          return true;
+        }
+      }
+      return nameSearch()
+    }
+    return filterFunction
+  }
+
+
+  // Reset table filters
+  resetFilters() {
+    this.filterValues = {}
+    this.filterSelectObj.forEach((value, key) => {
+      value.modelValue = undefined;
+    })
+    this.dataSource.filter = "";
   }
 
 }

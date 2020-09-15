@@ -154,10 +154,32 @@ export class LoginComponent implements OnInit {
     })
 
     if (this.usuariosService.isLogin()) {
-          this.router.navigateByUrl('/inicio')
+      this.pedirDatos()
     }
   }
       
+  async getUserData() {
+    const resp: any = await this.usuariosService.checkUsuario().toPromise()
+    console.log(resp.user)
+    return resp.user
+  }
+
+  async pedirDatos() {
+    // Esta funcion pide todos los datos previos antes de mostrar en el browser
+    // getUserData() Chequea si el usuario esta logeado 
+    // checkCuenta() Avisa al Navbar sino 
+    // pedirProductos() Trae datos del Servicio Productos
+
+    console.log('pedirDatos')
+    const user = await this.getUserData()
+    if (user) {
+      this.router.navigateByUrl('/inicio')
+    }
+    else {
+      this.usuariosService.removeToken()
+    }
+}
+
   login() {
     // console.log(this.f.value)
 

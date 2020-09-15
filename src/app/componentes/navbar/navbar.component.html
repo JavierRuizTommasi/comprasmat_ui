@@ -1,127 +1,168 @@
 <div class="jumbotron">
-  <img src="../../assets/logo2.png">
+  <img class="mt-2" src="../../assets/logo2.png">
 </div>
 
-  <nav class="navbar navbar-expand-lg navbar-toggler-md navbar-dark bg-primary sticky-top">
+<!-- <mat-sidenav-container class="sidenav-container" (backdropClick)="drawer.close()"> -->
+<mat-sidenav-container class="sidenav-container" (backdropClick)="drawer.close()">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport="true" role="navigation"> 
+    <mat-toolbar (click)="drawer.close()">Menu</mat-toolbar>
+    <!-- [mode]="(isHandset$ | async) ? 'over' : 'side'" -->
+    <!-- [opened]="(isHandset$ | async) === false"> -->
+    <mat-nav-list>
+      <a mat-list-item [matMenuTriggerFor]="menuLicita">{{esp ? 'Licitaciones' : 'Tenders'}}</a>
+      <mat-menu #menuLicita="matMenu" yPosition="below">
+        <a mat-menu-item routerLink="/licitaciones" (click)="drawer.close()">{{esp ? 'Activas' : 'Actives'}}</a>
+        <ng-container *ngIf="cuenta">
+          <ng-container *ngIf="cuenta.perfil!=4">
+            <a mat-menu-item routerLink="/licitaciones" (click)="drawer.close()">{{esp ? 'Licitaciones' : 'Tenders'}}</a>
+            <a mat-menu-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Ofertas' : 'Offers'}}</a>
+          </ng-container>
+          <ng-container *ngIf="cuenta.perfil==4">
+            <a mat-menu-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Mis Ofertas' : 'My Offers'}}</a>
+          </ng-container>
+        </ng-container>
+      </mat-menu>
 
-   <!-- <a class="navbar-brand" routerLink="/">{{title}}</a> -->
-   <a class="navbar-brand" href="index.html">
-     {{esp ? 'Compras' : 'Purchases'}}
-     <!-- <img src="../../assets/logo.jpg" width="40" height="40"> -->
-   </a>
+      <ng-container *ngIf="cuenta">
+        <a mat-list-item [matMenuTriggerFor]="menuMuestras">{{esp ? 'Muestras' : 'Samples'}}</a>
+        <mat-menu #menuMuestras="matMenu" yPosition="below"> 
+          <ng-container *ngIf="cuenta.perfil!=4">
+            <a mat-menu-item routerLink="/muestras" (click)="drawer.close()">{{esp ? 'Muestras' : 'Samples'}}</a>
+          </ng-container>
+          <ng-container *ngIf="cuenta.perfil==4">
+            <a mat-menu-item routerLink="/muestras" (click)="drawer.close()">{{esp ? 'Mis Muestras' : 'My Samples'}}</a>
+          </ng-container>
+        </mat-menu>
 
-   <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-   </button>
+        <a mat-list-item [matMenuTriggerFor]="menuProductos">{{esp ? 'Productos' : 'Products'}}</a>
+        <mat-menu #menuProductos="matMenu" yPosition="below"> 
+          <a mat-menu-item routerLink="/productos" (click)="drawer.close()">{{esp ? 'Productos' : 'Products'}}</a>
+          <a mat-menu-item routerLink="/seleccion" (click)="drawer.close()">{{esp ? 'Seleccionar Productos' : 'Product Selection'}}</a>
+          <a mat-menu-item routerLink="/myproducts" (click)="drawer.close()">{{esp ? 'Mis Productos' : 'My Products'}}</a>
+        </mat-menu>
+        
+        <a mat-list-item [matMenuTriggerFor]="menuComunica">{{esp ? 'Comunicacion' : 'Communication'}}</a>
+        <mat-menu #menuComunica="matMenu" yPosition="below"> 
+            <a mat-menu-item routerLink="/mensajes" (click)="drawer.close()">{{esp ? 'Mis Mensajes' : 'My Messages'}}</a>
+            <ng-container *ngIf="cuenta.perfil<=3">
+              <a mat-menu-item routerLink="/mailtoprov" (click)="drawer.close()">{{esp ? 'Mails a Proveedores' : 'Mails to Suppliers'}}</a>
+            </ng-container>
+        </mat-menu>
 
-   <!-- <div class="spacer"></div> -->
+        <ng-container *ngIf="cuenta.perfil!=4">
+            <a mat-list-item routerLink="/usuarios" (click)="drawer.close()">{{esp ? 'Usuarios' : 'Users'}}</a>
+        </ng-container>
 
-   <div class="collapse navbar-collapse" id="navbarNav">
-      <div class="navbar-nav mr-auto ml-2 text-center">
-          <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/inicio" routerLinkActive="active">{{esp ? 'Inicio' : 'Home'}}</a>
-          <!-- <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/licitaciones" routerLinkActive="active">{{esp ? 'Licitaciones' : 'Tenders'}}</a> -->
-          <!-- <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/usuarios" routerLinkActive="active">Usuarios</a> -->
+        <a mat-list-item [matMenuTriggerFor]="menuCuenta">{{cuenta.nombre}}</a>
+        <mat-menu #menuCuenta="matMenu" yPosition="below"> 
+              <a mat-menu-item routerLink="/cuenta" (click)="drawer.close()">{{esp ? 'Cuenta' : 'My Account'}}</a>
+              <a mat-menu-item routerLink="/changepass" (click)="drawer.close()">{{esp ? 'Password' : 'Password'}}</a>
+              <div class="dropdown-divider"></div>
+              <a mat-menu-item routerLink="/logout" (click)="drawer.close()">{{esp ? 'Salir' : 'Logout'}}</a>
+        </mat-menu>
+      </ng-container>
 
-          <a class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="tendersNavbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{esp ? 'Licitaciones' : 'Tenders'}}
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/licitaciones">{{esp ? 'Activas' : 'Actives'}}</a>
-              <ng-container *ngIf="cuenta">
-                <ng-container *ngIf="cuenta.perfil!=4">
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/licitaciones">{{esp ? 'Licitaciones' : 'Tenders'}}</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/ofertas">{{esp ? 'Ofertas' : 'Offers'}}</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/muestras">{{esp ? 'Muestras' : 'Samples'}}</a>
-                </ng-container>
-                <ng-container *ngIf="cuenta.perfil==4">
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/ofertas">{{esp ? 'Mis Ofertas' : 'My Offers'}}</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/muestras">{{esp ? 'Mis Muestras' : 'My Samples'}}</a>
-                </ng-container>
+      <ng-container *ngIf="!cuenta">
+        <a mat-list-item routerLink="/register" (click)="drawer.close()">{{esp ? 'Registrase' : 'Register'}}</a>
+        <a mat-list-item routerLink="/login" (click)="drawer.close()">{{esp ? 'Ingreso' : 'Login'}}</a>
+      </ng-container>
+
+      <a mat-list-item (click)="changeLang()">
+        <img *ngIf="esp" src="../../assets/uk.png" width="20" height="20">
+        <img *ngIf="!esp" src="../../assets/spain.png" width="20" height="20">
+      </a>
+
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <mat-toolbar-row fxLayoutAlign="space-between center">
+        <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+          *ngIf="deviceXs">
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+        <div>
+          <button mat-button routerLink="/inicio"      >
+            <mat-icon>home</mat-icon>
+            <span class="logo" href="index.html">
+              {{esp ? 'Compras' : 'Purchases'}}
+            </span>
+          </button>
+        </div>
+
+        <div *ngIf="!deviceXs">
+          <!-- <span class="spacer"></span> -->
+          <button mat-button [matMenuTriggerFor]="menuLicita">{{esp ? 'Licitaciones' : 'Tenders'}}</button>
+          <mat-menu #menuLicita="matMenu" yPosition="below">
+            <button mat-menu-item routerLink="/licitaciones">{{esp ? 'Activas' : 'Actives'}}</button>
+            <ng-container *ngIf="cuenta">
+              <ng-container *ngIf="cuenta.perfil!=4">
+                <button mat-menu-item routerLink="/licitaciones">{{esp ? 'Licitaciones' : 'Tenders'}}</button>
+                <button mat-menu-item routerLink="/ofertas">{{esp ? 'Ofertas' : 'Offers'}}</button>
               </ng-container>
-            </div>
-          </a>
-
-          <a class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="productsNavbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{esp ? 'Productos' : 'Products'}}
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/productos">{{esp ? 'Productos' : 'Products'}}</a>
-              <!-- <ng-container *ngIf="cuenta">
-                <ng-container *ngIf="cuenta.perfil==4"> -->
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/seleccion">{{esp ? 'Seleccionar Productos' : 'Product Selection'}}</a>
-                <!-- </ng-container>
-              </ng-container> -->
-              <!-- <ng-container *ngIf="cuenta">
-                <ng-container *ngIf="cuenta.perfil==4"> -->
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/myproducts">{{esp ? 'Mis Productos' : 'My Products'}}</a>
-                <!-- </ng-container>
-              </ng-container> -->
-            </div>
-          </a>
-
-          <a class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="mensajesNavbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{esp ? 'Comunicacion' : 'Communication'}}
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/mensajes">{{esp ? 'Mis Mensajes' : 'My Messages'}}</a>
-              <ng-container *ngIf="cuenta">
-                <ng-container *ngIf="cuenta.perfil<=3">
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/mailtoprov">{{esp ? 'Mails a Proveedores' : 'Mails to Suppliers'}}</a>
-                </ng-container>
+              <ng-container *ngIf="cuenta.perfil==4">
+                <button mat-menu-item routerLink="/ofertas">{{esp ? 'Mis Ofertas' : 'My Offers'}}</button>
               </ng-container>
-            </div>
-          </a>
-
-          <!-- <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/productos" routerLinkActive="active">{{esp ? 'Productos' : 'Products'}}</a> -->
+            </ng-container>
+          </mat-menu>
 
           <ng-container *ngIf="cuenta">
+            <button mat-button [matMenuTriggerFor]="menuMuestras">{{esp ? 'Muestras' : 'Samples'}}</button>
+            <mat-menu #menuMuestras="matMenu" yPosition="below"> 
+              <ng-container *ngIf="cuenta.perfil!=4">
+                <button mat-menu-item routerLink="/muestras">{{esp ? 'Muestras' : 'Samples'}}</button>
+              </ng-container>
+              <ng-container *ngIf="cuenta.perfil==4">
+                <button mat-menu-item routerLink="/muestras">{{esp ? 'Mis Muestras' : 'My Samples'}}</button>
+              </ng-container>
+            </mat-menu>
+
+            <button mat-button [matMenuTriggerFor]="menuProductos">{{esp ? 'Productos' : 'Products'}}</button>
+            <mat-menu #menuProductos="matMenu" yPosition="below"> 
+              <button mat-menu-item routerLink="/productos">{{esp ? 'Productos' : 'Products'}}</button>
+              <button mat-menu-item routerLink="/seleccion">{{esp ? 'Seleccionar Productos' : 'Product Selection'}}</button>
+              <button mat-menu-item routerLink="/myproducts">{{esp ? 'Mis Productos' : 'My Products'}}</button>
+            </mat-menu>
+
+            <button mat-button [matMenuTriggerFor]="menuComunica">{{esp ? 'Mensajes' : 'Messages'}}</button>
+            <mat-menu #menuComunica="matMenu" yPosition="below"> 
+                <button mat-menu-item routerLink="/mensajes">{{esp ? 'Mis Mensajes' : 'My Messages'}}</button>
+                <ng-container *ngIf="cuenta.perfil<=3">
+                  <button mat-menu-item routerLink="/mailtoprov">{{esp ? 'Mails a Proveedores' : 'Mails to Suppliers'}}</button>
+                </ng-container>
+            </mat-menu>
+
             <ng-container *ngIf="cuenta.perfil!=4">
-              <!-- <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/seleccion" routerLinkActive="active">{{esp ? 'Seleccion' : 'Selection'}}</a> -->
-              <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/usuarios" routerLinkActive="active">{{esp ? 'Usuarios' : 'Users'}}</a>
+              <button mat-button routerLink="/usuarios">{{esp ? 'Usuarios' : 'Users'}}</button>
             </ng-container>
           </ng-container>
-      </div>
-      
-      <div class="d-flex justify-content-center">     
-          <ng-container *ngIf="cuenta"> 
-            <!-- <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/inicio" routerLinkActive="active">{{cuenta.nombre}}</a>
-            <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/logout" routerLinkActive="active">Logout</a> -->
-            <a class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="cuentaNavbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{cuenta.nombre}}
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/cuenta">{{esp ? 'Cuenta' : 'My Account'}}</a>
-                <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/changepass">{{esp ? 'Password' : 'Password'}}</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/logout">{{esp ? 'Salir' : 'Logout'}}</a>
-              </div>
-            </a>
+        </div>
+
+        <div>
+          <ng-container *ngIf="cuenta && !deviceXs"> 
+            <button mat-button [matMenuTriggerFor]="menuCuenta">{{cuenta.nombre}}</button>
+            <mat-menu #menuCuenta="matMenu" yPosition="below"> 
+                  <button mat-menu-item routerLink="/cuenta">{{esp ? 'Cuenta' : 'My Account'}}</button>
+                  <button mat-menu-item routerLink="/changepass">{{esp ? 'Password' : 'Password'}}</button>
+                  <div class="dropdown-divider"></div>
+                  <button mat-menu-item routerLink="/logout">{{esp ? 'Salir' : 'Logout'}}</button>
+              </mat-menu>
           </ng-container>
-          <ng-container *ngIf="!cuenta" > 
-            <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/register" routerLinkActive="active">{{esp ? 'Registrase' : 'Register'}}</a>
-            <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" routerLink="/login" routerLinkActive="active">{{esp ? 'Ingreso' : 'Login'}}</a>
+
+          <ng-container *ngIf="!cuenta && !deviceXs">
+            <button mat-button routerLink="/register" routerLinkActive="active">{{esp ? 'Registrase' : 'Register'}}</button>
+            <button mat-button routerLink="/login" routerLinkActive="active">{{esp ? 'Ingreso' : 'Login'}}</button>
           </ng-container>
-          <a class="nav-item nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" role="button" routerLinkActive="active" (click)="changeLang()">
-            <!-- <img src="../../assets/f3.jpg" width="20" height="20"> -->
-            <!-- <img src="../../assets/uk.png" width="20" height="20"> -->
+
+          <button mat-button routerLinkActive="active" (click)="changeLang()">
             <img *ngIf="esp" src="../../assets/uk.png" width="20" height="20">
             <img *ngIf="!esp" src="../../assets/spain.png" width="20" height="20">
-          </a>
-      </div>
+          </button>
+        </div>
+      </mat-toolbar-row>
+    </mat-toolbar>
 
-  </div>
-
-</nav>
-
+    <ng-content></ng-content>
+    <!-- Add Content Here -->
+  </mat-sidenav-content>
+</mat-sidenav-container>

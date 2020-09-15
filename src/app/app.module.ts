@@ -8,7 +8,6 @@ import { RouterModule } from '@angular/router'
 import { FlexLayoutModule } from '@angular/flex-layout'
 
 import { BrowserModule } from '@angular/platform-browser';
-import { platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './modulos/material.module'
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
@@ -32,8 +31,8 @@ import { SamplesComponent } from './componentes/samples/samples.component';
 
 import { AlertMessagesComponent } from './componentes/alert-messages/alert-messages.component'
 
-import { MainnavbarComponent } from './componentes/mainnavbar/mainnavbar.component';
-import { MatUsersComponent } from './componentes/mat-users/mat-users.component';
+// import { MainnavbarComponent } from './componentes/mainnavbar/mainnavbar.component';
+// import { MatUsersComponent } from './componentes/mat-users/mat-users.component';
 
 // Servicios
 import { AuthInterceptor } from './servicios/auth.interceptor'
@@ -66,8 +65,8 @@ import Rutas from './routes';
     OfertasComponent,
     SeleccionComponent,
     SamplesComponent,
-    MainnavbarComponent,
-    MatUsersComponent,
+    // MainnavbarComponent,
+    // MatUsersComponent,
     AlertMessagesComponent
   ],
   imports: [

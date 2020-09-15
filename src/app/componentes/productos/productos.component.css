@@ -7,23 +7,4 @@
     padding: 0;
 }
 
-hr {
-    background-color:#333;
-}
-
-.my_checkbox {
-    width:5vw;
-    height:5vh;
-}
-
-.mat-form-field {
-    font-size: 14px;
-    width: 100%;
-    margin: 0 auto;
-    display: block;
-    /* margin-top: 1rem; */
-}
-
-
-  
   

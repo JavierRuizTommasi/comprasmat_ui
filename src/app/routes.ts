@@ -14,8 +14,6 @@ import { OfertasComponent } from './componentes/ofertas/ofertas.component'
 import { SeleccionComponent } from './componentes/seleccion/seleccion.component'
 import { SamplesComponent } from './componentes/samples/samples.component'
 
-import { MatUsersComponent } from './componentes/mat-users/mat-users.component'
-
 class Rutas {
   private routes: Routes = [
     { path: 'inicio', component: InicioComponent},
@@ -26,8 +24,8 @@ class Rutas {
     { path: 'licitaciones', component: LicitacionesComponent},
     { path: 'seleccion', component: SeleccionComponent},
     { path: 'myproducts', component: MyProductsComponent},
-    // { path: 'usuarios', component: UsuariosComponent},
-    { path: 'usuarios', component: MatUsersComponent},
+    { path: 'usuarios', component: UsuariosComponent},
+    // { path: 'usuarios', component: MatUsersComponent},
     { path: 'logout', component: LogoutComponent},
     { path: 'cuenta', component: CuentaComponent},
     { path: 'changepass', component: ChangepassComponent},

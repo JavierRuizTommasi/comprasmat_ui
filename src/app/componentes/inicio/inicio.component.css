@@ -1,19 +1,9 @@
 .jumbotron {
     background-color: white;
     color: black;
-    padding-top: 20px;
+    width: 98%;
+    margin: auto;
+    margin-top: 1rem;
+    padding: 0;
 }
 
-hr {
-    background-color: gray;
-}
-
-/* .card-img-top {
-    width: 100%;
-    height: 15vw;
-    object-fit: cover; 
-} */
-
-/* .embed-responsive .card-img-top {
-    object-fit: cover;
-} */

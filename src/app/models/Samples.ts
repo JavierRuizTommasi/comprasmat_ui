@@ -1,8 +1,6 @@
 export class Samples {
     public id?: string
     public muestra: number
-    public oferta: number
-    public licitacion: number
     public usuario: string
     public email: string
     public proveedor: number

@@ -1,4 +1,7 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Cuenta } from 'src/app/models/Cuenta'
 import { ComunicacionService } from 'src/app/servicios/comunicacion.service'
 import { UsuariosService } from 'src/app/servicios/usuarios.service'
@@ -8,17 +11,29 @@ import { Router } from '@angular/router'
 import { Language } from 'src/app/models/Language'
 import { LanguageService } from 'src/app/servicios/language.service'
 import { OffersService } from 'src/app/servicios/offers.service'
-import { TendersService } from 'src/app/servicios/tenders.service'
-import * as moment from 'moment'
-import { Tenders } from 'src/app/models/Tenders';
 import { Offers } from 'src/app/models/Offers';
+import { TendersService } from 'src/app/servicios/tenders.service'
+import { Tenders } from 'src/app/models/Tenders';
+import * as moment from 'moment'
+import { MatDialog } from '@angular/material/dialog'
+import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
+import { arEstadosOfertas } from 'src/app/models/EstadosOfertas'
+import { arIncoterms } from 'src/app/models/Incoterms'
 
 @Component({
   selector: 'app-ofertas',
   templateUrl: './ofertas.component.html',
   styleUrls: ['./ofertas.component.css']
 })
-export class OfertasComponent implements OnInit {
+export class OfertasComponent implements AfterViewInit, OnInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator
+  @ViewChild(MatSort) sort: MatSort
+  @ViewChild(MatTable) table: MatTable<Offers>
+
+  dataSource: MatTableDataSource<Offers> = new MatTableDataSource<Offers>()
+
+  /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
+  displayedColumns: string[] = ['oferta', 'usuario', 'licitacion', 'descrip', 'cantidad', 'unidad', 'precio', 'incoterm', 'entrega', 'estado', 'actions']
 
   strTipo: string
   idIdx: string
@@ -34,46 +49,31 @@ export class OfertasComponent implements OnInit {
   offer: Offers
   offUpt: Offers
 
-  filterOffers: Offers[] = []
-  
-  private _searchTerm: string
-  get searchTerm(): string {
-    return this._searchTerm
-  }
-  set searchTerm(value: string) {
-    this._searchTerm = value
-    this.filterOffers = this.filtroOffers(value, this.searchUsu)
-  }
-
-  private _searchUsu: string
-  get searchUsu(): string {
-    return this._searchUsu
-  }
-  set searchUsu(value: string) {
-    this._searchUsu = value
-    this.filterOffers = this.filtroOffers(this.searchTerm, value)
-  }
-
   tenders: Tenders[] = [] 
 
   f: FormGroup
-  fs: FormGroup
 
   siGrabo: boolean
   msgGrabo: string
 
   notDone: boolean = true
 
+  estadosOfertas = arEstadosOfertas
+  incoterms = arIncoterms
+
+  filterValues = {}
+  filterSelectObj = []
+
   constructor(
     private fb: FormBuilder,
-    private fbs: FormBuilder,
     private comunicacionService: ComunicacionService,
     private modalService: NgbModal,
     private languageService: LanguageService,
     private usuariosService: UsuariosService,
     private offersService: OffersService,
     private tenderService: TendersService,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog
   ) {
 
     if (!this.usuariosService.isLogin()) {
@@ -82,10 +82,7 @@ export class OfertasComponent implements OnInit {
 
     this.f = fb.group({
       id: [''],
-      oferta: ['',
-        Validators.compose([
-        Validators.required
-      ])],
+      oferta: [''],
       licitacion: ['',
         Validators.compose([
         Validators.required
@@ -153,131 +150,129 @@ export class OfertasComponent implements OnInit {
       detalle: ['']
     })
 
-    this.fs = fbs.group({
-      fdescrip: [''],
-      fuser: ['']
-    })
-
     this.languageService.esp$.subscribe((lang: Language) => {
       this.esp = lang.esp
     })
 
-    // console.log('Offers Constructor')
-
-   }
-
-  ngOnInit(): void {
-    // console.log('Offers OnInit')
-
     this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
       this.cuenta = cuenta
-
     })
 
-    this.getUserData()
-    // console.log(this.cuenta)
-
-    this.pedirTenders()
-    
-    this.pedirOffers()
-
-  }
-
-  removeAlert(): void {
-    this.siGrabo = false
-  }
-
-  getUserData() {
-    this.usuariosService.checkUsuario()
-    .subscribe(respuesta => {
-      if (respuesta.user) {
-        // this.cuenta.nombre = respuesta.user.nombre
-        // this.cuenta.perfil = respuesta.user.perfil
-        this.cuenta = respuesta.user
-        this.esp = (this.cuenta.language === 'es')
-        // console.log('respuesta:', respuesta)
-        // console.log('cuenta:', this.cuenta)
-
-        if (this.cuenta.perfil == 4) {
-          this.fs.patchValue({
-            fuser: this.cuenta.usuario
-          })  
-          this.searchUsu = this.cuenta.usuario
-        } else {
-          this.searchUsu = ''
-        }
-        this.searchTerm = ''
-        this.filtroOffers(this.searchTerm, this.searchUsu)
+    this.filterSelectObj = [
+      {
+        name: 'USUARIO',
+        nameeng: 'USER',
+        columnProp: 'usuario',
+        options: []
+      },
+      {
+        name: 'PRODUCTO',
+        nameeng: 'PRODUCT',
+        columnProp: 'descrip',
+        options: []
       }
-      else {
-        // console.log(respuesta)
-        this.usuariosService.removeToken()
-        this.cuenta = undefined
-
-        navigator.language.substr(0, 2)
-        // this.router.navigateByUrl('/login')
-
-        switch (navigator.language.substr(0, 2)) {
-          case 'en': { this.esp = false; break }
-          case 'es': { this.esp = true; break }
-          default: {this.esp = true; break}
-        }
-
-        this.searchUsu = ''
-        this.searchTerm = ''
-        this.filtroOffers(this.searchTerm, this.searchUsu)
-      }
-
-      // console.log(this.cuenta)
-      this.comunicacionService.cuenta$.next(this.cuenta)
-      this.actualizaCuenta.emit(this.cuenta)
-
-      // console.log(this.esp)
-      this.lang = {esp: this.esp}
-      this.languageService.esp$.next(this.lang)
-      this.actualizaLang.emit(this.lang)
-    })
+    ]
   }
 
-  pedirOffers() {
-    // console.log('Tenders Pedir Tenders')
+  ngOnInit(): void {
+    this.pedirDatos()
+  }
 
-    if (this.cuenta) {
-      // console.log('Offers')
-      this.offersService.getOffers()
-      .subscribe((resp: any) => {
-        // console.log(resp)
-        this.offers = resp.Offers
-        this.notDone = false
+  ngAfterViewInit() {
+    // console.log(this.dataSource)
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.table.dataSource = this.dataSource;
 
-        if (this.cuenta.perfil == 4) {
-          this.fs.patchValue({
-            fuser: this.cuenta.usuario
-          })  
-          this.searchUsu = this.cuenta.usuario
-        } else {
-          this.searchUsu = ''
-        }
-        this.searchTerm = ''
-        this.filtroOffers(this.searchTerm, this.searchUsu)
-      })
+    // Overrride default filter behaviour of Material Datatable
+    this.dataSource.filterPredicate = this.createFilter()
+  }
+  
+  async getUserData() {
+    const resp: any = await this.usuariosService.checkUsuario().toPromise()
+    console.log(resp.user)
+    return resp.user
+  }
 
-    } else {
-      // console.log('Actives')
-      this.offersService.getOffers()
-      .subscribe((resp: any) => {
-        // console.log(resp)
-        this.offers = resp.Offers
-        this.notDone = false
-      })
-      this.searchTerm = ''
-      this.searchUsu = ''
-      this.filtroOffers(this.searchTerm, this.searchUsu)
+  async pedirDatos() {
+    // Esta funcion pide todos los datos previos antes de mostrar en el browser
+    // getUserData() Chequea si el usuario esta logeado 
+    // checkCuenta() Avisa al Navbar sino 
+    // pedirTenders() Trae datos del Servicio Tenders
+    // pedirOffers() Trae datos del Servicio Offers
+    // pedirSampres() trae datos del Servicio Samples pero solo en caso que el usuario este logeado  
+
+    console.log('pedirDatos')
+    const user = await this.getUserData()
+    this.checkCuenta(user)
+
+    // await this.pedirTenders(user)
+    // await this.pedirOffers(user)
+    await this.pedirTenders(user)
+    await this.pedirOffers(user)
+
+    this.notDone = false
+  
+  }
+
+  checkCuenta(user) {
+    // esta funcion verifica si el usuario esta logeado y asigna 
+    // los datos del user a un objeto cuenta[] y tambien la variable esp
+    // si no lo encuentra deberia devolver cuenta como undefined
+    console.log('checkUser')
+    // console.log(user)
+    if (user) {
+      // console.log(user)
+      this.cuenta = user
+      this.esp = (this.cuenta.language === 'es')
+    }
+    else {
+      console.log('no logueado')
+      this.usuariosService.removeToken()
+      this.router.navigateByUrl('/login')
     }
 
-}
+    this.comunicacionService.cuenta$.next(this.cuenta)
+    this.actualizaCuenta.emit(this.cuenta)
+    // console.log(user)
+  
+    this.lang = {esp: this.esp}
+    this.languageService.esp$.next(this.lang)
+    this.actualizaLang.emit(this.lang)
+    // console.log(this.esp)
 
-  pedirTenders() {
+  }
+  
+  async pedirOffers(user) {
+    let resp: any
+    if (user) {
+      // console.log('Offers')
+      if (user.perfil === 4) {
+        // console.log('Proveedor', user.perfil)
+        resp = await this.offersService.findMyOffers(user.usuario).toPromise()
+      } else {
+        // console.log('Actives')
+        resp = await this.offersService.getOffers().toPromise()
+        // console.log(resp)
+      }
+
+      this.dataSource.data = resp.Offers
+      this.dataSource.sort = this.sort
+      this.dataSource.paginator = this.paginator
+      this.table.dataSource = this.dataSource
+
+      // this.offers = resp.Offers
+      this.notDone = false
+      console.log(this.dataSource)
+
+      this.filterSelectObj.filter((o) => {
+        o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
+      })
+    }
+
+  }
+
+  async pedirTenders(user) {
       this.tenderService.getTenders()
       .subscribe((resp: any) => {
         // console.log(resp)
@@ -285,7 +280,7 @@ export class OfertasComponent implements OnInit {
       })
   }
 
-openModal(targetModal, offer, strTipoParam) {
+  openModal(targetModal, offer, strTipoParam) {
     this.strTipo = strTipoParam
 
     this.modalService.open(targetModal, {
@@ -337,8 +332,14 @@ openModal(targetModal, offer, strTipoParam) {
         estado: offer.estado,
         detalle: offer.detalle
       })
-      if (strTipoParam === 'B') this.f.disable()
     }
+
+    if (strTipoParam === 'B') {
+      this.f.disable()
+    } else {
+      this.f.enable()
+    }
+
   }
 
   onSubmit() {
@@ -389,24 +390,22 @@ openModal(targetModal, offer, strTipoParam) {
     this.offersService.addOffer(this.offUpt)
       .subscribe((offer: Offers) => {
         // console.log('Alta:', offer)
-        this.siGrabo = true
-        this.msgGrabo = this.esp ? 'Oferta Grabada!' : 'Offer Saved!'
-        this.pedirOffers()
+        if (offer) {
+          this.alertMsg()
+        }
+        this.pedirDatos()
       })
-
-    setTimeout(() => this.removeAlert(), 3000)
    }
 
   borrarOferta() {
     this.offersService.deleteOffer(this.idIdx)
      .subscribe((offer: Offers) => {
       //  console.log('Baja:', offer)
-       this.siGrabo = true
-       this.msgGrabo = this.esp ? 'Oferta Borrada!' : 'Offer Deleted'
-       this.pedirOffers()
-      })
-
-    setTimeout(() => this.removeAlert(), 3000)
+      if (offer) {
+        this.alertMsg()
+      }
+      this.pedirDatos()
+    })
   }
 
   modificarOferta() {
@@ -414,12 +413,11 @@ openModal(targetModal, offer, strTipoParam) {
     this.offersService.putOffer(this.idIdx, this.offUpt)
       .subscribe((offer: Offers) => {
       // console.log('Modif:', offer)
-      this.siGrabo = true
-      this.msgGrabo = this.esp ? 'Oferta Modificada!' : 'Offer Updated!'
-      this.pedirOffers()
+      if (offer) {
+        this.alertMsg()
+      }
+      this.pedirDatos()
     })
-
-    setTimeout(() => this.removeAlert(), 3000)
   }
 
   changeTender(ev) {
@@ -428,7 +426,7 @@ openModal(targetModal, offer, strTipoParam) {
       onlySelf: true
     })
     
-    // let result = [] 
+    console.log(ev.target.value)
 
     for(const tender of this.tenders){
       if (tender.licitacion == ev.target.value){
@@ -462,14 +460,92 @@ openModal(targetModal, offer, strTipoParam) {
 
   }
 
-  filtroOffers(searchProd: string, searchUsu: string) {
-    console.log(searchProd + searchUsu)
-    if (typeof searchProd === 'undefined' && typeof searchUsu === 'undefined') return this.offers  
-    if (typeof searchProd === 'undefined' && typeof searchUsu !== 'undefined') return this.offers.filter(offer => offer.usuario.toLowerCase().indexOf(searchUsu.toLowerCase()) >- 1) 
-    if (typeof searchProd !== 'undefined' && typeof searchUsu === 'undefined') return this.offers.filter(offer => offer.descrip.toLowerCase().indexOf(searchProd.toLowerCase()) >- 1) 
-    if (typeof searchProd !== 'undefined' && typeof searchUsu !== 'undefined') { 
-      return this.offers.filter(offer => ((offer.descrip.toLowerCase().indexOf(searchProd.toLowerCase()) >- 1) && (offer.usuario.toLowerCase().indexOf(searchUsu.toLowerCase()) >- 1))
-      )}
+  alertMsg(): void {
+    let strConfMsg = ''
+    switch (this.strTipo) {
+      case 'A':
+        // Alta
+        strConfMsg = this.esp ? 'Oferta Creada!' : 'Offer Created!' 
+        break
+      case 'B':
+        // Baja
+        strConfMsg = this.esp ? 'Oferta Borrada!' : 'Offer Deleted!' 
+        break
+      case 'M':
+        // Modificar
+        strConfMsg = this.esp ? 'Oferta Modificada!' : 'Offer Updated!' 
+        break
+      default:
+        break
+    }
+    
+    const dialogRef = this.dialog.open(AlertMessagesComponent, {
+      width: '300px',
+      data: {tipo: 'Aviso', mensaje: strConfMsg}
+    })
+  
+  }
+
+  getFilterObject(fullObj, key) {
+    const uniqChk = []
+    fullObj.filter((obj) => {
+      if (!uniqChk.includes(obj[key])) {
+        uniqChk.push(obj[key])
+      }
+      return obj
+    })
+    return uniqChk
+  }
+
+  // Called on Filter change
+  filterChange(filter, event) {
+    //let filterValues = {}
+    this.filterValues[filter.columnProp] = event.target.value.trim().toLowerCase()
+    this.dataSource.filter = JSON.stringify(this.filterValues)
+  }
+
+  // Custom filter method fot Angular Material Datatable
+  createFilter() {
+    let filterFunction = function (data: any, filter: string): boolean {
+      let searchTerms = JSON.parse(filter);
+      let isFilterSet = false;
+      for (const col in searchTerms) {
+        if (searchTerms[col].toString() !== '') {
+          isFilterSet = true;
+        } else {
+          delete searchTerms[col];
+        }
+      }
+
+      console.log(searchTerms);
+
+      let nameSearch = () => {
+        let found = false;
+        if (isFilterSet) {
+          for (const col in searchTerms) {
+            searchTerms[col].trim().toLowerCase().split(' ').forEach(word => {
+              if (data[col].toString().toLowerCase().indexOf(word) != -1 && isFilterSet) {
+                found = true
+              }
+            });
+          }
+          return found
+        } else {
+          return true;
+        }
+      }
+      return nameSearch()
+    }
+    return filterFunction
+  }
+
+  // Reset table filters
+  resetFilters() {
+    this.filterValues = {}
+    this.filterSelectObj.forEach((value, key) => {
+      value.modelValue = undefined;
+    })
+    this.dataSource.filter = "";
   }
 
 }

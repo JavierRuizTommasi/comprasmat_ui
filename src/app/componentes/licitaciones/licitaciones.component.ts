@@ -1,4 +1,7 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core'
+import { Component, OnInit, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core'
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Cuenta } from 'src/app/models/Cuenta'
 import { ComunicacionService } from 'src/app/servicios/comunicacion.service'
 import { UsuariosService } from 'src/app/servicios/usuarios.service'
@@ -12,14 +15,24 @@ import { Tenders } from 'src/app/models/Tenders'
 import * as moment from 'moment'
 import { ProductosService } from 'src/app/servicios/productos.service'
 import { Productos } from 'src/app/models/Products';
-
+import { MatDialog } from '@angular/material/dialog'
+import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
+import { arEstadosLicitaciones } from 'src/app/models/EstadosLicitaciones'
 
 @Component({
   selector: 'app-licitaciones',
   templateUrl: './licitaciones.component.html',
   styleUrls: ['./licitaciones.component.css']
 })
-export class LicitacionesComponent implements OnInit {
+export class LicitacionesComponent implements AfterViewInit, OnInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator
+  @ViewChild(MatSort) sort: MatSort
+  @ViewChild(MatTable) table: MatTable<Tenders>
+
+  dataSource: MatTableDataSource<Tenders> = new MatTableDataSource<Tenders>()
+
+  /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
+  displayedColumns: string[] = ['licitacion', 'descrip', 'cantidad', 'unidad', 'fecha', 'finaliza', 'estado', 'actions']
 
   strTipo: string
   idIdx: string
@@ -36,25 +49,15 @@ export class LicitacionesComponent implements OnInit {
   updtTender: Tenders
 
   products: Productos[] = [] 
-  
-  filterTenders: Tenders[] = []
-  
-  private _searchTerm: string
-  get searchTerm(): string {
-    return this._searchTerm
-  }
-  set searchTerm(value: string) {
-    this._searchTerm = value
-    this.filterTenders = this.filtroTenders(value)
-  }
 
   f: FormGroup
-  fs: FormGroup
 
   siGrabo: boolean
   msgGrabo: string
 
   notDone: boolean = true
+
+  estadosLicitaciones = arEstadosLicitaciones
 
   constructor(
     private fb: FormBuilder,
@@ -66,7 +69,13 @@ export class LicitacionesComponent implements OnInit {
     private tenderService: TendersService,
     private productService: ProductosService,
     private router: Router,
+    public dialog: MatDialog
     ) {
+      /* Debe dejar acceder a todos a ver las Licitaciones */
+      // if (!this.usuariosService.isLogin()) {
+      //   this.router.navigateByUrl('/login')
+      // }
+  
       this.f = fb.group({
         id: [''],
         licitacion: ['',
@@ -108,10 +117,6 @@ export class LicitacionesComponent implements OnInit {
         detalle: ['']
       })
 
-      this.fs = fbs.group({
-        fdescrip: ['']
-      })
-  
         this.languageService.esp$.subscribe((lang: Language) => {
         this.esp = lang.esp
       })
@@ -120,75 +125,81 @@ export class LicitacionesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     // console.log('Tenders OnInit')
-
     this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
       this.cuenta = cuenta
-
     })
 
-    this.getUserData()
-    // console.log(this.cuenta)
-
-    this.pedirTenders()
-
-    this.pedirProducts()
-
+    this.pedirDatos()
   }
 
-  removeAlert(): void {
-    this.siGrabo = false
+  ngAfterViewInit() {
+    // console.log(this.dataSource)
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.table.dataSource = this.dataSource;
   }
 
-  getUserData() {
-    this.usuariosService.checkUsuario()
-    .subscribe(respuesta => {
-      if (respuesta.user) {
-        // this.cuenta.nombre = respuesta.user.nombre
-        // this.cuenta.perfil = respuesta.user.perfil
-        this.cuenta = respuesta.user
-        this.esp = (this.cuenta.language === 'es')
-        // console.log('respuesta:', respuesta)
-        // console.log('cuenta:', this.cuenta)
-      }
-      else {
-        // console.log(respuesta)
-        this.usuariosService.removeToken()
-        this.cuenta = undefined
-
-        navigator.language.substr(0, 2)
-        // this.router.navigateByUrl('/login')
-
-        switch (navigator.language.substr(0, 2)) {
-          case 'en': { this.esp = false; break }
-          case 'es': { this.esp = true; break }
-          default: {this.esp = true; break}
-        }
-      }
-
-      // console.log(this.cuenta)
-      this.comunicacionService.cuenta$.next(this.cuenta)
-      this.actualizaCuenta.emit(this.cuenta)
-
-      // console.log(this.esp)
-      this.lang = {esp: this.esp}
-      this.languageService.esp$.next(this.lang)
-      this.actualizaLang.emit(this.lang)
-    })
+  async getUserData() {
+    const resp: any = await this.usuariosService.checkUsuario().toPromise()
+    // console.log(resp.user)
+    return resp.user
   }
 
-  pedirTenders() {
+  async pedirDatos() {
+    // Esta funcion pide todos los datos previos antes de mostrar en el browser
+    // getUserData() Chequea si el usuario esta logeado 
+    // checkCuenta() Avisa al Navbar sino 
+    // pedirProductos() Trae datos del Servicio Productos
 
-    // console.log('Tenders Pedir Tenders')
+    // console.log('pedirDatos')
+    const user = await this.getUserData()
+    this.checkCuenta(user)
 
-    if (this.cuenta) {
+    await this.pedirProducts()
+    await this.pedirTenders(user)
+  }
+    
+  checkCuenta(user) {
+    // esta funcion verifica si el usuario esta logeado y asigna 
+    // los datos del user a un objeto cuenta[] y tambien la variable esp
+    // si no lo encuentra deberia devolver cuenta como undefined
+    // console.log('checkUser')
+    // console.log(user)
+    if (user) {
+      // console.log(user)
+      this.cuenta = user
+      this.esp = (this.cuenta.language === 'es')
+
+    }
+    // Debe poder dejar acceder a ver las Licitaciones a todos
+    // else {
+    //   this.router.navigateByUrl('/login')
+    // }
+
+    this.comunicacionService.cuenta$.next(this.cuenta)
+    this.actualizaCuenta.emit(this.cuenta)
+    // console.log(user)
+  
+    this.lang = {esp: this.esp}
+    this.languageService.esp$.next(this.lang)
+    this.actualizaLang.emit(this.lang)
+    // console.log(this.esp)
+
+  }
+  
+  async pedirTenders(user) {
+    if (user) {
       // console.log('Tenders')
       this.tenderService.getTenders()
       .subscribe((resp: any) => {
         // console.log(resp)
-        this.tenders = resp.Tenders        
-        this.filterTenders = resp.Tenders
+        this.dataSource.data = resp.Tenders
+        this.dataSource.sort = this.sort
+        this.dataSource.paginator = this.paginator
+        this.table.dataSource = this.dataSource
+
+        // this.tenders = resp.Tenders        
         this.notDone = false
       })
     } else {
@@ -196,15 +207,18 @@ export class LicitacionesComponent implements OnInit {
       this.tenderService.getActives()
       .subscribe((resp: any) => {
         // console.log(resp)
-        this.tenders = resp.Tenders
-        this.filterTenders = resp.Tenders
+        this.dataSource.data = resp.Tenders
+        this.dataSource.sort = this.sort
+        this.dataSource.paginator = this.paginator
+        this.table.dataSource = this.dataSource
+
+        // this.tenders = resp.Tenders
         this.notDone = false
       })
     }
-
   }
 
-  pedirProducts() {
+  async pedirProducts() {
     this.productService.getProductos()
     .subscribe((resp: any) => {
       // console.log(resp)
@@ -252,8 +266,14 @@ export class LicitacionesComponent implements OnInit {
         provenom: tender.provenom,
         estado: tender.estado
       })
-      if (strTipoParam === 'B') this.f.disable()
     }
+
+    if (strTipoParam === 'B') {
+      this.f.disable()
+    } else {
+      this.f.enable()
+    }
+
   }
 
   onSubmit() {
@@ -261,6 +281,7 @@ export class LicitacionesComponent implements OnInit {
 
     this.modalService.dismissAll()
     // console.log('res:', this.f.getRawValue())
+    // console.log('res:', this.f.controls)
 
     this.idIdx = this.f.controls.id.value
     this.updtTender = {
@@ -298,24 +319,24 @@ export class LicitacionesComponent implements OnInit {
     this.tenderService.addTender(this.updtTender)
       .subscribe((tender: Tenders) => {
         // console.log('Alta:', tender)
-        this.siGrabo = true
-        this.msgGrabo = this.esp ? 'Licitacion Grabada!' : 'Tender Saved!'
-        this.pedirTenders()
+        if (tender) {
+          this.alertMsg()
+        }
+        this.pedirDatos()
       })
 
-    setTimeout(() => this.removeAlert(), 3000)
    }
 
   borrarTender() {
     this.tenderService.deleteTender(this.idIdx)
      .subscribe((tender: Tenders) => {
       //  console.log('Baja:', tender)
-       this.siGrabo = true
-       this.msgGrabo = this.esp ? 'Licitacion Borrada!' : 'Tender Deleted'
-       this.pedirTenders()
-      })
+      if (tender) {
+        this.alertMsg()
+      }
+      this.pedirDatos()
+    })
 
-    setTimeout(() => this.removeAlert(), 3000)
   }
 
   modificarTender() {
@@ -323,13 +344,13 @@ export class LicitacionesComponent implements OnInit {
 
     this.tenderService.putTender(this.idIdx, this.updtTender)
       .subscribe((tender: Tenders) => {
-      // console.log('Modif:', tender)
-      this.siGrabo = true
-      this.msgGrabo = this.esp ? 'Licitacion Modificada!' : 'Tender Updated!'
-      this.pedirTenders()
-    })
+        // console.log('Modif:', tender)
+        if (tender) {
+          this.alertMsg()
+        }
+        this.pedirDatos()
+      })
 
-    setTimeout(() => this.removeAlert(), 3000)
   }
 
   changeProduct(ev) {
@@ -372,11 +393,35 @@ export class LicitacionesComponent implements OnInit {
 
   }
 
-  filtroTenders(searchString: string) {
-    // console.log(searchString)
-    return this.tenders.filter(tender => 
-      (tender.descrip.toLowerCase().indexOf(searchString.toLowerCase()) >- 1))
+  applyFilter(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase()
   }
 
+  alertMsg(): void {
+
+    let strConfMsg = ''
+    switch (this.strTipo) {
+      case 'A':
+        // Alta
+        strConfMsg = this.esp ? 'Licitación Creada!' : 'Tender Created!' 
+        break
+      case 'B':
+        // Baja
+        strConfMsg = this.esp ? 'Licitación Borrada!' : 'Tender Deleted!' 
+        break
+      case 'M':
+        // Modificar
+        strConfMsg = this.esp ? 'Licitación Modificada!' : 'Tender Updated!' 
+        break
+      default:
+        break
+    }
+    
+    const dialogRef = this.dialog.open(AlertMessagesComponent, {
+      width: '300px',
+      data: {tipo: 'Aviso', mensaje: strConfMsg}
+    })
+  
+  }
 }
 
