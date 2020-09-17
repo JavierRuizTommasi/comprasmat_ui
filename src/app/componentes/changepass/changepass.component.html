@@ -44,9 +44,6 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="d-flex justify-content-between"> -->
-                            <ngb-alert class="mt-2" *ngIf="siAlert" [type]="alertType" (close)="!siAlert">{{msgAlert}}</ngb-alert>
-                            <!-- <ngb-alert *ngIf="siGrabo" type="success" (close)="siGrabo=false">{{msgGrabo}}</ngb-alert> -->
                             <div class="d-flex justify-content-end">
                                 <button type="button" class="btn btn-primary mr-2" [disabled]="!f.valid" (click)="onSubmit()">{{esp ? 'Aceptar' : 'Save'}}</button>
                                 <button type="button" class="btn btn-secondary" (click)="onCancel()">{{esp ? 'Cancelar' : 'Cancel'}}</button>

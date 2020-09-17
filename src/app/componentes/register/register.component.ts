@@ -5,6 +5,8 @@ import { UsuariosService, IUsuario, IUsuUtp } from 'src/app/servicios/usuarios.s
 import { Usuarios } from 'src/app/models/Usuarios'
 import { Language } from 'src/app/models/Language'
 import { LanguageService } from 'src/app/servicios/language.service'
+import { MatDialog } from '@angular/material/dialog'
+import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
 
 @Component({
   selector: 'app-register',
@@ -68,7 +70,8 @@ constructor(
   private fb: FormBuilder,
   private usuariosService: UsuariosService,
   private languageService: LanguageService,
-  private router: Router) {
+  private router: Router,
+  public dialog: MatDialog) {
   
     if (this.usuariosService.isLogin()) {
       this.router.navigateByUrl('/inicio')
@@ -114,7 +117,7 @@ constructor(
         Validators.required,
         Validators.pattern(this.passPattern)
       ])],
-      perfil: [4],
+      perfil: [5],
       proveedor: [0],
       contacto: [''],
       direccion: [''],
@@ -147,7 +150,7 @@ constructor(
       language: lang
     })
     
-    // console.log(this.f.value)
+    console.log(this.f.value)
 
     this.usuariosService.register(this.f.value)
     .subscribe( respuesta => {
@@ -158,11 +161,9 @@ constructor(
           // this.usuariosService.setToken(accessToken)
 
           this.msgAlert = this.esp ? 'Usuario registrado' : 'User registered'
-          this.siAlert = true
-          this.siRegistro = true
-          this.alertType = "success"
+          this.alertMsg(this.msgAlert, false)
 
-          console.log('registro correcto', respuesta)
+          // console.log('registro correcto', respuesta)
 
           this.envioEmail(respuesta.dataUser.email)
 
@@ -173,17 +174,12 @@ constructor(
             default: {this.msgAlert = this.esp ? 'Error de Registro' : 'Register Error'; break}
           }
           
-          this.siAlert = true
-          this.siRegistro = true
-          this.alertType = "warning"
+          this.alertMsg(this.msgAlert, true)
 
-          console.log('registro incorrecto', respuesta)
+          // console.log('registro incorrecto', respuesta)
         }
     })
 
-    setTimeout(() => this.removeAlert(), 6000)
-    setTimeout(() => this.removeMsage(),30000)
-    this.freset()
   }
 
   envioEmail(email: string) {
@@ -198,23 +194,12 @@ constructor(
             // this.usuariosService.setToken(accessToken)
 
             console.log('Envio correcto de Email')
-          }
-          else {
-            // switch (respuesta.message) {
-            //   case 'Email already exists': { this.msgAlert = this.esp ? 'Email ya existente' : 'Email already exists'; break }
-            //   default: {this.msgAlert = this.esp ? 'Error de Envío' : 'Send Error'; break}
-            // }
-            
-            // this.siAlert = true
-            // this.siRegistro = false
-            // this.alertType = "warning"
 
-            console.log('Error de envío de Welcome Email', respuesta)
-          }
+            this.router.navigateByUrl('/inicio')
+        }
       })
     }
-    setTimeout(() => this.removeAlert(), 6000)
-    this.freset()
+
 
   }
 
@@ -240,16 +225,22 @@ constructor(
     }
   }
 
-  removeAlert(): void {
-    this.siAlert = false
+  alertMsg(strMsg: string, alert: boolean): void {
 
-    // if (this.alertType == "success") {
-    //   this.router.navigateByUrl('/login')
-    // }
-  }
+    if (alert) {
+      const dialogRef = this.dialog.open(AlertMessagesComponent, {
+        width: '300px',
+        data: {tipo: 'Error', mensaje: strMsg}
+      })
 
-  removeMsage(): void {
-    this.siRegistro = false
+    } else {
+      const dialogRef = this.dialog.open(AlertMessagesComponent, {
+        width: '300px',
+        data: {tipo: 'Aviso', mensaje: strMsg}
+      })
+
+    }
+  
   }
 
 }

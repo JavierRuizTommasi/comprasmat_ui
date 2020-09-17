@@ -232,12 +232,8 @@
             <div class="col-sm-9">
               <!-- <input type="perfil" class="form-control" formControlName="perfil" id="perfil" [readOnly]="this.strTipo == 'B'"> -->
               <select class="custom-select" formControlName="perfil" id="perfil" required="required">
-                <option selected>{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
-                <option value=0>{{esp ? 'Administrador' : 'Administrator'}}</option>
-                <option value=1>{{esp ? 'Auditor' : 'Auditor'}}</option>
-                <option value=2>{{esp ? 'Laboratorio' : 'Laboratory'}}</option>
-                <option value=3>{{esp ? 'Compras' : 'Purchases'}}</option>
-                <option value=4>{{esp ? 'Proveedor' : 'Supplier'}}</option>
+                <option [ngValue]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
+                <option [ngValue]="perfil.perfil" *ngFor="let perfil of perfiles">{{esp ? perfil.perfilnom : perfil.perfileng}}</option>
               </select>
             </div>  
           </div>
@@ -251,22 +247,23 @@
 
           <div class="modal-footer">
             <div *ngIf="this.strTipo === 'B'">
-              <button type="submit" class="btn btn-primary" [disabled]="!f.valid">{{esp ? 'Borrar' : 'Delete'}}</button>
+              <button type="submit" class="btn btn-primary">{{esp ? 'Borrar' : 'Delete'}}</button>
             </div>
             <div *ngIf="this.strTipo !== 'B'">
               <button type="submit" class="btn btn-primary" [disabled]="!f.valid">{{esp ? 'Guardar' : 'Save'}}</button>
             </div>
             <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">{{esp ? 'Cancelar' : 'Cancel'}}</button>
           </div>
-        </form>
-      </div>
 
-      <!-- <hr>
-      <pre>{{f.controls.pass.errors | json}}</pre>
-      <hr>
-      <hr>
-      <pre>{{f.controls.confpass.errors | json}}</pre>
-      <hr> -->
+          <!-- <hr>
+          <pre>{{f.controls.errors | json}}</pre>
+          <hr>
+          <hr>
+          <pre>{{f.controls.confpass.errors | json}}</pre>
+          <hr> -->
+
+    </form>
+      </div>
 
     </ng-template>
 </div>

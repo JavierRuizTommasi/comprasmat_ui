@@ -18,6 +18,7 @@ import * as moment from 'moment'
 import { MatDialog } from '@angular/material/dialog'
 import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
 import { arEstadosMuestras } from 'src/app/models/EstadosMuestras'
+import { arUnidades } from 'src/app/models/Unidades'
 
 @Component({
   selector: 'app-samples',
@@ -58,6 +59,7 @@ export class SamplesComponent implements AfterViewInit, OnInit {
   notDone: boolean = true
 
   estadosMuestras = arEstadosMuestras
+  unidades = arUnidades
 
   filterValues = {}
   filterSelectObj = []
@@ -202,6 +204,11 @@ export class SamplesComponent implements AfterViewInit, OnInit {
       // console.log(user)
       this.cuenta = user
       this.esp = (this.cuenta.language === 'es')
+
+      if (user.perfil == 5) {
+        // User Pending
+        this.router.navigateByUrl('/inicio')
+      }
     }
     else {
       console.log('no logueado')
@@ -225,7 +232,7 @@ export class SamplesComponent implements AfterViewInit, OnInit {
     // console.log(user)
     let resp: any
     if (user) {
-      if (user.perfil === 4) {
+      if (user.perfil == 4) {
         console.log('Proveedor', user.perfil)
         resp = await this.samplesService.findMySamples(user.usuario).toPromise()
       } else {
@@ -274,7 +281,7 @@ export class SamplesComponent implements AfterViewInit, OnInit {
         fecha: moment().format().substr(0, 10) ,
         producto: 0,
         descrip: '',
-        cantidad: 0,
+        cantidad: '',
         unidad: '',
         analisis: '',
         userlab: '',
@@ -307,7 +314,13 @@ export class SamplesComponent implements AfterViewInit, OnInit {
       this.f.disable()
     } else {
       this.f.enable()
+
+      if (this.cuenta.perfil !== 0 && this.cuenta.perfil !== 3) {
+        this.f.get('analisis').disable({ onlySelf: true })
+        this.f.get('estado').disable({ onlySelf: true })
+      }
     }
+    
 
   }
 

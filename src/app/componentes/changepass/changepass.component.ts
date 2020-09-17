@@ -6,6 +6,8 @@ import { ComunicacionService } from 'src/app/servicios/comunicacion.service'
 import { Cuenta } from 'src/app/models/Cuenta'
 import { Language } from 'src/app/models/Language'
 import { LanguageService } from 'src/app/servicios/language.service'
+import { MatDialog } from '@angular/material/dialog'
+import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
 
 @Component({
   selector: 'app-changepass',
@@ -31,16 +33,13 @@ export class ChangepassComponent implements OnInit {
     newpass: ''
   }
 
-  siAlert: boolean
-  msgAlert: string
-  alertType: string
-  
   constructor(
     private fb: FormBuilder,
     private usuariosService: UsuariosService,
     private comunicacionService: ComunicacionService,
     private languageService: LanguageService,
-    private router: Router) {
+    private router: Router,
+    public dialog: MatDialog) {
       this.f = fb.group({
         id: [''],
         oldpass: ['',
@@ -107,28 +106,16 @@ export class ChangepassComponent implements OnInit {
       .subscribe(resp => {
       console.log('Modif:', resp)
       if (resp.dataUser) {
-        this.msgAlert = this.esp ? 'Password Actualizada!' : 'Password Updated!'
-        this.alertType = "success"
-        this.siAlert = true
-      } else {
-        this.msgAlert = this.esp ? 'Password No Actualizada!' : 'Password Not Updated!' 
-        this.alertType = "warning"
-        this.siAlert = true
+          this.alertMsg()
       }
 
-      setTimeout(() => this.removeAlert(), 3000)
-
-      this.f.reset()
+      this.onCancel()
     })
 
  }
 
  onCancel() {
    this.router.navigateByUrl('/inicio')
- }
-
- removeAlert(): void {
-   this.siAlert = false
  }
 
  passMustMatch(controlName: string, matchingControlName: string) {
@@ -153,4 +140,14 @@ export class ChangepassComponent implements OnInit {
     }
  }
 
+  alertMsg(): void {
+
+    let strConfMsg = this.esp ? 'Password Actualizada!' : 'Password Updated!'
+    
+    const dialogRef = this.dialog.open(AlertMessagesComponent, {
+      width: '300px',
+      data: {tipo: 'Aviso', mensaje: strConfMsg}
+    })
+  
+  }
 }

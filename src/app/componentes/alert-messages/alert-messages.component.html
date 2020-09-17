@@ -20,7 +20,21 @@
     </mat-dialog-content>
     <mat-dialog-actions align="center">
         <button mat-button mat-dialog-close (click)="onClickNo()">
-            <mat-icon>done_outline</mat-icon>
+            <mat-icon class="green">done_outline</mat-icon>
+            <!-- <i class="mdi mdi-check-outline md-24"></i> -->
+        </button>
+    </mat-dialog-actions>
+    <br>
+</ng-container>
+
+<ng-container *ngIf="data.tipo=='Error'" >
+    <mat-dialog-content>
+        <h2>{{data.mensaje}}</h2>
+        <br>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+        <button mat-button mat-dialog-close (click)="onClickNo()">
+            <mat-icon class="red">error</mat-icon>
         </button>
     </mat-dialog-actions>
     <br>

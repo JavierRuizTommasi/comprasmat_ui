@@ -6,6 +6,8 @@ import { ComunicacionService } from 'src/app/servicios/comunicacion.service'
 import { Cuenta } from 'src/app/models/Cuenta'
 import { Language } from 'src/app/models/Language'
 import { LanguageService } from 'src/app/servicios/language.service'
+import { MatDialog } from '@angular/material/dialog'
+import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
 
 @Component({
   selector: 'app-cuenta',
@@ -29,14 +31,13 @@ export class CuentaComponent implements OnInit {
   emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   passPattern = '((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,20})'
 
-  siGrabo: boolean
-  msgGrabo: string
-
-  constructor(private fb: FormBuilder,
-              private usuariosService: UsuariosService,
-              private comunicacionService: ComunicacionService,
-              private languageService: LanguageService,
-              private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private usuariosService: UsuariosService,
+    private comunicacionService: ComunicacionService,
+    private languageService: LanguageService,
+    private router: Router,
+    public dialog: MatDialog) {
       this.f = fb.group({
         id: [''],
         usuario: ['',
@@ -151,23 +152,29 @@ export class CuentaComponent implements OnInit {
 
     this.usuariosService.putUsuarios(this.idIdx, this.f.value)
       .subscribe((user: IUsuario) => {
-      console.log('Modif:', user)
-      this.siGrabo = true
-      this.msgGrabo = 'Usuario Grabado!'
+      if (user) {
+          this.alertMsg()
+      }
 
-      this.pedirCuenta()
+      this.onCancel()
 
     })
 
-    setTimeout(() => this.removeAlert(), 3000)
   }
 
   onCancel() {
     this.router.navigateByUrl('/inicio')
   }
 
-  removeAlert(): void {
-    this.siGrabo = false
+  alertMsg(): void {
+
+    let strConfMsg = this.esp ? 'Usuario Actualizada!' : 'User Updated!'
+    
+    const dialogRef = this.dialog.open(AlertMessagesComponent, {
+      width: '300px',
+      data: {tipo: 'Aviso', mensaje: strConfMsg}
+    })
+  
   }
 
 }

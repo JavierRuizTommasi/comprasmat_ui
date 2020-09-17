@@ -18,6 +18,7 @@ import { Productos } from 'src/app/models/Products';
 import { MatDialog } from '@angular/material/dialog'
 import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
 import { arEstadosLicitaciones } from 'src/app/models/EstadosLicitaciones'
+import { arUnidades } from 'src/app/models/Unidades'
 
 @Component({
   selector: 'app-licitaciones',
@@ -58,6 +59,7 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
   notDone: boolean = true
 
   estadosLicitaciones = arEstadosLicitaciones
+  unidades = arUnidades
 
   constructor(
     private fb: FormBuilder,
@@ -242,7 +244,7 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
         finaliza: moment().format().substr(0, 10),
         producto: 0,
         descrip: '',
-        cantidad: 0,
+        cantidad: '',
         unidad: '',
         costo: 0,
         ultcompra: '',

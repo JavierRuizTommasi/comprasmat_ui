@@ -122,6 +122,11 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
       this.cuenta = user
       this.esp = (this.cuenta.language === 'es')
 
+      if (user.perfil == 5) {
+        // User Pending
+        this.router.navigateByUrl('/inicio')
+      }
+
     }
     else {
       this.router.navigateByUrl('/login')

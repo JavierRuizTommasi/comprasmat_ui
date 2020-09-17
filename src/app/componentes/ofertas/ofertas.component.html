@@ -1,278 +1,312 @@
-<div class="jumbotron"> 
-  <ng-container *ngIf="cuenta">
-    <h4 *ngIf="cuenta.perfil < 4">{{esp ? 'Ofertas' : 'Offers'}}</h4>
-    <h4 *ngIf="cuenta.perfil >= 4">{{esp ? 'Mis Ofertas' : 'My Offers'}}</h4>
-    <div class="d-flex flex-row flex-wrap">
-      <div class="mr-auto pr-2 flex-grow-1" *ngFor="let filter of filterSelectObj">
-        <mat-form-field>
-          <mat-label>Filter {{esp ? filter.name : filter.nameeng}}</mat-label>
-          <select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
-            (change)="filterChange(filter,$event)">
-            <option value="">-- Select {{esp ? filter.name : filter.nameeng}} --</option>
-            <option [value]="item" *ngFor="let item of filter.options">{{item}}</option>
-          </select>
-        </mat-form-field>
-      </div>
+<div class="jumbotron">
+    <ng-container *ngIf="cuenta">
+        <h4 *ngIf="cuenta.perfil < 4">{{esp ? 'Ofertas' : 'Offers'}}</h4>
+        <h4 *ngIf="cuenta.perfil >= 4">{{esp ? 'Mis Ofertas' : 'My Offers'}}</h4>
+        <div class="d-flex flex-row flex-wrap">
+            <div class="mr-auto pr-2 flex-grow-1" *ngFor="let filter of filterSelectObj">
+                <mat-form-field>
+                    <mat-label>Filter {{esp ? filter.name : filter.nameeng}}</mat-label>
+                    <select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
+                        (change)="filterChange(filter,$event)">
+                        <option value="">-- Select {{esp ? filter.name : filter.nameeng}} --</option>
+                        <option [value]="item" *ngFor="let item of filter.options">{{item}}</option>
+                    </select>
+                </mat-form-field>
+            </div>
 
-      <div class="container-btn-new">
-        <button id="filterbutton" mat-raised-button color="warn" (click)="resetFilters()">
-          <mat-icon>search_off</mat-icon>&nbsp; Reset
-        </button>
-      </div>
-      &nbsp;
+            <div class="container-btn-new">
+                <button id="filterbutton" mat-raised-button color="warn" (click)="resetFilters()">
+                    <mat-icon>search_off</mat-icon>&nbsp; Reset
+                </button>
+            </div>
+            &nbsp;
 
-      <div class="container-btn-new">
-        <button id="newbutton" mat-raised-button color="primary" (click)="openModal(editOfferModal, offer, 'A')">
-          <mat-icon>note_add</mat-icon>&nbsp; {{esp ? 'Nueva Oferta' : 'New Offer'}}
-        </button>
-      </div>
-    </div>
-  </ng-container>  
-
-  <div class="mat-elevation-z8 table-responsive">
-    <table mat-table [dataSource]='dataSource' matSort aria-label="Elements">
-      <ng-container matColumnDef="oferta">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Oferta' : 'Offer'}}</th>
-        <td mat-cell *matCellDef="let row">{{row.oferta}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="licitacion">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Licit.' : 'Tender'}}</th>
-        <td mat-cell *matCellDef="let row">{{row.licitacion}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="usuario">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Usuario' : 'User'}}</th>
-        <td mat-cell *matCellDef="let row">{{row.usuario}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="descrip">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Producto' : 'Product'}}</th>
-        <td mat-cell *matCellDef="let row">{{row.descrip}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="cantidad">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Cantidad' : 'Quantity'}}</th>
-        <td mat-cell *matCellDef="let row">{{row.cantidad}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="unidad">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Unidad' : 'Unity'}}</th>
-        <td mat-cell *matCellDef="let row">{{row.unidad}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="precio">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Precio' : 'Price'}}</th>
-        <td mat-cell *matCellDef="let row">{{row.precio}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="incoterm">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Incoterm' : 'Incoterm'}}</th>
-        <td mat-cell *matCellDef="let row">{{row.incoterm}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="entrega">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Entrega' : 'Delivery'}}</th>
-        <td mat-cell *matCellDef="let row">{{row.entrega.substring(0,10)}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="estado">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Estado' : 'State'}}</th>
-        <td mat-cell *matCellDef="let row">{{esp ? estadosOfertas[row.estado].estadoesp : estadosOfertas[row.estado].estadoeng}}</td>
-      </ng-container>
-
-      <!-- Actions Column -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>{{esp ? 'Acciones' : 'Acctions'}}</th>
-        <td mat-cell *matCellDef="let row">
-          <ng-container *ngIf="cuenta">
-            <!-- <ng-container *ngIf="cuenta.perfil==4"> -->
-              <button mat-icon-button color="primary" data-toggle="tooltip" title="Update" (click)="openModal(editOfferModal, row, 'M')">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button color="primary" data-toggle="tooltip" title="Delete" (click)="openModal(editOfferModal, row, 'B')">
-                <mat-icon>delete</mat-icon>
-              </button>
-            <!-- </ng-container>  -->
-          </ng-container>
-          <button mat-icon-button color="primary" data-toggle="tooltip" title="Details" (click)="openModal(editOfferModal, row, 'D')">
-            <mat-icon>description</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </div>
-
-  <mat-paginator 
-    #paginator [length]="dataSource.data?.length" 
-    [pageIndex]="0" 
-    [pageSize]="25"
-    [pageSizeOptions]="[25, 50, 100, 250]">
-  </mat-paginator>
-
-  <ng-container *ngIf="notDone">
-      <div class="d-flex justify-content-center">
-        <div class="spinner-border m-5" role="status">
-          <span class="sr-only">Loading...</span>
+            <ng-container *ngIf="cuenta.perfil!=1 && cuenta.perfil!=3">
+                <div class="container-btn-new">
+                    <button id="newbutton" mat-raised-button color="primary"
+                        (click)="openModal(editOfferModal, offer, 'A')">
+                        <mat-icon>note_add</mat-icon>&nbsp; {{esp ? 'Nueva Oferta' : 'New Offer'}}
+                    </button>
+                </div>
+            </ng-container>
         </div>
-      </div>
-  </ng-container>
+    </ng-container>
 
-  <ng-template #editOfferModal let-modal>
-      <div class="modal-header">
-        <h5 class="modal-title" *ngIf="this.strTipo == 'A'">{{esp ? 'Nuevo' : 'New'}}</h5>
-        <h5 class="modal-title" *ngIf="this.strTipo == 'B'">{{esp ? 'Borrar' : 'Delete'}}</h5>
-        <h5 class="modal-title" *ngIf="this.strTipo == 'M'">{{esp ? 'Modificar' : 'Update'}}</h5>
-        <button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-  
-      <div class="modal-body">
-        <form [formGroup]="f" (ngSubmit)="onSubmit()">
-          <div class="form-group row">
-              <label for="oferta" class="col-sm-3 col-form-label">{{esp ? 'Oferta' : 'Offer'}}</label>
-              <div class="col-sm-9">
-                  <input type="number" class="form-control" formControlName="oferta" id="oferta" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
-                  <!-- Error -->
-                  <div *ngIf="f.controls.oferta.errors && f.controls.oferta.dirty" class="alert alert-danger mt-0">
-                  <div *ngIf="f.controls.oferta.errors.required">Required</div>
-                  </div>
-              </div>
-          </div>
+    <div class="mat-elevation-z8 table-responsive">
+        <table mat-table [dataSource]='dataSource' matSort aria-label="Elements">
+            <ng-container matColumnDef="oferta">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Oferta' : 'Offer'}}</th>
+                <td mat-cell *matCellDef="let row">{{row.oferta}}</td>
+            </ng-container>
 
-          <div class="form-group row">
-            <label for="licitacion" class="col-sm-3 col-form-label">{{esp ? 'Licitacion' : 'Tender'}}</label>
-            <div class="col-sm-9">
-                <!-- <input type="number" class="form-control" formControlName="licitacion" id="licitacion" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'"> -->
-                <select class="custom-select" formControlName="licitacion" id="licitacion" required="required" (change)="changeTender($event)">
-                    <option [value]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
-                    <option [value]="tender.licitacion" *ngFor="let tender of tenders">{{tender.licitacion}} {{tender.descrip}} {{tender.cantidad}} {{tender.unidad}}</option>
-                </select>
-              <!-- Error -->
-                <div *ngIf="f.controls.licitacion.errors && f.controls.licitacion.dirty" class="alert alert-danger mt-0">
-                <div *ngIf="f.controls.licitacion.errors.required">Required</div>
-                </div>
+            <ng-container matColumnDef="licitacion">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Licit.' : 'Tender'}}</th>
+                <td mat-cell *matCellDef="let row">{{row.licitacion}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="usuario">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Usuario' : 'User'}}</th>
+                <td mat-cell *matCellDef="let row">{{row.usuario}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="descrip">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Producto' : 'Product'}}</th>
+                <td mat-cell *matCellDef="let row">{{row.descrip}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="cantidad">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Cantidad' : 'Quantity'}}</th>
+                <td mat-cell *matCellDef="let row">{{row.cantidad}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="unidad">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Unidad' : 'Unity'}}</th>
+                <td mat-cell *matCellDef="let row">{{row.unidad}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="precio">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Precio' : 'Price'}}</th>
+                <td mat-cell *matCellDef="let row">{{row.precio}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="incoterm">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Incoterm' : 'Incoterm'}}</th>
+                <td mat-cell *matCellDef="let row">{{row.incoterm}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="entrega">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Entrega' : 'Delivery'}}</th>
+                <td mat-cell *matCellDef="let row">{{row.entrega.substring(0,10)}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="estado">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Estado' : 'State'}}</th>
+                <td mat-cell *matCellDef="let row">
+                    {{esp ? estadosOfertas[row.estado].estadoesp : estadosOfertas[row.estado].estadoeng}}</td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>{{esp ? 'Acciones' : 'Acctions'}}</th>
+                <td mat-cell *matCellDef="let row">
+                    <ng-container *ngIf="cuenta">
+                        <ng-container *ngIf="cuenta.perfil!=1 && cuenta.perfil!=3">
+                            <button mat-icon-button color="primary" data-toggle="tooltip" title="Update"
+                                (click)="openModal(editOfferModal, row, 'M')">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button color="primary" data-toggle="tooltip" title="Delete"
+                                (click)="openModal(editOfferModal, row, 'B')">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </ng-container>
+                    </ng-container>
+                    <button mat-icon-button color="primary" data-toggle="tooltip" title="Details"
+                        (click)="openModal(editOfferModal, row, 'D')">
+                        <mat-icon>description</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+
+    <mat-paginator #paginator [length]="dataSource.data?.length" [pageIndex]="0" [pageSize]="25"
+        [pageSizeOptions]="[25, 50, 100, 250]">
+    </mat-paginator>
+
+    <ng-container *ngIf="notDone">
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border m-5" role="status">
+                <span class="sr-only">Loading...</span>
             </div>
-          </div>
+        </div>
+    </ng-container>
 
-          <div class="form-group row">
-            <label for="usuario" class="col-sm-3 col-form-label">{{esp ? 'Usuario' : 'User'}}</label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" formControlName="usuario" id="usuario" [readOnly]="true">
-                <!-- Error -->
-                <!-- <div *ngIf="f.controls.usuario.errors && f.controls.usuario.dirty" class="alert alert-danger mt-0">
-                  <div *ngIf="f.controls.usuario.errors.required">Required</div>
+    <ng-template #editOfferModal let-modal>
+        <div class="modal-header">
+            <h5 class="modal-title" *ngIf="this.strTipo == 'A'">{{esp ? 'Nuevo' : 'New'}}</h5>
+            <h5 class="modal-title" *ngIf="this.strTipo == 'B'">{{esp ? 'Borrar' : 'Delete'}}</h5>
+            <h5 class="modal-title" *ngIf="this.strTipo == 'M'">{{esp ? 'Modificar' : 'Update'}}</h5>
+            <button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <form [formGroup]="f" (ngSubmit)="onSubmit()">
+                <div class="form-group row">
+                    <label for="oferta" class="col-sm-3 col-form-label">{{esp ? 'Oferta' : 'Offer'}}</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" formControlName="oferta" id="oferta"
+                            [readOnly]="true">
+                        <!-- Error -->
+                        <div *ngIf="f.controls.oferta.errors && f.controls.oferta.dirty"
+                            class="alert alert-danger mt-0">
+                            <div *ngIf="f.controls.oferta.errors.required">Required</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="licitacion" class="col-sm-3 col-form-label">{{esp ? 'Licitacion' : 'Tender'}}</label>
+                    <div class="col-sm-9">
+                        <!-- <input type="number" class="form-control" formControlName="licitacion" id="licitacion" [readOnly]="this.strTipo == 'B'"> -->
+                        <select class="custom-select" formControlName="licitacion" id="licitacion" required="required"
+                            (change)="changeTender($event)">
+                            <option [value]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
+                            <option [value]="tender.licitacion" *ngFor="let tender of tenders">{{tender.licitacion}}
+                                {{tender.descrip}} {{tender.cantidad}} {{tender.unidad}}</option>
+                        </select>
+                        <!-- Error -->
+                        <div *ngIf="f.controls.licitacion.errors && f.controls.licitacion.dirty"
+                            class="alert alert-danger mt-0">
+                            <div *ngIf="f.controls.licitacion.errors.required">Required</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Solo para el Administrador -->
+                <ng-container *ngIf="cuenta.perfil==0">
+                    <div class="form-group row">
+                        <label for="usuario" class="col-sm-3 col-form-label">{{esp ? 'Usuario' : 'User'}}</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" formControlName="usuario" id="usuario"
+                                [readOnly]="true">
+                            <!-- Error -->
+                            <!-- <div *ngIf="f.controls.usuario.errors && f.controls.usuario.dirty" class="alert alert-danger mt-0">
+                        <div *ngIf="f.controls.usuario.errors.required">Required</div>
+                        </div> -->
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="email" class="col-sm-3 col-form-label">{{esp ? 'Email' : 'Email'}}</label>
+                        <div class="col-sm-9">
+                            <input type="email" class="form-control" formControlName="email" id="email"
+                                [readOnly]="true">
+                            <!-- Error -->
+                            <!-- <div *ngIf="f.controls.email.errors && f.controls.email.dirty" class="alert alert-danger mt-0">
+                        <div *ngIf="f.controls.usuario.errors.required">Required</div>
+                        </div> -->
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-group row">
+                    <label for="proveedor" class="col-sm-3 col-form-label">{{esp ? 'Proveedor' : 'Supplier'}}</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" formControlName="proveedor" id="proveedor" [readOnly]="this.strTipo == 'B'">
+                        <!-- Error -->
+                        <!-- <div *ngIf="f.controls.proveedor.errors && f.controls.proveedor.dirty" class="alert alert-danger mt-0">
+                            <div *ngIf="f.controls.proveedor.errors.required">Required</div>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <div class="form-group row">
+                        <label for="provenom" class="col-sm-3 col-form-label">{{esp ? 'Nombre' : 'Name'}}</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" formControlName="provenom" id="provenom"
+                                [readOnly]="true">
+                            <!-- Error -->
+                            <!-- <div *ngIf="f.controls.provenom.errors && f.controls.provenom.dirty" class="alert alert-danger mt-0">
+                                <div *ngIf="f.controls.provenom.errors.required">Required</div>
+                            </div> -->
+                        </div>
+                    </div>
+                </ng-container>
+
+                <div class="form-group row">
+                    <label for="fecha" class="col-sm-3 col-form-label">{{esp ? 'Inicio' : 'Start'}}</label>
+                    <div class="col-sm-9">
+                        <input type="date" class="form-control" formControlName="fecha" id="fecha"
+                            [readOnly]="this.strTipo == 'B'">
+                        <!-- Error -->
+                        <div *ngIf="f.controls.fecha.errors && f.controls.fecha.dirty" class="alert alert-danger mt-0">
+                            <div *ngIf="f.controls.fecha.errors.required">Required</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="finaliza" class="col-sm-3 col-form-label">{{esp ? 'Fin' : 'End'}}</label>
+                    <div class="col-sm-9">
+                        <input type="date" class="form-control" formControlName="finaliza" id="finaliza"
+                            [readOnly]="this.strTipo == 'B'">
+                        <!-- Error -->
+                        <div *ngIf="f.controls.finaliza.errors && f.controls.finaliza.dirty"
+                            class="alert alert-danger mt-0">
+                            <div *ngIf="f.controls.finaliza.errors.required">Required</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="producto" class="col-sm-3 col-form-label">{{esp ? 'Producto' : 'Product'}}</label>
+                    <div class="col-sm-9">
+                        <!-- <input type="number" class="form-control" formControlName="producto" id="producto"
+                            [readOnly]="true"> -->
+                        <select class="custom-select" formControlName="producto" id="producto" required="required">
+                            <option [value]="product.codigo" *ngFor="let product of products">{{product.codigo}} {{product.descrip}}</option>
+                        </select>
+                        <!-- Error -->
+                        <div *ngIf="f.controls.producto.errors && f.controls.producto.dirty"
+                            class="alert alert-danger mt-0">
+                            <div *ngIf="f.controls.producto.errors.required">Required</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="form-group row">
+                    <label for="descrip" class="col-sm-3 col-form-label">{{esp ? 'Descrip' : 'Descrip'}}</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" formControlName="descrip" id="descrip"
+                            [readOnly]="true">
+                        <!-- Error -->
+                        <!-- <div *ngIf="f.controls.descrip.errors && f.controls.descrip.dirty"
+                            class="alert alert-danger mt-0">
+                            <div *ngIf="f.controls.descrip.errors.required">Required</div>
+                        </div>
+                    </div>
                 </div> -->
-            </div>
-          </div>
 
-          <div class="form-group row">
-            <label for="email" class="col-sm-3 col-form-label">{{esp ? 'Email' : 'Email'}}</label>
-            <div class="col-sm-9">
-                <input type="email" class="form-control" formControlName="email" id="email" [readOnly]="true">
-                <!-- Error -->
-                <!-- <div *ngIf="f.controls.email.errors && f.controls.email.dirty" class="alert alert-danger mt-0">
-                  <div *ngIf="f.controls.usuario.errors.required">Required</div>
-                </div> -->
-            </div>
-          </div>
-
-          <!-- <div class="form-group row">
-              <label for="proveedor" class="col-sm-3 col-form-label">{{esp ? 'Proveedor' : 'Supplier'}}</label>
-              <div class="col-sm-9">
-                  <input type="number" class="form-control" formControlName="proveedor" id="proveedor" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
-                  <!-- Error -->
-                  <!-- <div *ngIf="f.controls.proveedor.errors && f.controls.proveedor.dirty" class="alert alert-danger mt-0">
-                    <div *ngIf="f.controls.proveedor.errors.required">Required</div>
-                  </div>
-              </div>
-            </div> -->
-
-            <div class="form-group row">
-              <label for="provenom" class="col-sm-3 col-form-label">{{esp ? 'Nombre' : 'Name'}}</label>
-              <div class="col-sm-9">
-                  <input type="text" class="form-control" formControlName="provenom" id="provenom" [readOnly]="true">
-                  <!-- Error -->
-                  <!-- <div *ngIf="f.controls.provenom.errors && f.controls.provenom.dirty" class="alert alert-danger mt-0">
-                    <div *ngIf="f.controls.provenom.errors.required">Required</div>
-                  </div> -->
-              </div>
-            </div>
-
-            <div class="form-group row">
-            <label for="fecha" class="col-sm-3 col-form-label">{{esp ? 'Inicio' : 'Start'}}</label>
-            <div class="col-sm-9">
-                <input type="date" class="form-control" formControlName="fecha" id="fecha" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
-                <!-- Error -->
-                <div *ngIf="f.controls.fecha.errors && f.controls.fecha.dirty" class="alert alert-danger mt-0">
-                  <div *ngIf="f.controls.fecha.errors.required">Required</div>
+                <div class="form-group row">
+                    <label for="cantidad" class="col-sm-3 col-form-label">{{esp ? 'Cantidad' : 'Quantity'}}</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" formControlName="cantidad" id="cantidad"
+                            [readOnly]="this.strTipo == 'B'">
+                        <!-- Error -->
+                        <div *ngIf="f.controls.cantidad.errors && f.controls.cantidad.dirty"
+                            class="alert alert-danger mt-0">
+                            <div *ngIf="f.controls.cantidad.errors.required">Required</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-          </div>
 
-          <div class="form-group row">
-            <label for="finaliza" class="col-sm-3 col-form-label">{{esp ? 'Fin' : 'End'}}</label>
-            <div class="col-sm-9">
-                <input type="date" class="form-control" formControlName="finaliza" id="finaliza" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
-                <!-- Error -->
-                <div *ngIf="f.controls.finaliza.errors && f.controls.finaliza.dirty" class="alert alert-danger mt-0">
-                  <div *ngIf="f.controls.finaliza.errors.required">Required</div>
+                <div class="form-group row">
+                    <label for="unidad" class="col-sm-3 col-form-label">{{esp ? 'Unidad' : 'Unity'}}</label>
+                    <div class="col-sm-9">
+                        <!-- <input type="text" class="form-control" formControlName="unidad" id="unidad"
+                            [readOnly]="this.strTipo == 'B'"> -->
+                        <select class="custom-select" formControlName="unidad" id="unidad" required="required"
+                            [readOnly]="this.strTipo == 'B'">
+                            <!-- <option ng-value disabled>{{esp ? 'Elija una opcion...' : 'Choose...'}}</option> -->
+                            <option [value]="unidad.value" *ngFor="let unidad of unidades">{{unidad.value}}</option>
+                        </select>
+                        <!-- Error -->
+                        <div *ngIf="f.controls.unidad.errors && f.controls.unidad.dirty"
+                            class="alert alert-danger mt-0">
+                            <div *ngIf="f.controls.unidad.errors.required">Required</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-          </div>
 
-          <div class="form-group row">
-            <label for="producto" class="col-sm-3 col-form-label">{{esp ? 'Producto' : 'Product'}}</label>
-            <div class="col-sm-9">
-                <input type="number" class="form-control" formControlName="producto" id="producto" [readOnly]="true">
-                <!-- Error -->
-                <div *ngIf="f.controls.producto.errors && f.controls.producto.dirty" class="alert alert-danger mt-0">
-                  <div *ngIf="f.controls.producto.errors.required">Required</div>
-                </div>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="descrip" class="col-sm-3 col-form-label">{{esp ? 'Descrip' : 'Descrip'}}</label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" formControlName="descrip" id="descrip" [readOnly]="true">
-                <!-- Error -->
-                <div *ngIf="f.controls.descrip.errors && f.controls.descrip.dirty" class="alert alert-danger mt-0">
-                  <div *ngIf="f.controls.descrip.errors.required">Required</div>
-                </div>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="cantidad" class="col-sm-3 col-form-label">{{esp ? 'Cantidad' : 'Quantity'}}</label>
-            <div class="col-sm-9">
-                <input type="number" class="form-control" formControlName="cantidad" id="cantidad" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
-                <!-- Error -->
-                <div *ngIf="f.controls.cantidad.errors && f.controls.cantidad.dirty" class="alert alert-danger mt-0">
-                  <div *ngIf="f.controls.cantidad.errors.required">Required</div>
-                </div>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="unidad" class="col-sm-3 col-form-label">{{esp ? 'Unidad' : 'Unity'}}</label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" formControlName="unidad" id="unidad" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
-                <!-- Error -->
-                <div *ngIf="f.controls.unidad.errors && f.controls.unidad.dirty" class="alert alert-danger mt-0">
-                  <div *ngIf="f.controls.unidad.errors.required">Required</div>
-                </div>
-            </div>
-          </div>
-
-          <!-- <div class="form-group row">
+                <!-- <div class="form-group row">
             <label for="costo" class="col-sm-3 col-form-label">{{esp ? 'Costo' : 'Cost'}}</label>
             <div class="col-sm-9">
-                <input type="number" class="form-control" formControlName="costo" id="costo" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
+                <input type="number" class="form-control" formControlName="costo" id="costo" [readOnly]="this.strTipo == 'B'">
                 <!-- Error -->
                 <!-- <div *ngIf="f.controls.costo.errors && f.controls.costo.dirty" class="alert alert-danger mt-0">
                   <div *ngIf="f.controls.costo.errors.required">Required</div>
@@ -280,68 +314,73 @@
             </div>
           </div>  -->
 
-          <div class="form-group row">
-              <label for="precio" class="col-sm-3 col-form-label">{{esp ? 'Precio' : 'Price'}}</label>
-              <div class="col-sm-9">
-                  <input type="number" class="form-control" formControlName="precio" id="precio" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
-                  <!-- Error -->
-                  <!-- <div *ngIf="f.controls.precio.errors && f.controls.precio.dirty" class="alert alert-danger mt-0">
+                <div class="form-group row">
+                    <label for="precio" class="col-sm-3 col-form-label">{{esp ? 'Precio' : 'Price'}}</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" formControlName="precio" id="precio"
+                            [readOnly]="this.strTipo == 'B'">
+                        <!-- Error -->
+                        <!-- <div *ngIf="f.controls.precio.errors && f.controls.precio.dirty" class="alert alert-danger mt-0">
                     <div *ngIf="f.controls.precio.errors.required">Required</div>
                   </div> -->
-              </div>
-          </div>
+                    </div>
+                </div>
 
-          <div class="form-group row">
-              <label for="incoterm" class="col-sm-3 col-form-label">{{esp ? 'INCOTERM' : 'INCOTERM'}}</label>
-              <div class="col-sm-9">
-                <select class="custom-select" formControlName="incoterm" id="incoterm" required="required">
-                  <option [ngValue]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
-                  <option [ngValue]="item.value" *ngFor="let item of incoterms">{{item.value}}</option>
-                </select>
-              </div>  
-          </div>
-    
-          <div class="form-group row">
-            <label for="entrega" class="col-sm-3 col-form-label">{{esp ? 'Entrega' : 'Delivery'}}</label>
-            <div class="col-sm-9">
-                <input type="date" class="form-control" formControlName="entrega" id="entrega" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
-                <!-- Error -->
-                <!-- <div *ngIf="f.controls.entrega.errors && f.controls.entrega.dirty" class="alert alert-danger mt-0">
+                <div class="form-group row">
+                    <label for="incoterm" class="col-sm-3 col-form-label">{{esp ? 'INCOTERM' : 'INCOTERM'}}</label>
+                    <div class="col-sm-9">
+                        <select class="custom-select" formControlName="incoterm" id="incoterm" required="required">
+                            <option [ngValue]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
+                            <option [ngValue]="item.value" *ngFor="let item of incoterms">{{item.value}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="entrega" class="col-sm-3 col-form-label">{{esp ? 'Entrega' : 'Delivery'}}</label>
+                    <div class="col-sm-9">
+                        <input type="date" class="form-control" formControlName="entrega" id="entrega"
+                            [readOnly]="this.strTipo == 'B'">
+                        <!-- Error -->
+                        <!-- <div *ngIf="f.controls.entrega.errors && f.controls.entrega.dirty" class="alert alert-danger mt-0">
                   <div *ngIf="f.controls.entrega.errors.required">Required</div>
                 </div> -->
-            </div>
-          </div>
+                    </div>
+                </div>
 
-          <div *ngIf="this.strTipo !== 'B' && this.strTipo !== 'P'" class="form-group row">
-              <label for="estado" class="col-sm-3 col-form-label">{{esp ? 'Estado' : 'State'}}</label>
-              <div class="col-sm-9">
-                <select class="custom-select" formControlName="estado" id="estado" required="required">
-                  <option [ngValue]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
-                  <option [ngValue]="estado.estado" *ngFor="let estado of estadosOfertas">{{esp ? estado.estadoesp : estado.estadoeng}}</option>
-                </select>
-              </div>  
-          </div>
-    
-          <div class="modal-footer">
-            <div *ngIf="this.strTipo === 'B'">
-              <button type="submit" class="btn btn-primary">{{esp ? 'Borrar' : 'Delete'}}</button>
-            </div>
-            <div *ngIf="this.strTipo !== 'B'">
-              <button type="submit" class="btn btn-primary" [disabled]="!f.valid">{{esp ? 'Guardar' : 'Save'}}</button>
-            </div>
-            <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">{{esp ? 'Cancelar' : 'Cancel'}}</button>
-          </div>
+                <div *ngIf="this.strTipo !== 'B' && this.strTipo !== 'P'" class="form-group row">
+                    <label for="estado" class="col-sm-3 col-form-label">{{esp ? 'Estado' : 'State'}}</label>
+                    <div class="col-sm-9">
+                        <select class="custom-select" formControlName="estado" id="estado" required="required">
+                            <option [value]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
+                            <option [value]="estado.estado" *ngFor="let estado of estadosOfertas">
+                                {{esp ? estado.estadoesp : estado.estadoeng}}</option>
+                        </select>
+                    </div>
+                </div>
 
-          <!-- <hr>
+                <div class="modal-footer">
+                    <div *ngIf="this.strTipo === 'B'">
+                        <button type="submit" class="btn btn-primary">{{esp ? 'Borrar' : 'Delete'}}</button>
+                    </div>
+                    <div *ngIf="this.strTipo !== 'B'">
+                        <button type="submit" class="btn btn-primary"
+                            [disabled]="!f.valid">{{esp ? 'Guardar' : 'Save'}}</button>
+                    </div>
+                    <button type="button" class="btn btn-secondary"
+                        (click)="modal.dismiss()">{{esp ? 'Cancelar' : 'Cancel'}}</button>
+                </div>
+
+                <!-- <hr>
           <pre>{{f.controls.pass.errors | json}}</pre>
           <hr> -->
-          <!-- <hr>
+                <!-- <hr>
           <pre>{{f.errors | json}}</pre>
           <hr> -->
-        
-        </form>
-      </div>
-    
-  </ng-template>
-      
+
+            </form>
+        </div>
+
+    </ng-template>
+
 </div>

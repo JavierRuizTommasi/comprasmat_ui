@@ -14,11 +14,14 @@ import { OffersService } from 'src/app/servicios/offers.service'
 import { Offers } from 'src/app/models/Offers';
 import { TendersService } from 'src/app/servicios/tenders.service'
 import { Tenders } from 'src/app/models/Tenders';
+import { ProductosService } from 'src/app/servicios/productos.service'
+import { Productos } from 'src/app/models/Products';
 import * as moment from 'moment'
 import { MatDialog } from '@angular/material/dialog'
 import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
 import { arEstadosOfertas } from 'src/app/models/EstadosOfertas'
 import { arIncoterms } from 'src/app/models/Incoterms'
+import { arUnidades } from 'src/app/models/Unidades'
 
 @Component({
   selector: 'app-ofertas',
@@ -51,6 +54,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   tenders: Tenders[] = [] 
 
+  products: Productos[] = [] 
+
   f: FormGroup
 
   siGrabo: boolean
@@ -60,6 +65,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   estadosOfertas = arEstadosOfertas
   incoterms = arIncoterms
+  unidades = arUnidades
 
   filterValues = {}
   filterSelectObj = []
@@ -72,6 +78,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     private usuariosService: UsuariosService,
     private offersService: OffersService,
     private tenderService: TendersService,
+    private productService: ProductosService,
     private router: Router,
     public dialog: MatDialog
   ) {
@@ -208,6 +215,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
     // await this.pedirTenders(user)
     // await this.pedirOffers(user)
+    await this.pedirProducts()
     await this.pedirTenders(user)
     await this.pedirOffers(user)
 
@@ -225,6 +233,11 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       // console.log(user)
       this.cuenta = user
       this.esp = (this.cuenta.language === 'es')
+
+      if (user.perfil == 5) {
+        // User Pending
+        this.router.navigateByUrl('/inicio')
+      }
     }
     else {
       console.log('no logueado')
@@ -247,7 +260,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     let resp: any
     if (user) {
       // console.log('Offers')
-      if (user.perfil === 4) {
+      if (user.perfil == 4) {
         // console.log('Proveedor', user.perfil)
         resp = await this.offersService.findMyOffers(user.usuario).toPromise()
       } else {
@@ -280,6 +293,14 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       })
   }
 
+  async pedirProducts() {
+    this.productService.getProductos()
+    .subscribe((resp: any) => {
+      // console.log(resp)
+      this.products = resp.Products
+    })
+  }
+
   openModal(targetModal, offer, strTipoParam) {
     this.strTipo = strTipoParam
 
@@ -301,10 +322,10 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         finaliza: moment().format().substr(0, 10),
         producto: 0,
         descrip: '',
-        cantidad: 0,
+        cantidad: '',
         unidad: '',
-        costo: 0,
-        precio: 0,
+        costo: '',
+        precio: '',
         incoterm: '',
         entrega: '',
         estado: 1,
@@ -338,6 +359,12 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       this.f.disable()
     } else {
       this.f.enable()
+
+      if (this.cuenta.perfil !== 0 && this.cuenta.perfil !== 2) {
+        this.f.get('estado').disable({ onlySelf: true })
+        this.f.get('producto').disable({ onlySelf: true })
+      }
+
     }
 
   }

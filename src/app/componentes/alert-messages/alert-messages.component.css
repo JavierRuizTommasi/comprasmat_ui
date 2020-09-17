@@ -1,3 +1,16 @@
 mat-dialog-content {
     text-align: center;
 }
+
+.mdi.green { 
+    color: green;
+    transform: scale(2);
+}
+
+.mat-icon.green {
+    color: green;
+}
+
+.mat-icon.red {
+    color: red;
+}
