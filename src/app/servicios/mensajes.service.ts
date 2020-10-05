@@ -15,8 +15,8 @@ export class MensajesService {
 
   mensaje(staticAlertClosed: boolean, successMessage: string): void {
     setTimeout(() => staticAlertClosed = true, 20000)
-    console.log(successMessage)
-    console.log(staticAlertClosed)
+    // console.log(successMessage)
+    // console.log(staticAlertClosed)
 
     this.msgSuccess.subscribe((message: string) => successMessage = message)
     this.msgSuccess.pipe(
@@ -26,7 +26,7 @@ export class MensajesService {
 
   changeSuccessMessage() {
     this.msgSuccess.next('${new Date()} - Message successfully changed.')
-    console.log(this.msgSuccess)
+    // console.log(this.msgSuccess)
   }
 
 }

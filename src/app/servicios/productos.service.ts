@@ -12,7 +12,7 @@ export class ProductosService {
   constructor(
     private http: HttpClient,
     public url: UrlproviderService) {
-      console.log('Servicio Productos OK')
+      // console.log('Servicio Productos OK')
   }
 
   getHttpOptions() {

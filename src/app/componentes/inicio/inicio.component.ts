@@ -10,6 +10,7 @@ import { UsuariosService } from 'src/app/servicios/usuarios.service'
 import { TendersService } from 'src/app/servicios/tenders.service'
 import { Tenders } from 'src/app/models/Tenders';
 import { arEstadosLicitaciones } from 'src/app/models/EstadosLicitaciones'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-inicio',
@@ -43,7 +44,13 @@ export class InicioComponent implements AfterViewInit, OnInit {
     private comunicacionService: ComunicacionService,
     private usuariosService: UsuariosService,
     private languageService: LanguageService,
-    private tenderService: TendersService) {
+    private tenderService: TendersService,
+    private router: Router
+    ) {
+      if (!this.usuariosService.isLogin()) {
+        this.router.navigateByUrl('/login')
+      }
+
       this.languageService.esp$.subscribe((lang: Language) => {
         // console.log(this.esp)
         this.esp = lang.esp
@@ -59,7 +66,7 @@ export class InicioComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
-    console.log(this.dataSource)
+    // console.log(this.dataSource)
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.table.dataSource = this.dataSource;
@@ -67,7 +74,7 @@ export class InicioComponent implements AfterViewInit, OnInit {
 
   async getUserData() {
     const resp: any = await this.usuariosService.checkUsuario().toPromise()
-    console.log(resp.user)
+    // console.log(resp.user)
     return resp.user
   }
 
@@ -77,7 +84,7 @@ export class InicioComponent implements AfterViewInit, OnInit {
     // checkCuenta() Avisa al Navbar sino 
     // pedirProductos() Trae datos del Servicio Productos
 
-    console.log('pedirDatos')
+    // console.log('pedirDatos')
     const user = await this.getUserData()
     this.checkCuenta(user)
 
@@ -88,13 +95,15 @@ export class InicioComponent implements AfterViewInit, OnInit {
     // esta funcion verifica si el usuario esta logeado y asigna 
     // los datos del user a un objeto cuenta[] y tambien la variable esp
     // si no lo encuentra deberia devolver cuenta como undefined
-    console.log('checkUser')
+    // console.log('checkUser')
     // console.log(user)
     if (user) {
       // console.log(user)
       this.cuenta = user
       this.esp = (this.cuenta.language === 'es')
-
+    }
+    else {
+      this.router.navigateByUrl('/login')
     }
 
     this.comunicacionService.cuenta$.next(this.cuenta)
@@ -109,24 +118,22 @@ export class InicioComponent implements AfterViewInit, OnInit {
   }
   
   async pedirTenders(user) {
-    this.tenderService.getActives()
-    .subscribe((resp: any) => {
-      // console.log(resp)
+      let resp: any = await this.tenderService.getActives().toPromise()
+      // resp.Tenders = Object.keys(resp.Tenders).map(e=>resp.Tenders[e])
+
+      // console.log(resp.Tenders)
       this.dataSource.data = resp.Tenders
       this.dataSource.sort = this.sort
       this.dataSource.paginator = this.paginator
       this.table.dataSource = this.dataSource
 
-      // console.log(this.dataSource.data)
       // this.tenders = resp.Tenders
       this.notDone = false
-    })
 
   }
 
   applyFilter(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase()
-      
   }
 }
 

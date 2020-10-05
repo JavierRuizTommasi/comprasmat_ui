@@ -7,7 +7,7 @@ import { ComunicacionService } from 'src/app/servicios/comunicacion.service'
 import { UsuariosService } from 'src/app/servicios/usuarios.service'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
-import { Router } from '@angular/router'
+import { Router, ActivatedRoute } from '@angular/router'
 import { Language } from 'src/app/models/Language'
 import { LanguageService } from 'src/app/servicios/language.service'
 import { OffersService } from 'src/app/servicios/offers.service'
@@ -22,6 +22,8 @@ import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert
 import { arEstadosOfertas } from 'src/app/models/EstadosOfertas'
 import { arIncoterms } from 'src/app/models/Incoterms'
 import { arUnidades } from 'src/app/models/Unidades'
+import { arFinanciacion } from 'src/app/models/Financiacion'
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-ofertas',
@@ -32,11 +34,12 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator
   @ViewChild(MatSort) sort: MatSort
   @ViewChild(MatTable) table: MatTable<Offers>
+  @ViewChild('editOfferModal', { static: false }) private editOfferModal
 
   dataSource: MatTableDataSource<Offers> = new MatTableDataSource<Offers>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['oferta', 'usuario', 'licitacion', 'descrip', 'cantidad', 'unidad', 'precio', 'incoterm', 'entrega', 'estado', 'actions']
+  displayedColumns: string[] = ['oferta', 'usuario', 'licitacion', 'descrip', 'cantidad', 'precio', 'incoterm', 'entrega', 'estado', 'actions']
 
   strTipo: string
   idIdx: string
@@ -66,9 +69,12 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   estadosOfertas = arEstadosOfertas
   incoterms = arIncoterms
   unidades = arUnidades
-
+  financiaciones = arFinanciacion
+  
   filterValues = {}
   filterSelectObj = []
+
+  newOffer: Observable<string>
 
   constructor(
     private fb: FormBuilder,
@@ -80,7 +86,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     private tenderService: TendersService,
     private productService: ProductosService,
     private router: Router,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private activatedRoute: ActivatedRoute
   ) {
 
     if (!this.usuariosService.isLogin()) {
@@ -94,6 +101,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         Validators.compose([
         Validators.required
       ])],
+      licitacion_id: [''],
       usuario: ['',
         Validators.compose([
         Validators.required
@@ -154,8 +162,15 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         Validators.compose([
         Validators.required
       ])],
-      detalle: ['']
-    })
+      detalle: [''],
+      scoreProveedor: [0],
+      scorePrecio: [0],
+      scoreEntrega: [0],
+      scoreCantidad: [0],
+      scoring: [0],
+      financiacion: [0],
+      scoreFinanciacion: [0]
+    }, { validators: this.validaCantidad('licitacion', 'cantidad')})
 
     this.languageService.esp$.subscribe((lang: Language) => {
       this.esp = lang.esp
@@ -182,7 +197,14 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
+    this.activatedRoute.params.subscribe(params => {
+      console.log(params);
+      this.newOffer = params['nuevaoferta']
+      console.log(this.newOffer);
+    })
+
     this.pedirDatos()
+
   }
 
   ngAfterViewInit() {
@@ -193,11 +215,12 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
     // Overrride default filter behaviour of Material Datatable
     this.dataSource.filterPredicate = this.createFilter()
+
   }
   
   async getUserData() {
     const resp: any = await this.usuariosService.checkUsuario().toPromise()
-    console.log(resp.user)
+    // console.log(resp.user)
     return resp.user
   }
 
@@ -220,7 +243,11 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     await this.pedirOffers(user)
 
     this.notDone = false
-  
+
+    if (this.newOffer) {
+      // Que vino desde Activas
+      await this.openModal(this.editOfferModal, this.offer, 'A')
+    }
   }
 
   checkCuenta(user) {
@@ -276,7 +303,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
       // this.offers = resp.Offers
       this.notDone = false
-      console.log(this.dataSource)
+      // console.log(this.dataSource)
 
       this.filterSelectObj.filter((o) => {
         o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
@@ -313,7 +340,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       this.f.patchValue({
         id: '',
         oferta: 0,
-        licitacion: 0,
+        licitacion: '',
+        licitacion_id: '',
         usuario: this.cuenta.usuario,
         email: this.cuenta.email,
         proveedor: this.cuenta.proveedor,
@@ -326,16 +354,24 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         unidad: '',
         costo: '',
         precio: '',
-        incoterm: '',
+        incoterm: 'FOB',
         entrega: '',
         estado: 1,
-        detalle: ''
+        detalle: '',
+        scoreProveedor: 0,
+        scorePrecio: 0,
+        scoreEntrega: 0,
+        scoreCantidad: 0,
+        scoring: 0,
+        financiacion: 0,
+        scoreFinanciacion: 0
       })
     } else {
       this.f.patchValue({
         id: offer._id,
         oferta: offer.oferta,
         licitacion: offer.licitacion,
+        licitacion_id: offer.licitacion_id,
         usuario: offer.usuario,
         email: offer.email,
         proveedor: offer.proveedor,
@@ -351,7 +387,14 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         incoterm: offer.incoterm,
         entrega: offer.entrega.substr(0,10),
         estado: offer.estado,
-        detalle: offer.detalle
+        detalle: offer.detalle,
+        scoreProveedor: offer.scoreProveedor,
+        scorePrecio: offer.scorePrecio,
+        scoreEntrega: offer.scoreEntrega,
+        scoreCantidad: offer.scoreCantidad,
+        scoring: offer.scoring,
+        financiacion: offer.financiacion,
+        scoreFinanciacion: offer.scoreFinanciacion
       })
     }
 
@@ -363,10 +406,10 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       if (this.cuenta.perfil !== 0 && this.cuenta.perfil !== 2) {
         this.f.get('estado').disable({ onlySelf: true })
         this.f.get('producto').disable({ onlySelf: true })
+        this.f.get('unidad').disable({ onlySelf: true })
+        this.f.get('incoterm').disable({ onlySelf: true })
       }
-
     }
-
   }
 
   onSubmit() {
@@ -379,6 +422,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     this.offUpt = {
       oferta: this.f.controls.oferta.value,
       licitacion: this.f.controls.licitacion.value,
+      licitacion_id: this.f.controls.licitacion_id.value,
       usuario: this.f.controls.usuario.value,
       email: this.f.controls.email.value,
       proveedor: this.f.controls.proveedor.value,
@@ -394,7 +438,14 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       incoterm: this.f.controls.incoterm.value,
       entrega: this.f.controls.entrega.value,
       estado: this.f.controls.estado.value,
-      detalle: this.f.controls.detalle.value
+      detalle: this.f.controls.detalle.value,
+      scoreProveedor: this.f.controls.scoreProveedor.value,
+      scorePrecio: this.f.controls.scorePrecio.value,
+      scoreEntrega: this.f.controls.scoreEntrega.value,
+      scoreCantidad: this.f.controls.scoreCantidad.value,
+      scoring: this.f.controls.scoring.value,
+      financiacion: this.f.controls.financiacion.value,
+      scoreFinanciacion: this.f.controls.scoreFinanciacion.value
     }
 
     switch (this.strTipo) {
@@ -411,41 +462,60 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         this.modificarOferta()
         break
     }
+
+    this.newOffer = undefined
+    console.log(this.newOffer)
   }
 
-  agregarOferta() {
-    this.offersService.addOffer(this.offUpt)
-      .subscribe((offer: Offers) => {
-        // console.log('Alta:', offer)
-        if (offer) {
-          this.alertMsg()
-        }
-        this.pedirDatos()
-      })
+  async agregarOferta() {
+    let resp: any = await this.offersService.addOffer(this.offUpt).toPromise()
+
+    if (resp) {
+      let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
+      this.alertMsg()
+    }
+    await this.pedirDatos()
    }
 
-  borrarOferta() {
-    this.offersService.deleteOffer(this.idIdx)
-     .subscribe((offer: Offers) => {
-      //  console.log('Baja:', offer)
-      if (offer) {
+  async borrarOferta() {
+    let resp: any = await this.offersService.deleteOffer(this.idIdx).toPromise()
+  
+    if (resp) {
+        let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
         this.alertMsg()
-      }
-      this.pedirDatos()
-    })
+    }
+    await this.pedirDatos()
   }
 
-  modificarOferta() {
-    // console.log(this.offUpt)
-    this.offersService.putOffer(this.idIdx, this.offUpt)
-      .subscribe((offer: Offers) => {
-      // console.log('Modif:', offer)
-      if (offer) {
+  async modificarOferta() {
+    let resp: any = await this.offersService.putOffer(this.idIdx, this.offUpt).toPromise()
+    // console.log('Modif:', defOff)
+      
+    if (resp) {
+        // console.log('Modif:', this.offUpt.licitacion_id)
+        let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
+        // console.log(newOff)
         this.alertMsg()
-      }
-      this.pedirDatos()
-    })
+    }
+    await this.pedirDatos()
   }
+
+  // async calculaScoring(offer: Offers) {
+  //   console.log('Calcula')
+
+  //   let resp: any = this.products.filter( x => x.codigo == offer.producto)
+  //   // console.log(resp)
+
+  //   let valorHisto: number = 0
+  //   if (resp[0]) {
+  //     valorHisto = resp[0].historico
+  //   }
+
+  //   offer.scorePrecio = valorHisto
+
+  //   return offer
+  // }
+
 
   changeTender(ev) {
     // console.log(ev)
@@ -453,34 +523,42 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       onlySelf: true
     })
     
-    console.log(ev.target.value)
+    // console.log(ev.target.value)
 
-    for(const tender of this.tenders){
-      if (tender.licitacion == ev.target.value){
-        // console.log('Igual')
+    let resp: any = this.tenders.filter( x => x.licitacion == ev.target.value)
+    // console.log(resp)
+
+    if (resp[0]) {
+      // for(const tender of this.tenders){
+      // if (tender.licitacion == ev.target.value){
+        // console.log(resp[0])
         // result.push(tender)
 
-        this.f.get('producto').setValue((tender.producto), {
+        this.f.get('licitacion_id').setValue((resp[0]._id), {
           onlySelf: true
         })
     
-        this.f.get('descrip').setValue((tender.descrip), {
+        this.f.get('producto').setValue((resp[0].producto), {
           onlySelf: true
         })
     
-        this.f.get('costo').setValue((tender.costo), {
+        this.f.get('descrip').setValue((resp[0].descrip), {
           onlySelf: true
         })
     
-        // this.f.get('cantidad').setValue((tender.cantidad), {
+        this.f.get('costo').setValue((resp[0].costo), {
+          onlySelf: true
+        })
+    
+        // this.f.get('cantidad').setValue((resp.cantidad), {
         //   onlySelf: true
         // })
     
-        // this.f.get('unidad').setValue((tender.unidad), {
-        //   onlySelf: true
-        // })
+        this.f.get('unidad').setValue((resp[0].unidad), {
+          onlySelf: true
+        })
     
-      }
+      // }
     }
 
     // console.log(result)
@@ -573,6 +651,41 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       value.modelValue = undefined;
     })
     this.dataSource.filter = "";
+  }
+
+  validaCantidad(controlLicitacion: string, controlCantidad: string) {
+    return (formGroup: FormGroup) => {
+        const tender = formGroup.controls[controlLicitacion]
+        const offerCantidad = formGroup.controls[controlCantidad]
+
+        // console.log(control.value)
+        // console.log(matchingControl.value)
+
+        let resp: any = this.tenders.filter( x => x.licitacion == tender.value)
+        // console.log(resp)
+
+        if (resp[0]) {
+          // for(const tender of this.tenders){
+          // if (tender.licitacion == ev.target.value){
+            // console.log(resp[0])
+            // result.push(tender)
+
+          let tenderCantidad = resp[0].cantidad
+
+          if (offerCantidad.errors) {
+              // return if another validator has already found an error on the Cantidad
+              return
+          }
+
+          // set error on cantidad if validation fails
+          if (tenderCantidad > offerCantidad.value) {
+            offerCantidad.setErrors({ Menor: true })
+          } else {
+            offerCantidad.setErrors(null)
+          }
+
+        }
+    }
   }
 
 }

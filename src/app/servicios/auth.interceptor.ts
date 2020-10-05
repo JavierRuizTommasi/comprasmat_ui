@@ -48,7 +48,7 @@ export class AuthInterceptor implements HttpInterceptor {
       //Profiling
       finalize(() => {
         const profilingMsg = `${req.method} "${req.urlWithParams}`
-        console.log(profilingMsg)
+        // console.log(profilingMsg)
       })
 
     )

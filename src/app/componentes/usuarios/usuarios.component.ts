@@ -136,7 +136,7 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
-    console.log(this.dataSource)
+    // console.log(this.dataSource)
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.table.dataSource = this.dataSource;
@@ -144,7 +144,7 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
 
   async getUserData() {
     const resp: any = await this.usuariosService.checkUsuario().toPromise()
-    console.log(resp.user)
+    // console.log(resp.user)
     return resp.user
   }
 
@@ -154,7 +154,7 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
     // checkCuenta() Avisa al Navbar sino 
     // pedirProductos() Trae datos del Servicio Productos
 
-    console.log('pedirDatos')
+    // console.log('pedirDatos')
     const user = await this.getUserData()
     this.checkCuenta(user)
 
@@ -165,7 +165,7 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
     // esta funcion verifica si el usuario esta logeado y asigna 
     // los datos del user a un objeto cuenta[] y tambien la variable esp
     // si no lo encuentra deberia devolver cuenta como undefined
-    console.log('checkUser')
+    // console.log('checkUser')
     // console.log(user)
     if (user) {
       // console.log(user)
@@ -199,7 +199,7 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
 
         // this.usuarios = resp.Users
         this.notDone = false
-        console.log(this.table.dataSource)
+        // console.log(this.table.dataSource)
       })
 
     }
@@ -397,7 +397,7 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
 
     this.usuariosService.putUsuarios(this.idIdx, this.updtUser)
       .subscribe((user: IUsuario) => {
-      console.log('Modif:', user)
+      // console.log('Modif:', user)
       if (user) {
         this.alertMsg()
       }
@@ -417,7 +417,7 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
 
     this.usuariosService.putPass(this.updtPass)
       .subscribe(resp => {
-      console.log('Pass:', resp)
+      // console.log('Pass:', resp)
       if (resp.dataUser) {
         this.alertMsg()
       }

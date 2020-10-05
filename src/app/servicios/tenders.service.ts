@@ -12,7 +12,7 @@ export class TendersService {
   constructor(
     private http: HttpClient,
     public url: UrlproviderService) {
-      console.log('Servicio Tenders OK')
+      // console.log('Servicio Tenders OK')
     }
 
     getHttpOptions() {
@@ -29,7 +29,6 @@ export class TendersService {
   }
 
   getActives(): Observable<Tenders[]> {
-    // console.log('getActives')
     return this.http.get<Tenders[]>(this.url.baseApiUrl + 'tendersactives', this.getHttpOptions())
   }
 
@@ -47,6 +46,10 @@ export class TendersService {
 
   deleteTender(id: string): Observable<Tenders> {
     return this.http.delete<Tenders>(this.url.baseApiUrl + 'tenders/' + id, this.getHttpOptions())
+  }
+
+  updateScoring(id: string): Observable<Tenders> {
+    return this.http.put<Tenders>(this.url.baseApiUrl + 'updateScoring/' + id, this.getHttpOptions())
   }
 
 }

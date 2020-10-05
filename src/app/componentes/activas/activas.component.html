@@ -1,0 +1,152 @@
+<div class="jumbotron"> 
+    <h5 class="mt-2">{{esp ? 'Licitaciones Activas' : 'Active Tenders'}}</h5>
+    <div class="d-flex flex-row flex-wrap">
+      <div class="mr-auto pr-2 flex-grow-1">
+        <mat-form-field>
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{esp ? 'Filtro' : 'Filter'}}" />
+        </mat-form-field>
+      </div>
+      <!-- <ng-container *ngIf="cuenta">
+        <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2">
+          <div class="container-btn-new">
+            <button id="newbutton" mat-raised-button color="primary" (click)="openModal(editTenderModal, tender, 'A')">
+              <mat-icon>note_add</mat-icon>&nbsp; {{esp ? 'Nueva Licitacion' : 'New Tender'}}
+            </button>
+          </div>
+        </ng-container>
+      </ng-container> -->
+    </div>
+  
+    <div class="mat-elevation-z8 table-responsive">
+      <table mat-table [dataSource]='dataSource' matSort aria-label="Elements" multiTemplateDataRows>
+          <ng-container matColumnDef="licitacion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Req.' : 'Order'}}</th>
+            <td mat-cell *matCellDef="let element">{{element.licitacion}}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="descrip">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Producto' : 'Product'}}</th>
+            <td mat-cell *matCellDef="let element">{{element.descrip}}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="cantidad">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Cantidad' : 'Quantity'}}</th>
+            <td mat-cell *matCellDef="let element">{{element.cantidad}} {{element.unidad}}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="fecha">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Inicio' : 'Start'}}</th>
+            <td mat-cell *matCellDef="let element">{{element.fecha.substring(0,10)}}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="finaliza">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Fin' : 'End'}}</th>
+              <td mat-cell *matCellDef="let element">{{element.finaliza.substring(0,10)}}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="estado">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Estado' : 'State'}}</th>
+              <td mat-cell *matCellDef="let element">{{esp ? estadosLicitaciones[element.estado].estadoesp : estadosLicitaciones[element.estado].estadoeng}}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef>{{esp ? 'Ofertas' : 'Offers'}}</th>
+            <td mat-cell *matCellDef="let element">
+              <!-- <button mat-icon-button color="primary" data-toggle="tooltip" title="{{esp ? 'Detalle' : 'Details'}}" (click)="element.isExpanded = !element.isExpanded"> -->
+                <!-- <mat-icon>description</mat-icon> -->
+                <span class="badge badge-primary badge-pill">{{element.offer.length ? element.offer.length : 0}}</span>
+              <!-- </button> -->
+            </td>
+          </ng-container>
+      
+          <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+              <div class="example-element-detail" [@detailExpand]="element.isExpanded ? 'expanded' : 'collapsed'">
+                <!-- <div class="example-element-diagram">
+                  <div class="example-element-position"> {{element.detalle}} </div>
+                  <!-- <div class="example-element-symbol"> {{element.symbol}} </div>
+                  <div class="example-element-name"> {{element.name}} </div>
+                  <div class="example-element-weight"> {{element.weight}} </div> -->
+                <!-- </div> -->
+
+ 
+                <div class="container pl-0 ml-0 m-0 pb-0 pr-2 overflow-auto">
+                  <table class="table table-responsive" >
+                    <thead class="offer-th">
+                      <tr>
+                        <th>{{esp ? 'Rank.' : 'Rank.'}}</th>
+                        <th>{{esp ? 'Oferta' : 'Offer'}}</th>
+                        <th>{{esp ? 'Usuario' : 'User'}}</th>
+                        <th>{{esp ? 'Cantidad' : 'Quantity'}}</th>
+                        <th>{{esp ? 'Precio' : 'Price'}}</th>
+                        <th>{{esp ? 'Entrega' : 'Delivery'}}</th>
+                        <th>{{esp ? 'Scoring' : 'Scoring'}}</th>
+                      </tr>
+                    </thead>
+                    <!-- <tbody *ngFor="let offer of element?.offer;index as i"> -->
+                    <tbody *ngFor="let offer of getFilterByTender(element._id);index as i">
+                      <tr [style.background-color]="i === 0 ? 'lightyellow' : 'white'">
+                        <td>{{i+1}}</td>
+                        <td>{{offer.oferta}}</td> 
+                        <td>{{offer.usuario}}</td>
+                        <td>{{offer.cantidad}} {{offer.unidad}}</td>
+                        <td>{{offer.precio}}</td>
+                        <td>{{offer.entrega.substring(0,10)}}</td>
+                        <td class="d-flex flex-nowrap">{{offer.scoring}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                                    
+                <div class="descrip pl-2 pr-2 mb-2 d-flex align-content-between flex-wrap">
+                  <!-- <span class="example-element-description-attribution">{{esp ? 'Detalle' : 'Details'}}</span> -->
+                  <div>
+                    <h5 class="mt-2">{{esp ? 'Detalle' : 'Details'}} {{element.descrip}}</h5>
+                    <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam vel dolor laboriosam, maiores eveniet repellat at quibusdam distinctio repellendus illo quidem rerum. Aperiam aspernatur quae amet adipisci inventore maxime assumenda?</div>
+                  </div>
+                  
+                  <ng-container *ngIf="cuenta">
+                    <ng-container *ngIf="canOffer">
+                      <div class="ml-auto mb-2">
+                        <button mat-raised-button color="primary" (click)="makeAnOffer()">
+                          <mat-icon>note_add</mat-icon>&nbsp; {{esp ? 'Nueva Oferta' : 'New Offer'}}
+                          <!-- {{esp ? 'Nueva Oferta' : 'New Offer'}} -->
+                        </button>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+
+                </div>
+
+              </div>
+            </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let element; columns: displayedColumns;"
+              class="example-element-row"
+              [class.example-expanded-row]="element.isExpanded"
+              (click)="element.isExpanded = !element.isExpanded">
+          </tr>
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+        </table>
+    </div>
+  
+    <mat-paginator class="mat-elevation-z8 mb-3"
+      #paginator [length]="dataSource.data?.length" 
+      [pageIndex]="0" 
+      [pageSize]="25"
+      [pageSizeOptions]="[25, 50, 100, 250]"
+      showFirstLastButtons>
+    </mat-paginator>
+  
+    <ng-container *ngIf="notDone">
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border m-5" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </ng-container>
+        
+  </div>

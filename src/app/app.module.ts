@@ -7,10 +7,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
 import { RouterModule } from '@angular/router'
 import { FlexLayoutModule } from '@angular/flex-layout'
 
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MaterialModule } from './modulos/material.module'
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field'
 
 // Componentes
 import { AppComponent } from './app.component'
@@ -23,15 +23,16 @@ import { LoginComponent } from './componentes/login/login.component'
 import { RegisterComponent } from './componentes/register/register.component'
 import { UsuariosComponent } from './componentes/usuarios/usuarios.component'
 import { LogoutComponent } from './componentes/logout/logout.component'
-import { CuentaComponent } from './componentes/cuenta/cuenta.component';
+import { CuentaComponent } from './componentes/cuenta/cuenta.component'
 import { ChangepassComponent } from './componentes/changepass/changepass.component'
 import { OfertasComponent } from './componentes/ofertas/ofertas.component'
-import { SeleccionComponent } from './componentes/seleccion/seleccion.component';
-import { SamplesComponent } from './componentes/samples/samples.component';
+import { SeleccionComponent } from './componentes/seleccion/seleccion.component'
+import { SamplesComponent } from './componentes/samples/samples.component'
+import { ActivasComponent } from './componentes/activas/activas.component'
 
 import { AlertMessagesComponent } from './componentes/alert-messages/alert-messages.component'
 
-// import { MainnavbarComponent } from './componentes/mainnavbar/mainnavbar.component';
+// import { MainnavbarComponent } from './componentes/mainnavbar/mainnavbar.component'
 // import { MatUsersComponent } from './componentes/mat-users/mat-users.component';
 
 // Servicios
@@ -46,7 +47,7 @@ import { TendersService } from './servicios/tenders.service'
 import { OffersService } from './servicios/offers.service'
 import { SamplesService } from './servicios/samples.service'
 
-import Rutas from './routes';
+import Rutas from './routes'
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import Rutas from './routes';
     SamplesComponent,
     // MainnavbarComponent,
     // MatUsersComponent,
-    AlertMessagesComponent
+    AlertMessagesComponent,
+    ActivasComponent
   ],
   imports: [
     CommonModule,
@@ -103,3 +105,4 @@ import Rutas from './routes';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+

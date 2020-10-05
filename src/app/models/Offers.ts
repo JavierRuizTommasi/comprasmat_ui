@@ -1,7 +1,8 @@
 export class Offers {
     public id?: string
     public oferta: number
-    public licitacion: number
+    public licitacion: string
+    public licitacion_id: string
     public usuario: string
     public email: string
     public proveedor: number
@@ -18,4 +19,11 @@ export class Offers {
     public entrega: string
     public estado: number
     public detalle: string
+    public scoreProveedor: number
+    public scorePrecio: number
+    public scoreEntrega: number
+    public scoreCantidad: number
+    public scoring: number 
+    public financiacion: number
+    public scoreFinanciacion: number
 }

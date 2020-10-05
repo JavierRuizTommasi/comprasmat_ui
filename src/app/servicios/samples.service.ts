@@ -12,7 +12,7 @@ export class SamplesService {
   constructor(
     private http: HttpClient,
     public url: UrlproviderService) {
-      console.log('Servicio Samples OK')
+      // console.log('Servicio Samples OK')
     }
 
   getHttpOptions() {
@@ -21,7 +21,7 @@ export class SamplesService {
         'Content-Type' : 'application/json'
       })
     }
-    console.log('Sample httpOptions', httpOptions)
+    // console.log('Sample httpOptions', httpOptions)
     return httpOptions
   }
 

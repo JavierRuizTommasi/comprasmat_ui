@@ -1,5 +1,5 @@
 export class Tenders {
-    public licitacion: number
+    public licitacion: string
     public fecha: string
     public finaliza: string
     public producto: number
@@ -11,4 +11,5 @@ export class Tenders {
     public proveedor: number
     public provenom: string
     public estado: number
+    // public offer: []
 }

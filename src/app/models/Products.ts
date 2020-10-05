@@ -12,4 +12,5 @@ export class Productos {
     public precio: number
     public activo: boolean
     public checked?: boolean
+    public historico: number
 }

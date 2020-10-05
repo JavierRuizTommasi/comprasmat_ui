@@ -62,7 +62,7 @@ export class UsuariosService {
   constructor(
     private http: HttpClient,
     public url: UrlproviderService) {
-    console.log('Servicio Usuarios OK')
+    // console.log('Servicio Usuarios OK')
   }
 
   getHttpOptions() {
@@ -121,7 +121,7 @@ export class UsuariosService {
   checkUsuario2():Promise <Cuenta> {
     return new Promise(resolve => {
       const user = this.http.get<Cuenta>(this.url.baseApiUrl + 'check', this.getHttpOptions())
-      console.log(user)
+      // console.log(user)
       // resolve(user)
     })
     

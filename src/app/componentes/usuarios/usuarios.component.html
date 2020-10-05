@@ -80,7 +80,7 @@
     </div>
     <!-- </div>   -->
   
-    <mat-paginator 
+    <mat-paginator class="mat-elevation-z8 mb-3"
       #paginator [length]="dataSource.data?.length" 
       [pageIndex]="0" 
       [pageSize]="25"
@@ -262,8 +262,7 @@
           <pre>{{f.controls.confpass.errors | json}}</pre>
           <hr> -->
 
-    </form>
+        </form>
       </div>
-
     </ng-template>
 </div>

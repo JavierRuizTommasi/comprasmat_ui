@@ -13,7 +13,7 @@
                                 <div class="mat-elevation-z8 table-responsive">
                                     <table mat-table [dataSource]='dataSource' matSort aria-label="Elements">
                                         <ng-container matColumnDef="licitacion">
-                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Orden' : 'Tender'}}</th>
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Req.' : 'Order'}}</th>
                                         <td mat-cell *matCellDef="let row">{{row.licitacion}}</td>
                                         </ng-container>
                                 
@@ -52,11 +52,11 @@
                                     </table>
                                 </div>
 
-                                <mat-paginator
+                                <mat-paginator class="mat-elevation-z8"
                                     #paginator [length]="dataSource.data?.length" 
                                     [pageIndex]="0" 
-                                    [pageSize]="25"
-                                    [pageSizeOptions]="[25, 50, 100, 250]">
+                                    [pageSize]="5"
+                                    [pageSizeOptions]="[5, 25, 50, 100, 250]">
                                 </mat-paginator>
 
                                 <ng-container *ngIf="notDone">
@@ -67,10 +67,10 @@
                                     </div>
                                 </ng-container>
                             
-                                <h5 class="card-title">{{esp ? 'Licitaciones Activas' : 'Active Tenders'}}</h5>
+                                <h5 class="card-title mt-4">{{esp ? 'Licitaciones Activas' : 'Active Tenders'}}</h5>
                                 <p class="card-text">Consulte la lista de Licitaciones abiertas y elija en la que quiera hacer su oferta.</p>
                                 <!-- <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit vero quis architecto eius illo aperiam! Laborum at porro magnam, natus fuga mollitia tempora doloribus aut eligendi laudantium? Facere, et at.</p> -->
-                                <a class="btn btn-primary" routerLink="/licitaciones" routerLinkActive="active">{{esp ? 'Ver mas' : 'See more'}}</a>
+                                <a class="btn btn-primary" routerLink="/activas" routerLinkActive="active">{{esp ? 'Ver mas' : 'See more'}}</a>
                             </div>
                         </div>
                     </div>

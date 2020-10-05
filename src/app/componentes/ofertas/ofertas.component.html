@@ -56,15 +56,10 @@
 
             <ng-container matColumnDef="cantidad">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Cantidad' : 'Quantity'}}</th>
-                <td mat-cell *matCellDef="let row">{{row.cantidad}}</td>
+                <td mat-cell *matCellDef="let row">{{row.cantidad}} {{row.unidad}}</td>
             </ng-container>
 
-            <ng-container matColumnDef="unidad">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Unidad' : 'Unity'}}</th>
-                <td mat-cell *matCellDef="let row">{{row.unidad}}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="precio">
+             <ng-container matColumnDef="precio">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Precio' : 'Price'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.precio}}</td>
             </ng-container>
@@ -113,7 +108,10 @@
         </table>
     </div>
 
-    <mat-paginator #paginator [length]="dataSource.data?.length" [pageIndex]="0" [pageSize]="25"
+    <mat-paginator  class="mat-elevation-z8 mb-3" 
+        #paginator [length]="dataSource.data?.length" 
+        [pageIndex]="0" 
+        [pageSize]="25"
         [pageSizeOptions]="[25, 50, 100, 250]">
     </mat-paginator>
 
@@ -145,7 +143,7 @@
                         <!-- Error -->
                         <div *ngIf="f.controls.oferta.errors && f.controls.oferta.dirty"
                             class="alert alert-danger mt-0">
-                            <div *ngIf="f.controls.oferta.errors.required">Required</div>
+                            <div *ngIf="f.controls.oferta.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
                         </div>
                     </div>
                 </div>
@@ -163,7 +161,7 @@
                         <!-- Error -->
                         <div *ngIf="f.controls.licitacion.errors && f.controls.licitacion.dirty"
                             class="alert alert-danger mt-0">
-                            <div *ngIf="f.controls.licitacion.errors.required">Required</div>
+                            <div *ngIf="f.controls.licitacion.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
                         </div>
                     </div>
                 </div>
@@ -225,7 +223,7 @@
                             [readOnly]="this.strTipo == 'B'">
                         <!-- Error -->
                         <div *ngIf="f.controls.fecha.errors && f.controls.fecha.dirty" class="alert alert-danger mt-0">
-                            <div *ngIf="f.controls.fecha.errors.required">Required</div>
+                            <div *ngIf="f.controls.fecha.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
                         </div>
                     </div>
                 </div>
@@ -238,7 +236,7 @@
                         <!-- Error -->
                         <div *ngIf="f.controls.finaliza.errors && f.controls.finaliza.dirty"
                             class="alert alert-danger mt-0">
-                            <div *ngIf="f.controls.finaliza.errors.required">Required</div>
+                            <div *ngIf="f.controls.finaliza.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
                         </div>
                     </div>
                 </div>
@@ -254,7 +252,7 @@
                         <!-- Error -->
                         <div *ngIf="f.controls.producto.errors && f.controls.producto.dirty"
                             class="alert alert-danger mt-0">
-                            <div *ngIf="f.controls.producto.errors.required">Required</div>
+                            <div *ngIf="f.controls.producto.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
                         </div>
                     </div>
                 </div>
@@ -280,7 +278,8 @@
                         <!-- Error -->
                         <div *ngIf="f.controls.cantidad.errors && f.controls.cantidad.dirty"
                             class="alert alert-danger mt-0">
-                            <div *ngIf="f.controls.cantidad.errors.required">Required</div>
+                            <div *ngIf="f.controls.cantidad.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+                            <div *ngIf="f.controls.cantidad.errors.Menor">{{esp ? 'Menor a lo requerido' : 'Less than required'}}</div>
                         </div>
                     </div>
                 </div>
@@ -291,28 +290,28 @@
                         <!-- <input type="text" class="form-control" formControlName="unidad" id="unidad"
                             [readOnly]="this.strTipo == 'B'"> -->
                         <select class="custom-select" formControlName="unidad" id="unidad" required="required"
-                            [readOnly]="this.strTipo == 'B'">
+                            [readOnly]="true">
                             <!-- <option ng-value disabled>{{esp ? 'Elija una opcion...' : 'Choose...'}}</option> -->
                             <option [value]="unidad.value" *ngFor="let unidad of unidades">{{unidad.value}}</option>
                         </select>
                         <!-- Error -->
                         <div *ngIf="f.controls.unidad.errors && f.controls.unidad.dirty"
                             class="alert alert-danger mt-0">
-                            <div *ngIf="f.controls.unidad.errors.required">Required</div>
+                            <div *ngIf="f.controls.unidad.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- <div class="form-group row">
-            <label for="costo" class="col-sm-3 col-form-label">{{esp ? 'Costo' : 'Cost'}}</label>
-            <div class="col-sm-9">
-                <input type="number" class="form-control" formControlName="costo" id="costo" [readOnly]="this.strTipo == 'B'">
-                <!-- Error -->
-                <!-- <div *ngIf="f.controls.costo.errors && f.controls.costo.dirty" class="alert alert-danger mt-0">
-                  <div *ngIf="f.controls.costo.errors.required">Required</div>
-                </div>
-            </div>
-          </div>  -->
+                    <label for="costo" class="col-sm-3 col-form-label">{{esp ? 'Costo' : 'Cost'}}</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" formControlName="costo" id="costo" [readOnly]="this.strTipo == 'B'">
+                        <!-- Error -->
+                        <!-- <div *ngIf="f.controls.costo.errors && f.controls.costo.dirty" class="alert alert-danger mt-0">
+                        <div *ngIf="f.controls.costo.errors.required">Required</div>
+                        </div>
+                    </div>
+                </div>  -->
 
                 <div class="form-group row">
                     <label for="precio" class="col-sm-3 col-form-label">{{esp ? 'Precio' : 'Price'}}</label>
@@ -323,6 +322,16 @@
                         <!-- <div *ngIf="f.controls.precio.errors && f.controls.precio.dirty" class="alert alert-danger mt-0">
                     <div *ngIf="f.controls.precio.errors.required">Required</div>
                   </div> -->
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="financiacion" class="col-sm-3 col-form-label">{{esp ? 'Financiacion' : 'Financing'}}</label>
+                    <div class="col-sm-9">
+                        <select class="custom-select" formControlName="financiacion" id="financiacion" required="required">
+                            <option [ngValue]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
+                            <option [ngValue]="item.value" *ngFor="let item of financiaciones">{{item.value}}</option>
+                        </select>
                     </div>
                 </div>
 

@@ -62,18 +62,18 @@ ngOnInit(): void {
     this.languageService.esp$.next(this.lang)
     this.actualizaLang.emit(this.lang)
   })
-  console.log(this.cuenta)
+  // console.log(this.cuenta)
 }
 
 changeLang() {
-  console.log('Change')
+  // console.log('Change')
   if (this.esp) {
     this.esp = false
   }
   else {
     this.esp = true
   }
-  console.log(this.esp)
+  // console.log(this.esp)
   this.lang = {esp: this.esp}
   this.languageService.esp$.next(this.lang)
   this.actualizaLang.emit(this.lang)

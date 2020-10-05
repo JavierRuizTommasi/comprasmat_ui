@@ -88,7 +88,8 @@ export class ProductosComponent implements AfterViewInit, OnInit {
         proveedor: [0],
         provenom: [''],
         precio: [0],
-        activo: true
+        activo: true,
+        historico: [0]
       })
 
       this.languageService.esp$.subscribe((lang: Language) => {
@@ -105,7 +106,7 @@ export class ProductosComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
-    console.log(this.dataSource)
+    // console.log(this.dataSource)
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.table.dataSource = this.dataSource;
@@ -113,7 +114,7 @@ export class ProductosComponent implements AfterViewInit, OnInit {
 
   async getUserData() {
     const resp: any = await this.usuariosService.checkUsuario().toPromise()
-    console.log(resp.user)
+    // console.log(resp.user)
     return resp.user
   }
 
@@ -140,7 +141,6 @@ export class ProductosComponent implements AfterViewInit, OnInit {
       // console.log(user)
       this.cuenta = user
       this.esp = (this.cuenta.language === 'es')
-
     }
     else {
       this.router.navigateByUrl('/login')
@@ -169,14 +169,13 @@ export class ProductosComponent implements AfterViewInit, OnInit {
         // this.productos = resp.Products
         // this.filterProducts = resp.Products
         this.notDone = false
-        console.log(this.table.dataSource)
+        // console.log(this.table.dataSource)
       })
     }
   }
 
   applyFilter(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase()
-      
   }
 
   openModal(targetModal, producto, strTipoParam) {
@@ -200,7 +199,8 @@ export class ProductosComponent implements AfterViewInit, OnInit {
         proveedor: 0,
         provenom: '',
         precio: 0,
-        activo: true
+        activo: true,
+        historico: 0
       })
     } else {
       this.f.patchValue({
@@ -215,7 +215,8 @@ export class ProductosComponent implements AfterViewInit, OnInit {
         proveedor: producto.proveedor,
         provenom: producto.provenom,
         precio: producto.precio,
-        activo: producto.activo
+        activo: producto.activo,
+        historico: producto.historico
       })
     }
 
@@ -248,6 +249,8 @@ export class ProductosComponent implements AfterViewInit, OnInit {
       provenom: this.f.controls.provenom.value,
       precio: this.f.controls.precio.value,
       activo: this.f.controls.activo.value,
+      historico: this.f.controls.historico.value
+
   }
 
     switch (this.strTipo) {
@@ -331,7 +334,7 @@ export class ProductosComponent implements AfterViewInit, OnInit {
       width: '300px',
       data: {tipo: 'Aviso', mensaje: strConfMsg}
     })
-  
+ 
   }
 
 }

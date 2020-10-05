@@ -13,6 +13,7 @@ import { ChangepassComponent } from './componentes/changepass/changepass.compone
 import { OfertasComponent } from './componentes/ofertas/ofertas.component'
 import { SeleccionComponent } from './componentes/seleccion/seleccion.component'
 import { SamplesComponent } from './componentes/samples/samples.component'
+import { ActivasComponent } from './componentes/activas/activas.component'
 
 class Rutas {
   private routes: Routes = [
@@ -30,12 +31,14 @@ class Rutas {
     { path: 'cuenta', component: CuentaComponent},
     { path: 'changepass', component: ChangepassComponent},
     { path: 'ofertas', component: OfertasComponent},
+    { path: 'ofertas/:nuevaoferta', component: OfertasComponent},
     { path: 'muestras', component: SamplesComponent},
+    { path: 'activas', component: ActivasComponent},
     { path: '**', component: InicioComponent}
   ]
 
   constructor() {
-    console.log('Rutas OK!')
+    // console.log('Rutas OK!')
   }
 
   config() {

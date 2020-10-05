@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment'
 export class UrlproviderService {
 
   constructor(public http: HttpClient) {
-    console.log('Urlprovider', environment.baseUrl)
+    // console.log('Urlprovider', environment.baseUrl)
    }
 
   baseApiUrl = environment.baseUrl

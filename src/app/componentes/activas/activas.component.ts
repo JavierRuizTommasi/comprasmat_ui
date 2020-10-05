@@ -13,19 +13,28 @@ import { LanguageService } from 'src/app/servicios/language.service'
 import { TendersService } from 'src/app/servicios/tenders.service'
 import { Tenders } from 'src/app/models/Tenders'
 import * as moment from 'moment'
-import { ProductosService } from 'src/app/servicios/productos.service'
-import { Productos } from 'src/app/models/Products';
+import { OffersService } from 'src/app/servicios/offers.service'
+import { Offers } from 'src/app/models/Offers';
 import { MatDialog } from '@angular/material/dialog'
 import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
 import { arEstadosLicitaciones } from 'src/app/models/EstadosLicitaciones'
 import { arUnidades } from 'src/app/models/Unidades'
+import { trigger, state, style, animate, transition } from '@angular/animations'
 
 @Component({
-  selector: 'app-licitaciones',
-  templateUrl: './licitaciones.component.html',
-  styleUrls: ['./licitaciones.component.css']
+  selector: 'app-activas',
+  templateUrl: './activas.component.html',
+  styleUrls: ['./activas.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
-export class LicitacionesComponent implements AfterViewInit, OnInit {
+
+export class ActivasComponent implements AfterViewInit, OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator
   @ViewChild(MatSort) sort: MatSort
   @ViewChild(MatTable) table: MatTable<Tenders>
@@ -33,8 +42,8 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<Tenders> = new MatTableDataSource<Tenders>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['licitacion', 'descrip', 'cantidad', 'fecha', 'finaliza', 'estado', 'actions']
-
+  displayedColumns: string[] = ['licitacion', 'descrip', 'cantidad', 'fecha', 'finaliza', 'estado', 'acciones']
+  
   strTipo: string
   idIdx: string
 
@@ -49,7 +58,7 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
   tender: Tenders
   updtTender: Tenders
 
-  products: Productos[] = [] 
+  offers: Offers[] = [] 
 
   f: FormGroup
 
@@ -61,6 +70,8 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
   estadosLicitaciones = arEstadosLicitaciones
   unidades = arUnidades
 
+  canOffer = false
+
   constructor(
     private fb: FormBuilder,
     private comunicacionService: ComunicacionService,
@@ -68,14 +79,13 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
     private languageService: LanguageService,
     private usuariosService: UsuariosService,
     private tenderService: TendersService,
-    private productService: ProductosService,
+    private offerService: OffersService,
     private router: Router,
     public dialog: MatDialog
     ) {
-      /* Debe dejar acceder a todos a ver las Licitaciones */
-      // if (!this.usuariosService.isLogin()) {
-      //   this.router.navigateByUrl('/login')
-      // }
+      if (!this.usuariosService.isLogin()) {
+        this.router.navigateByUrl('/login')
+      }
   
       this.f = fb.group({
         id: [''],
@@ -157,7 +167,7 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
     const user = await this.getUserData()
     this.checkCuenta(user)
 
-    await this.pedirProducts()
+    await this.pedirOffers()
     await this.pedirTenders(user)
   }
     
@@ -171,12 +181,12 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
       // console.log(user)
       this.cuenta = user
       this.esp = (this.cuenta.language === 'es')
-
+      this.canOffer = (this.cuenta.perfil===0 || this.cuenta.perfil===2 || this.cuenta.perfil===4)
+      // console.log(this.canOffer)
     }
-    // Debe poder dejar acceder a ver las Licitaciones a todos
-    // else {
-    //   this.router.navigateByUrl('/login')
-    // }
+    else {
+      this.router.navigateByUrl('/login')
+    }
 
     this.comunicacionService.cuenta$.next(this.cuenta)
     this.actualizaCuenta.emit(this.cuenta)
@@ -192,9 +202,9 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
   async pedirTenders(user) {
     if (user) {
       // console.log('Tenders')
-      this.tenderService.getTenders()
-      .subscribe((resp: any) => {
-        // console.log(resp)
+      let resp: any = await this.tenderService.getTenders().toPromise()
+      // .subscribe((resp: Tenders) => {
+        // console.log(resp.Tenders)
         this.dataSource.data = resp.Tenders
         this.dataSource.sort = this.sort
         this.dataSource.paginator = this.paginator
@@ -202,12 +212,14 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
 
         // this.tenders = resp.Tenders        
         this.notDone = false
-      })
+      // })
     } else {
       // console.log('Actives')
-      this.tenderService.getActives()
-      .subscribe((resp: any) => {
-        // console.log(resp)
+      let resp: any = await this.tenderService.getActives().toPromise()
+      // resp.Tenders = Object.keys(resp.Tenders).map(e=>resp.Tenders[e])
+
+      // .subscribe((resp: Tenders) => {
+        // console.log(resp.Tenders)
         this.dataSource.data = resp.Tenders
         this.dataSource.sort = this.sort
         this.dataSource.paginator = this.paginator
@@ -215,185 +227,18 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
 
         // this.tenders = resp.Tenders
         this.notDone = false
-      })
+      // })
     }
   }
 
-  async pedirProducts() {
-    this.productService.getProductos()
-    .subscribe((resp: any) => {
+  async pedirOffers() {
+    let resp: any = await this.offerService.getOffers().toPromise()
+    // .subscribe((resp: Offers) => {
       // console.log(resp)
-      this.products = resp.Products
-    })
+      this.offers = resp.Offers
+    // })
   }
-
-  openModal(targetModal, tender, strTipoParam) {
-    this.strTipo = strTipoParam
-
-    this.modalService.open(targetModal, {
-     centered: true,
-     backdrop: 'static'
-    })
-
-    if (strTipoParam === 'A') {
-      this.f.patchValue({
-        id: '',
-        licitacion: '',
-        fecha: moment().format().substr(0, 10) ,
-        finaliza: moment().format().substr(0, 10),
-        producto: 0,
-        descrip: '',
-        cantidad: '',
-        unidad: '',
-        costo: 0,
-        ultcompra: '',
-        proveedor: 0,
-        provenom: '',
-        estado: 1
-      })
-    } else {
-      this.f.patchValue({
-        id: tender._id,
-        licitacion: tender.licitacion,
-        fecha: tender.fecha.substr(0, 10) ,
-        finaliza: tender.finaliza.substr(0, 10),
-        producto: tender.producto,
-        descrip: tender.descrip,
-        cantidad: tender.cantidad,
-        unidad: tender.unidad,
-        costo: tender.costo,
-        ultcompra: tender.ultcompra.substr(0, 10),
-        proveedor: tender.proveedor,
-        provenom: tender.provenom,
-        estado: tender.estado
-      })
-    }
-
-    if (strTipoParam === 'B') {
-      this.f.disable()
-    } else {
-      this.f.enable()
-    }
-
-  }
-
-  onSubmit() {
-    // console.log(this.strTipo)
-
-    this.modalService.dismissAll()
-    // console.log('res:', this.f.getRawValue())
-    // console.log('res:', this.f.controls)
-
-    this.idIdx = this.f.controls.id.value
-    this.updtTender = {
-      licitacion: this.f.controls.licitacion.value,
-      fecha: this.f.controls.fecha.value,
-      finaliza: this.f.controls.finaliza.value,
-      producto: this.f.controls.producto.value,
-      descrip: this.f.controls.descrip.value,
-      cantidad: this.f.controls.cantidad.value,
-      unidad: this.f.controls.unidad.value,
-      costo: this.f.controls.costo.value,
-      ultcompra: this.f.controls.ultcompra.value,
-      proveedor: this.f.controls.proveedor.value,
-      provenom: this.f.controls.provenom.value,
-      estado: this.f.controls.estado.value
-    }
-
-    switch (this.strTipo) {
-      case 'A':
-        // Alta
-        this.agregarTender()
-        break
-      case 'B':
-        // Baja
-        this.borrarTender()
-        break
-      case 'M':
-        // Modificar
-        this.modificarTender()
-        break
-    }
-  }
-
-  agregarTender() {
-    this.tenderService.addTender(this.updtTender)
-      .subscribe((tender: Tenders) => {
-        // console.log('Alta:', tender)
-        if (tender) {
-          this.alertMsg()
-        }
-        this.pedirDatos()
-      })
-
-   }
-
-  borrarTender() {
-    this.tenderService.deleteTender(this.idIdx)
-     .subscribe((tender: Tenders) => {
-      //  console.log('Baja:', tender)
-      if (tender) {
-        this.alertMsg()
-      }
-      this.pedirDatos()
-    })
-
-  }
-
-  modificarTender() {
-    // console.log(this.updtTender)
-
-    this.tenderService.putTender(this.idIdx, this.updtTender)
-      .subscribe((tender: Tenders) => {
-        // console.log('Modif:', tender)
-        if (tender) {
-          this.alertMsg()
-        }
-        this.pedirDatos()
-      })
-
-  }
-
-  changeProduct(ev) {
-    // console.log(ev)
-    this.f.get('producto').setValue(ev.target.value, {
-      onlySelf: true
-    })
-    
-    // let result = [] 
-
-    for(const prod of this.products){
-      if (prod.codigo == ev.target.value){
-        // console.log('Igual')
-        // result.push(tender)
-
-        this.f.get('descrip').setValue((prod.descrip), {
-          onlySelf: true
-        })
-    
-        this.f.get('unidad').setValue((prod.unidad), {
-          onlySelf: true
-        })
-    
-        // this.f.get('costo').setValue((tender.costo), {
-        //   onlySelf: true
-        // })
-    
-        // this.f.get('cantidad').setValue((tender.cantidad), {
-        //   onlySelf: true
-        // })
-    
-        // this.f.get('unidad').setValue((tender.unidad), {
-        //   onlySelf: true
-        // })
-    
-      }
-    }
-
-    // console.log(result)
-
-  }
-
+  
   applyFilter(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase()
   }
@@ -424,5 +269,30 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
     })
   
   }
+
+  getFilterByTender(tender: string) {
+    let newOff: Offers[] = []
+    newOff = this.offers.filter( x => x.licitacion_id == tender)
+
+    newOff.sort((a, b) => {
+      if(a.scoring < b.scoring) {
+        return 1
+      } 
+      if (a.scoring > b.scoring) {
+        return -1
+      }
+      return 0
+    })
+    
+    // console.log(newOff)
+
+    // return this.offers.filter( x => x.licitacion_id == tender)
+    return newOff
+  }
+
+  makeAnOffer() {
+    this.router.navigateByUrl('/ofertas/:nuevaoferta')
+  }
+
 }
 
