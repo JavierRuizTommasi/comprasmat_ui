@@ -14,6 +14,8 @@ import { OfertasComponent } from './componentes/ofertas/ofertas.component'
 import { SeleccionComponent } from './componentes/seleccion/seleccion.component'
 import { SamplesComponent } from './componentes/samples/samples.component'
 import { ActivasComponent } from './componentes/activas/activas.component'
+import { SuppliersComponent } from './componentes/suppliers/suppliers.component'
+import { ScoringsComponent } from './componentes/scorings/scorings.component'
 
 class Rutas {
   private routes: Routes = [
@@ -34,6 +36,8 @@ class Rutas {
     { path: 'ofertas/:nuevaoferta', component: OfertasComponent},
     { path: 'muestras', component: SamplesComponent},
     { path: 'activas', component: ActivasComponent},
+    { path: 'proveedores', component: SuppliersComponent},
+    { path: 'scorings', component: ScoringsComponent},
     { path: '**', component: InicioComponent}
   ]
 

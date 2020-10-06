@@ -47,9 +47,9 @@ export class InicioComponent implements AfterViewInit, OnInit {
     private tenderService: TendersService,
     private router: Router
     ) {
-      if (!this.usuariosService.isLogin()) {
-        this.router.navigateByUrl('/login')
-      }
+      // if (!this.usuariosService.isLogin()) {
+      //   this.router.navigateByUrl('/login')
+      // }
 
       this.languageService.esp$.subscribe((lang: Language) => {
         // console.log(this.esp)
@@ -103,7 +103,7 @@ export class InicioComponent implements AfterViewInit, OnInit {
       this.esp = (this.cuenta.language === 'es')
     }
     else {
-      this.router.navigateByUrl('/login')
+      // this.router.navigateByUrl('/login')
     }
 
     this.comunicacionService.cuenta$.next(this.cuenta)

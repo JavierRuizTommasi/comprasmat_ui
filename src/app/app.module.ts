@@ -29,6 +29,8 @@ import { OfertasComponent } from './componentes/ofertas/ofertas.component'
 import { SeleccionComponent } from './componentes/seleccion/seleccion.component'
 import { SamplesComponent } from './componentes/samples/samples.component'
 import { ActivasComponent } from './componentes/activas/activas.component'
+import { SuppliersComponent } from './componentes/suppliers/suppliers.component'
+import { ScoringsComponent } from './componentes/scorings/scorings.component'
 
 import { AlertMessagesComponent } from './componentes/alert-messages/alert-messages.component'
 
@@ -46,6 +48,8 @@ import { ComunicacionService } from './servicios/comunicacion.service'
 import { TendersService } from './servicios/tenders.service'
 import { OffersService } from './servicios/offers.service'
 import { SamplesService } from './servicios/samples.service'
+import { SuppliersService } from './servicios/suppliers.service'
+import { ScoringsService } from './servicios/scorings.service'
 
 import Rutas from './routes'
 
@@ -69,7 +73,9 @@ import Rutas from './routes'
     // MainnavbarComponent,
     // MatUsersComponent,
     AlertMessagesComponent,
-    ActivasComponent
+    ActivasComponent,
+    SuppliersComponent,
+    ScoringsComponent
   ],
   imports: [
     CommonModule,
@@ -100,6 +106,8 @@ import Rutas from './routes'
     TendersService,
     OffersService,
     SamplesService,
+    SuppliersService,
+    ScoringsService,
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'legacy' } }
   ],
   bootstrap: [AppComponent]
