@@ -13,4 +13,9 @@ export class Productos {
     public activo: boolean
     public checked?: boolean
     public historico: number
+    public detaeng: string
+    public rubroeng: string
+    public subrueng: string
+    public caracteris: string
+    public caracteriseng: string
 }

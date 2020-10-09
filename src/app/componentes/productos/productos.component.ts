@@ -15,6 +15,7 @@ import { LanguageService } from 'src/app/servicios/language.service'
 import * as moment from 'moment'
 import { MatDialog } from '@angular/material/dialog'
 import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
+import { arUnidades } from 'src/app/models/Unidades'
 
 @Component({
   selector: 'app-productos',
@@ -29,7 +30,7 @@ export class ProductosComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<Productos> = new MatTableDataSource<Productos>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['codigo', 'descrip', 'unidad', 'rubro', 'subrubro', 'activo', 'actions']
+  displayedColumns: string[] = ['codigo', 'descrip', 'unidad', 'rubro', 'subrubro', 'historico', 'activo', 'actions']
 
   strTipo: string
   idIdx: string
@@ -48,9 +49,12 @@ export class ProductosComponent implements AfterViewInit, OnInit {
   f: FormGroup
 
   unumPattern = '^[0-9]{1,10}$'
-  udescPattern = '^[A-Z0-9. ]{1,50}$'
-
+  udescPattern = '^[A-Z0-9. ()\/-_*!"#$%&=]{1,50}$'
+  urubrPattern = '^[A-Z0-9. ()\/-_*!"#$%&=]{1,30}$'
+  
   notDone: boolean = true
+
+  unidades = arUnidades
 
   constructor(
     private fb: FormBuilder,
@@ -76,20 +80,38 @@ export class ProductosComponent implements AfterViewInit, OnInit {
           Validators.required,
           Validators.pattern(this.udescPattern)
         ])],
+        rubro: ['', Validators.compose([
+          Validators.required,
+          Validators.pattern(this.urubrPattern)
+        ])],
+        subrubro: ['', Validators.compose([
+          Validators.required,
+          Validators.pattern(this.urubrPattern)
+        ])],
         unidad: ['', Validators.compose([
           Validators.required
         ])],
-        rubro: ['', Validators.compose([
-          Validators.required
-        ])],
-        subrubro: [''],
         costo: [0],
         ultcompra: [''],
         proveedor: [0],
         provenom: [''],
         precio: [0],
         activo: true,
-        historico: [0]
+        historico: [0],
+        detaeng: ['', Validators.compose([
+          Validators.required,
+          Validators.pattern(this.udescPattern)
+        ])],
+        rubroeng: ['', Validators.compose([
+          Validators.required,
+          Validators.pattern(this.urubrPattern)
+        ])],
+        subrueng: ['', Validators.compose([
+          Validators.required,
+          Validators.pattern(this.urubrPattern)
+        ])],
+        caracteris: [''],
+        caracteriseng: ['']
       })
 
       this.languageService.esp$.subscribe((lang: Language) => {
@@ -200,7 +222,12 @@ export class ProductosComponent implements AfterViewInit, OnInit {
         provenom: '',
         precio: 0,
         activo: true,
-        historico: 0
+        historico: 0,
+        detaeng: '',
+        rubroeng: '',
+        subrueng: '',
+        caracteris: '',
+        caracteriseng: ''
       })
     } else {
       this.f.patchValue({
@@ -216,7 +243,12 @@ export class ProductosComponent implements AfterViewInit, OnInit {
         provenom: producto.provenom,
         precio: producto.precio,
         activo: producto.activo,
-        historico: producto.historico
+        historico: producto.historico,
+        detaeng: producto.detaeng,
+        rubroeng: producto.rubroeng,
+        subrueng: producto.subrueng,
+        caracteris: producto.caracteris,
+        caracteriseng: producto.caracteriseng
       })
     }
 
@@ -225,7 +257,6 @@ export class ProductosComponent implements AfterViewInit, OnInit {
     } else {
       this.f.enable()
     }
-
   }
 
   onSubmit() {
@@ -249,8 +280,12 @@ export class ProductosComponent implements AfterViewInit, OnInit {
       provenom: this.f.controls.provenom.value,
       precio: this.f.controls.precio.value,
       activo: this.f.controls.activo.value,
-      historico: this.f.controls.historico.value
-
+      historico: this.f.controls.historico.value,
+      detaeng: this.f.controls.detaeng.value,
+      rubroeng: this.f.controls.rubroeng.value,
+      subrueng: this.f.controls.subrueng.value,
+      caracteris: this.f.controls.caracteris.value,
+      caracteriseng: this.f.controls.caracteriseng.value
   }
 
     switch (this.strTipo) {
@@ -337,4 +372,26 @@ export class ProductosComponent implements AfterViewInit, OnInit {
  
   }
 
+  logKeyValuePairs(group: FormGroup): void {
+
+    Object.keys(group.controls).forEach((key: string) => {
+
+      // Get a reference to the control using the FormGroup.get() method
+      const abstractControl = group.get(key);
+
+      // If the control is an instance of FormGroup i.e a nested FormGroup
+      // then recursively call this same method (logKeyValuePairs) passing it
+      // the FormGroup so we can get to the form controls in it
+
+      if (abstractControl instanceof FormGroup) {
+        this.logKeyValuePairs(abstractControl);
+        // If the control is not a FormGroup then we know it's a FormControl
+      }
+      else {
+        console.log('Key = ' + key + ' && Value = ' + abstractControl.value);
+        console.log('Error = ' + key + ' && Value = ' + abstractControl.errors);
+      }
+
+    });
+  }
 }

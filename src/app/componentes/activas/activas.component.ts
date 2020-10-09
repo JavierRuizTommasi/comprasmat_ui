@@ -42,7 +42,7 @@ export class ActivasComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<Tenders> = new MatTableDataSource<Tenders>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['licitacion', 'descrip', 'cantidad', 'fecha', 'finaliza', 'estado', 'acciones']
+  displayedColumns: string[] = ['licitacion', 'descrip', 'cantidad', 'fecha', 'finaliza', 'historico', 'estado', 'acciones']
   
   strTipo: string
   idIdx: string

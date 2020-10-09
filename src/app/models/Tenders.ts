@@ -11,5 +11,6 @@ export class Tenders {
     public proveedor: number
     public provenom: string
     public estado: number
+    public historico: number
     // public offer: []
 }

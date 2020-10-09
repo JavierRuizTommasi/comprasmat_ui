@@ -44,6 +44,11 @@
               <td mat-cell *matCellDef="let element">{{element.finaliza.substring(0,10)}}</td>
           </ng-container>
   
+          <ng-container matColumnDef="historico">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Precio His.' : 'Hist. Price'}}</th>
+            <td mat-cell *matCellDef="let row">{{row.historico}}</td>
+          </ng-container>
+
           <ng-container matColumnDef="estado">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Estado' : 'State'}}</th>
               <td mat-cell *matCellDef="let element">{{esp ? estadosLicitaciones[element.estado].estadoesp : estadosLicitaciones[element.estado].estadoeng}}</td>

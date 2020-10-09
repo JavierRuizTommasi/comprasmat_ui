@@ -33,7 +33,7 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<Tenders> = new MatTableDataSource<Tenders>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['licitacion', 'descrip', 'cantidad', 'fecha', 'finaliza', 'estado', 'actions']
+  displayedColumns: string[] = ['licitacion', 'descrip', 'cantidad', 'fecha', 'finaliza', 'historico', 'estado', 'actions']
 
   strTipo: string
   idIdx: string
@@ -115,7 +115,8 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
           Validators.compose([
           Validators.required
         ])],
-        detalle: ['']
+        detalle: [''],
+        historico: 0
       })
 
         this.languageService.esp$.subscribe((lang: Language) => {
@@ -249,7 +250,8 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
         ultcompra: '',
         proveedor: 0,
         provenom: '',
-        estado: 1
+        estado: 1,
+        historico: 0
       })
     } else {
       this.f.patchValue({
@@ -262,10 +264,11 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
         cantidad: tender.cantidad,
         unidad: tender.unidad,
         costo: tender.costo,
-        ultcompra: tender.ultcompra.substr(0, 10),
+        ultcompra: tender.ultcompra ? tender.ultcompra.substr(0, 10) : '', 
         proveedor: tender.proveedor,
         provenom: tender.provenom,
-        estado: tender.estado
+        estado: tender.estado,
+        historico: tender.historico
       })
     }
 
@@ -297,7 +300,8 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
       ultcompra: this.f.controls.ultcompra.value,
       proveedor: this.f.controls.proveedor.value,
       provenom: this.f.controls.provenom.value,
-      estado: this.f.controls.estado.value
+      estado: this.f.controls.estado.value,
+      historico: this.f.controls.historico.value
     }
 
     switch (this.strTipo) {
@@ -360,24 +364,26 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
       onlySelf: true
     })
     
-    // let result = [] 
+    let resp: any = this.products.filter( x => x.codigo == ev.target.value)
+    // console.log(resp)
 
-    for(const prod of this.products){
-      if (prod.codigo == ev.target.value){
+    if (resp[0]) {
+      // for(const prod of this.products){
+      // if (prod.codigo == ev.target.value){
         // console.log('Igual')
         // result.push(tender)
 
-        this.f.get('descrip').setValue((prod.descrip), {
+        this.f.get('descrip').setValue((resp[0].descrip), {
           onlySelf: true
         })
     
-        this.f.get('unidad').setValue((prod.unidad), {
+        this.f.get('unidad').setValue((resp[0].unidad), {
           onlySelf: true
         })
     
-        // this.f.get('costo').setValue((tender.costo), {
-        //   onlySelf: true
-        // })
+        this.f.get('historico').setValue((resp[0].historico), {
+          onlySelf: true
+        })
     
         // this.f.get('cantidad').setValue((tender.cantidad), {
         //   onlySelf: true
@@ -387,7 +393,7 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
         //   onlySelf: true
         // })
     
-      }
+      // }
     }
 
     // console.log(result)
