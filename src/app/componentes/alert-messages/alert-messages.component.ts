@@ -6,6 +6,9 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog'
 export interface DialogData {
   tipo: string;
   mensaje: string;
+  mensaje2: string;
+  product: string;
+  tender: string
 }
 
 @Component({
@@ -21,9 +24,9 @@ export class AlertMessagesComponent implements OnInit {
   constructor(
     private languageService: LanguageService,
     public dialogRef: MatDialogRef<AlertMessagesComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {tipo: string,  mensaje: string}
+    @Inject(MAT_DIALOG_DATA) public data: {tipo: string, mensaje: string, mensaje2: string, product: string, tender: string}
     ) {     
-      console.log('Constructor')
+      // console.log('Constructor')
 
       this.languageService.esp$.subscribe((lang: Language) => {
         this.esp = lang.esp
@@ -32,11 +35,15 @@ export class AlertMessagesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('Init')
+    // console.log(tipo)
   }
 
   onClickNo(): void {
-    this.dialogRef.close()
+    this.dialogRef.close(false)
+  }
+
+  onClickYes(): void {
+    this.dialogRef.close(true);
   }
 
 }

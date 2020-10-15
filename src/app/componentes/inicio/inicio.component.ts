@@ -25,7 +25,7 @@ export class InicioComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<Tenders> = new MatTableDataSource<Tenders>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['licitacion', 'descrip', 'cantidad', 'unidad', 'fecha', 'finaliza', 'estado']
+  displayedColumns: string[] = ['licitacion', 'descrip', 'cantidad', 'unidad', 'fecha', 'finaliza', 'historico', 'estado']
 
   esp: boolean
   public lang: Language = {esp: true}

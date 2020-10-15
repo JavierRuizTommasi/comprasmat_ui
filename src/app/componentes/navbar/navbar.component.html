@@ -46,7 +46,7 @@
         <mat-menu #menuComunica="matMenu" yPosition="below"> 
             <a mat-menu-item routerLink="/mensajes" (click)="drawer.close()">{{esp ? 'Mis Mensajes' : 'My Messages'}}</a>
             <ng-container *ngIf="cuenta.perfil<=2">
-              <a mat-menu-item routerLink="/mailtoprov" (click)="drawer.close()">{{esp ? 'Mails a Proveedores' : 'Mails to Suppliers'}}</a>
+              <a mat-menu-item routerLink="/mailsToSuppliers" (click)="drawer.close()">{{esp ? 'Mails a Proveedores' : 'Mails to Suppliers'}}</a>
             </ng-container>
         </mat-menu>
 
@@ -131,7 +131,6 @@
               </ng-container> -->
             </mat-menu>
   
-  
             <button mat-button [matMenuTriggerFor]="menuMuestras">{{esp ? 'Muestras' : 'Samples'}}</button>
             <mat-menu #menuMuestras="matMenu" yPosition="below"> 
               <ng-container *ngIf="cuenta.perfil!=4">
@@ -155,7 +154,7 @@
             <mat-menu #menuComunica="matMenu" yPosition="below"> 
                 <button mat-menu-item routerLink="/mensajes">{{esp ? 'Mis Mensajes' : 'My Messages'}}</button>
                 <ng-container *ngIf="cuenta.perfil<=2">
-                  <button mat-menu-item routerLink="/mailtoprov">{{esp ? 'Mails a Proveedores' : 'Mails to Suppliers'}}</button>
+                  <button mat-menu-item routerLink="/mailsToSuppliers">{{esp ? 'Mails a Proveedores' : 'Mails to Suppliers'}}</button>
                 </ng-container>
             </mat-menu>
 

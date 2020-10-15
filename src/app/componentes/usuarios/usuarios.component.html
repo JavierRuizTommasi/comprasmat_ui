@@ -46,15 +46,13 @@
         <!-- Activo Column -->
         <ng-container matColumnDef="activo">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Activo' : 'Active'}}</th>
-          <!-- <td mat-cell *matCellDef="let row">{{row.activo}}</td> -->
           <td mat-cell *matCellDef="let row">
-            <ng-container *ngIf="row.activo; then conCheck; else sinoBlanck"></ng-container>
-            <ng-template #conCheck>
-              <mat-icon class="mt-2">done</mat-icon>
-            </ng-template>
-            <ng-template #sinoBlanck>
-              <mat-icon></mat-icon>
-            </ng-template>
+            <div *ngIf="row.activo">
+              <mat-slide-toggle [checked]="true" [disabled]="true" color=primary></mat-slide-toggle>
+            </div>
+            <div *ngIf="!row.activo">
+              <mat-slide-toggle [checked]="false" [disabled]="true" color=primary></mat-slide-toggle>
+            </div>
           </td>
         </ng-container>
 
@@ -240,8 +238,11 @@
 
           <div *ngIf="this.strTipo !== 'B' && this.strTipo !== 'P'" class="form-group row">
             <label for="activo" class="col-sm-3 col-form-label">{{esp ? 'Activo' : 'Active'}}</label>
-            <div class="ml-2 mt-1">
-              <input type="checkbox" class="my_checkbox" formControlName="activo" id="activo">
+            <div class="col-sm-9">
+              <div class="ml-2 mt-1">
+                <mat-slide-toggle formControlName="activo" id="activo" color=primary [readOnly]="this.strTipo == 'B'"></mat-slide-toggle>
+                <!-- <!-- <input type="checkbox" class="my_checkbox" formControlName="activo" id="activo"> -->
+              </div>
             </div>  
           </div>
 

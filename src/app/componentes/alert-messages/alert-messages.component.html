@@ -1,19 +1,31 @@
 <ng-container *ngIf="data.tipo=='Confirma'" >
-    <!-- <h2 mat-dialog-title>{{esp ? 'Confirma?' : 'Confirm?'}}</h2> -->
-    <h2 mat-dialog-title>{{data.mensaje}}</h2>
+    <h1 mat-dialog-title>{{esp ? 'Confirma?' : 'Confirm?'}}</h1>
     <mat-dialog-content class="mat-typography">
-        <!-- <p>{{data.mensaje}}</p> -->
+        <!-- <h2 mat-dialog-title>{{data.mensaje}}</h2> -->
+        <p>{{data.mensaje}}</p>
     </mat-dialog-content>
     <mat-dialog-actions align="center">
         <button mat-button mat-dialog-close (click)="onClickNo()">No</button>
-        <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Si</button>
+        <button mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="onClickYes()">Si</button>
     </mat-dialog-actions>
 </ng-container>
 
+<ng-container *ngIf="data.tipo=='Confirma Mails'" >
+    <h1 mat-dialog-title>{{esp ? 'Confirma?' : 'Confirm?'}}</h1>
+    <mat-dialog-content class="mat-typography">
+        <!-- <h2 mat-dialog-title>{{data.mensaje}}</h2> -->
+        <p>{{data.mensaje}}<strong>{{data.product}}</strong>{{data.mensaje2}}<strong>{{data.tender}}</strong></p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+        <button mat-button mat-dialog-close (click)="onClickNo()">No</button>
+        <button mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="onClickYes()">Si</button>
+    </mat-dialog-actions>
+</ng-container>
 
 <ng-container *ngIf="data.tipo=='Aviso'" >
     <!-- <h2 mat-dialog-title>{{esp ? 'Confirma?' : 'Confirm?'}}</h2> -->
     <!-- <h2 mat-dialog-title>{{data.mensaje}}</h2> -->
+    <h1 mat-dialog-title>{{esp ? 'Aviso' : 'Notice'}}</h1>
     <mat-dialog-content>
         <h2>{{data.mensaje}}</h2>
         <br>
@@ -28,6 +40,7 @@
 </ng-container>
 
 <ng-container *ngIf="data.tipo=='Error'" >
+    <h1 mat-dialog-title>{{esp ? 'Error' : 'Error'}}</h1>
     <mat-dialog-content>
         <h2>{{data.mensaje}}</h2>
         <br>

@@ -16,6 +16,7 @@ import { SamplesComponent } from './componentes/samples/samples.component'
 import { ActivasComponent } from './componentes/activas/activas.component'
 import { SuppliersComponent } from './componentes/suppliers/suppliers.component'
 import { ScoringsComponent } from './componentes/scorings/scorings.component'
+import { MailsToSuppliersComponent } from './componentes/mailsToSuppliers/mailsToSuppliers.component'
 
 class Rutas {
   private routes: Routes = [
@@ -38,6 +39,7 @@ class Rutas {
     { path: 'activas', component: ActivasComponent},
     { path: 'proveedores', component: SuppliersComponent},
     { path: 'scorings', component: ScoringsComponent},
+    { path: 'mailsToSuppliers', component: MailsToSuppliersComponent},
     { path: '**', component: InicioComponent}
   ]
 

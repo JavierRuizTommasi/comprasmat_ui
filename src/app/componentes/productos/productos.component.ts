@@ -49,8 +49,8 @@ export class ProductosComponent implements AfterViewInit, OnInit {
   f: FormGroup
 
   unumPattern = '^[0-9]{1,10}$'
-  udescPattern = '^[A-Z0-9. ()\/-_*!"#$%&=]{1,50}$'
-  urubrPattern = '^[A-Z0-9. ()\/-_*!"#$%&=]{1,30}$'
+  udescPattern = '^[A-Z0-9. !"#$%&()*+-./\_]{1,50}$'
+  urubrPattern = '^[A-Z0-9. !"#$%&()*+-./\_]{1,30}$'
   
   notDone: boolean = true
 

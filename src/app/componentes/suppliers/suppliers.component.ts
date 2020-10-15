@@ -49,7 +49,7 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
 
   unumPattern = '^[0-9]{1,10}$'
   userPattern = '^[A-Z0-9]{1,10}$'
-  nombPattern = '^[a-zA-Z0-9 ]{1,30}$'
+  nombPattern = '^[a-zA-Z0-9 .+&]{1,30}$'
 
   notDone: boolean = true
 
@@ -81,6 +81,7 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
           Validators.required,
           Validators.pattern(this.userPattern)
         ])],
+        domicilio: [''],
         c_postal: [''],
         localidad: [''],
         provincia: [''],
@@ -190,12 +191,13 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         codigo: 0,
         nombre: '',
         usuario: '',
+        domicilio: '',
         c_postal: 0,
         localidad: '',
         provincia: '',
         pais: '',
         desempeno: 0,
-        ultcompra: '',
+        ultcompra: moment().format().substr(0, 10),
         activo: true
       })
     } else {
@@ -204,12 +206,13 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         codigo: supplier.codigo,
         nombre: supplier.nombre,
         usuario: supplier.usuario,
+        domicilio: supplier.domicilio,
         c_postal: supplier.c_postal,
         localidad: supplier.localidad,
         provincia: supplier.provincia,
         pais: supplier.pais,
         desempeno: supplier.desempeno,
-        ultcompra: supplier.ultcompra,
+        ultcompra: supplier.ultcompra?.substr(0,10),
         activo: supplier.activo
       })
     }
@@ -235,6 +238,7 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
       codigo: this.f.controls.codigo.value,
       nombre: this.f.controls.nombre.value,
       usuario: this.f.controls.usuario.value,
+      domicilio: this.f.controls.domicilio.value,
       c_postal: this.f.controls.c_postal.value,
       localidad: this.f.controls.localidad.value,
       provincia: this.f.controls.provincia.value,

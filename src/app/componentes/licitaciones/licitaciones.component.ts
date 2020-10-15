@@ -351,7 +351,9 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
       .subscribe((tender: Tenders) => {
         // console.log('Modif:', tender)
         if (tender) {
-          this.alertMsg()
+          // console.log(this.idIdx)
+           this.tenderService.updateScoring(this.idIdx)
+           this.alertMsg()
         }
         this.pedirDatos()
       })

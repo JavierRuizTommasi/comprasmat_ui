@@ -46,7 +46,7 @@
   
           <ng-container matColumnDef="historico">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Precio His.' : 'Hist. Price'}}</th>
-            <td mat-cell *matCellDef="let row">{{row.historico}}</td>
+            <td mat-cell *matCellDef="let row">U$S {{row.historico}}</td>
           </ng-container>
 
           <ng-container matColumnDef="estado">
@@ -95,7 +95,7 @@
                         <td>{{offer.oferta}}</td> 
                         <td>{{offer.usuario}}</td>
                         <td>{{offer.cantidad}} {{offer.unidad}}</td>
-                        <td>{{offer.precio}}</td>
+                        <td>U$S {{offer.precio}}</td>
                         <td>{{offer.entrega.substring(0,10)}}</td>
                         <td class="d-flex flex-nowrap">{{offer.scoring}}</td>
                       </tr>

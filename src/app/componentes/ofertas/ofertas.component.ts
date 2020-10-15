@@ -232,7 +232,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     // pedirOffers() Trae datos del Servicio Offers
     // pedirSampres() trae datos del Servicio Samples pero solo en caso que el usuario este logeado  
 
-    console.log('pedirDatos')
+    // console.log('pedirDatos')
     const user = await this.getUserData()
     this.checkCuenta(user)
 
@@ -254,7 +254,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     // esta funcion verifica si el usuario esta logeado y asigna 
     // los datos del user a un objeto cuenta[] y tambien la variable esp
     // si no lo encuentra deberia devolver cuenta como undefined
-    console.log('checkUser')
+    // console.log('checkUser')
     // console.log(user)
     if (user) {
       // console.log(user)
