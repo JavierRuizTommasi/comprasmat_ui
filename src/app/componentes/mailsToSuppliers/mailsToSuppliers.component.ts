@@ -232,7 +232,7 @@ export class MailsToSuppliersComponent implements AfterViewInit, OnInit {
 
         if (conf) {
           if (resp[0]) {
-            console.log(resp[0])
+            // console.log(resp[0])
 
             this.mailsToSuppliersService.sendMailsToSuppliers(resp[0])
             .subscribe((resp: any) => {
