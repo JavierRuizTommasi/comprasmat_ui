@@ -72,10 +72,9 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
     private router: Router,
     public dialog: MatDialog
     ) {
-      /* Debe dejar acceder a todos a ver las Licitaciones */
-      // if (!this.usuariosService.isLogin()) {
-      //   this.router.navigateByUrl('/login')
-      // }
+      if (!this.usuariosService.isLogin()) {
+        this.router.navigateByUrl('/login')
+      }
   
       this.f = fb.group({
         id: [''],
@@ -174,10 +173,9 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
       this.esp = (this.cuenta.language === 'es')
 
     }
-    // Debe poder dejar acceder a ver las Licitaciones a todos
-    // else {
-    //   this.router.navigateByUrl('/login')
-    // }
+    else {
+      this.router.navigateByUrl('/login')
+    }
 
     this.comunicacionService.cuenta$.next(this.cuenta)
     this.actualizaCuenta.emit(this.cuenta)

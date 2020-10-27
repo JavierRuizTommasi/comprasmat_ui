@@ -31,7 +31,7 @@ export class MailsToSuppliersComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<MailsToSuppliers> = new MatTableDataSource<MailsToSuppliers>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['licitacion', 'producto', 'fecha', 'usuario', 'proveedor', 'email', 'actions']
+  displayedColumns: string[] = ['licitacion', 'producto', 'fecha', 'usuario', 'proveedor', 'email']
 
   strTipo: string
   idIdx: string

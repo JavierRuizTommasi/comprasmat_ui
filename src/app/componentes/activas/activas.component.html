@@ -75,7 +75,7 @@
                 <!-- </div> -->
 
  
-                <div class="container pl-0 ml-0 m-0 pb-0 pr-2 overflow-auto">
+                <div class="container pl-0 ml-0 m-0 pb-0 col-6 pr-2 overflow-auto">
                   <table class="table table-responsive" >
                     <thead class="offer-th">
                       <tr>
@@ -103,16 +103,19 @@
                   </table>
                 </div>
                                     
-                <div class="descrip pl-2 pr-2 mb-2 d-flex align-content-between flex-wrap">
+                <div class="descrip pl-2 pr-2 mb-2 col-6 d-flex align-content-between flex-wrap">
                   <!-- <span class="example-element-description-attribution">{{esp ? 'Detalle' : 'Details'}}</span> -->
                   <div>
                     <h5 class="mt-2">{{esp ? 'Detalle' : 'Details'}} {{element.descrip}}</h5>
-                    <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam vel dolor laboriosam, maiores eveniet repellat at quibusdam distinctio repellendus illo quidem rerum. Aperiam aspernatur quae amet adipisci inventore maxime assumenda?</div>
+                    <p [innerHTML]="getCaracteris(element.producto)"></p>
+                    <!-- <p>{{getCaracteris(element.producto)}}</p> -->
+                    <!-- <div>{{getCaracteris(element.producto)}}</div> -->
+                    <!-- <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam vel dolor laboriosam, maiores eveniet repellat at quibusdam distinctio repellendus illo quidem rerum. Aperiam aspernatur quae amet adipisci inventore maxime assumenda?</div> -->
                   </div>
                   
                   <ng-container *ngIf="cuenta">
                     <ng-container *ngIf="canOffer">
-                      <div class="ml-auto mb-2">
+                      <div class="ml-auto mt-2 mb-2">
                         <button mat-raised-button color="primary" (click)="makeAnOffer()">
                           <mat-icon>note_add</mat-icon>&nbsp; {{esp ? 'Nueva Oferta' : 'New Offer'}}
                           <!-- {{esp ? 'Nueva Oferta' : 'New Offer'}} -->

@@ -12,6 +12,8 @@ import { Language } from 'src/app/models/Language'
 import { LanguageService } from 'src/app/servicios/language.service'
 import { TendersService } from 'src/app/servicios/tenders.service'
 import { Tenders } from 'src/app/models/Tenders'
+import { ProductosService } from 'src/app/servicios/productos.service'
+import { Productos } from 'src/app/models/Products'
 import * as moment from 'moment'
 import { OffersService } from 'src/app/servicios/offers.service'
 import { Offers } from 'src/app/models/Offers';
@@ -60,6 +62,8 @@ export class ActivasComponent implements AfterViewInit, OnInit {
 
   offers: Offers[] = [] 
 
+  products: Productos[] = [] 
+  
   f: FormGroup
 
   siGrabo: boolean
@@ -80,6 +84,7 @@ export class ActivasComponent implements AfterViewInit, OnInit {
     private usuariosService: UsuariosService,
     private tenderService: TendersService,
     private offerService: OffersService,
+    private productsService: ProductosService,
     private router: Router,
     public dialog: MatDialog
     ) {
@@ -167,6 +172,7 @@ export class ActivasComponent implements AfterViewInit, OnInit {
     const user = await this.getUserData()
     this.checkCuenta(user)
 
+    await this.pedirProducts()
     await this.pedirOffers()
     await this.pedirTenders(user)
   }
@@ -239,6 +245,14 @@ export class ActivasComponent implements AfterViewInit, OnInit {
     // })
   }
   
+  async pedirProducts() {
+    this.productsService.getProductos()
+    .subscribe((resp: any) => {
+      this.products = resp.Products
+      // console.log(this.products)
+    })
+  }
+  
   applyFilter(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase()
   }
@@ -288,6 +302,23 @@ export class ActivasComponent implements AfterViewInit, OnInit {
 
     // return this.offers.filter( x => x.licitacion_id == tender)
     return newOff
+  }
+
+  getCaracteris(product: number) {
+    // console.log(product)
+    let newProd: any
+    newProd = this.products.filter( x => x.codigo == product)
+
+    let ret: string = " "
+    if (newProd[0]) {
+      if (this.esp) {
+        ret = newProd[0].caracteris ? newProd[0].caracteris : " "
+      } else {
+        ret = newProd[0].caracteriseng ? newProd[0].caracteriseng : " "
+      }
+    }
+    // console.log(newProd[0])
+    return ret 
   }
 
   makeAnOffer() {
