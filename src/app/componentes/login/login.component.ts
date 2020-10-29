@@ -173,6 +173,7 @@ export class LoginComponent implements OnInit {
     console.log('pedirDatos')
     const user = await this.getUserData()
     if (user) {
+      console.log(user)
       this.router.navigateByUrl('/inicio')
     }
     else {

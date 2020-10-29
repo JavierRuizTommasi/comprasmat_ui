@@ -180,6 +180,8 @@ constructor(
         }
     })
 
+    this.router.navigateByUrl('/inicio')
+
   }
 
   envioEmail(email: string) {
