@@ -7,4 +7,44 @@
     padding: 0;
 }
 
-  
+span {
+    cursor: pointer;
+}
+
+.upfiles label  {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.upfiles {
+    color: blue;
+    text-decoration: underline;
+}
+
+span:hover a {
+    color: red;
+}
+
+a + input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+.upfiles table {
+    margin-bottom: 0px;
+    border-top: 0px;
+}
+
+.upfiles table td, th {
+    vertical-align: top;
+    padding: 0px;
+    border-top: 0px;
+    cursor: pointer;
+}
+
+.filesicon {
+    vertical-align: top;
+}

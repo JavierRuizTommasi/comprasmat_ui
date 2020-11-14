@@ -11,6 +11,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-material-components/file-input": "^4.0.1",
     "@angular/animations": "^10.1.6",
     "@angular/cdk": "^10.2.0",
     "@angular/common": "^10.1.6",
@@ -26,6 +27,7 @@
     "@mdi/angular-material": "^5.6.55",
     "@mdi/font": "^5.6.55",
     "@ng-bootstrap/ng-bootstrap": "^7.0.0",
+    "angular-file-uploader": "^7.0.2",
     "bootstrap": "^4.5.2",
     "jquery": "^3.5.1",
     "moment": "^2.27.0",
@@ -35,7 +37,7 @@
     "zone.js": "~0.10.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.1001.7",
+    "@angular-devkit/build-angular": "^0.1002.0",
     "@angular/cli": "^10.1.7",
     "@angular/compiler-cli": "^10.1.6",
     "@angular/language-service": "^10.1.6",

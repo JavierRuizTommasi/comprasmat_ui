@@ -73,6 +73,10 @@
                   <i class="mdi mdi-account"></i>
                   {{esp ? 'Cuenta' : 'My Account'}}
                 </a>
+                <a mat-menu-item routerLink="/proveedores" (click)="drawer.close()">
+                  <i class="mdi mdi-file-account"></i>
+                  {{esp ? 'Ficha de Proveedor' : 'Card Supplier'}}
+                </a>
                 <a mat-menu-item routerLink="/changepass" (click)="drawer.close()">
                   <i class="mdi mdi-lock-open"></i>
                   {{esp ? 'Password' : 'Password'}}
@@ -183,6 +187,10 @@
                     <button mat-menu-item routerLink="/cuenta">
                       <i class="mdi mdi-account"></i>
                       {{esp ? 'Cuenta' : 'My Account'}}
+                    </button>
+                    <button mat-menu-item routerLink="/proveedores">
+                      <i class="mdi mdi-file-account"></i>
+                      {{esp ? 'Ficha de Proveedor' : 'Card Supplier'}}
                     </button>
                     <button mat-menu-item routerLink="/changepass">
                       <i class="mdi mdi-lock-open"></i>

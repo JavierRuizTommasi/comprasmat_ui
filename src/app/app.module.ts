@@ -32,6 +32,7 @@ import { ActivasComponent } from './componentes/activas/activas.component'
 import { SuppliersComponent } from './componentes/suppliers/suppliers.component'
 import { ScoringsComponent } from './componentes/scorings/scorings.component'
 import { MailsToSuppliersComponent } from './componentes/mailsToSuppliers/mailsToSuppliers.component'
+import { FooterComponent } from './componentes/footer/footer.component'
 
 import { AlertMessagesComponent } from './componentes/alert-messages/alert-messages.component'
 
@@ -52,8 +53,11 @@ import { SamplesService } from './servicios/samples.service'
 import { SuppliersService } from './servicios/suppliers.service'
 import { ScoringsService } from './servicios/scorings.service'
 import { MailsToSuppliersService } from './servicios/mailsToSuppliers.service'
+import { UploadsService } from './servicios/uploads.service'
 
-import Rutas from './routes'
+import { AngularFileUploaderModule } from "angular-file-uploader"
+
+import Rutas from './routes';
 
 @NgModule({
   declarations: [
@@ -78,7 +82,8 @@ import Rutas from './routes'
     ActivasComponent,
     SuppliersComponent,
     ScoringsComponent,
-    MailsToSuppliersComponent
+    MailsToSuppliersComponent,
+    FooterComponent
   ],
   imports: [
     CommonModule,
@@ -91,6 +96,7 @@ import Rutas from './routes'
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule.forRoot(Rutas.config()),
+    AngularFileUploaderModule
   ],
   entryComponents: [    
     AlertMessagesComponent
@@ -112,6 +118,7 @@ import Rutas from './routes'
     SuppliersService,
     ScoringsService,
     MailsToSuppliersService,
+    UploadsService,
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'legacy' } }
   ],
   bootstrap: [AppComponent]

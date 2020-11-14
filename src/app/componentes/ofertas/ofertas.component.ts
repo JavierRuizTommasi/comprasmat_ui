@@ -286,7 +286,6 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   async pedirOffers(user) {
     let resp: any
     if (user) {
-      // console.log('Offers')
       if (user.perfil == 4) {
         // console.log('Proveedor', user.perfil)
         resp = await this.offersService.findMyOffers(user.usuario).toPromise()
@@ -309,7 +308,6 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
       })
     }
-
   }
 
   async pedirTenders(user) {

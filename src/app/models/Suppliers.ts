@@ -10,5 +10,6 @@ export class Suppliers {
     public pais: string
     public desempeno: number
     public ultcompra: string
+    public upload: object
     public activo: boolean
 }

@@ -1,7 +1,7 @@
 <div class="jumbotron">
     <ng-container *ngIf="cuenta">
-        <h4 *ngIf="cuenta.perfil < 4">{{esp ? 'Ofertas' : 'Offers'}}</h4>
-        <h4 *ngIf="cuenta.perfil >= 4">{{esp ? 'Mis Ofertas' : 'My Offers'}}</h4>
+        <h5 *ngIf="cuenta.perfil < 4">{{esp ? 'Ofertas' : 'Offers'}}</h5>
+        <h5 *ngIf="cuenta.perfil >= 4">{{esp ? 'Mis Ofertas' : 'My Offers'}}</h5>
         <div class="d-flex flex-row flex-wrap">
             <div class="mr-auto pr-2 flex-grow-1" *ngFor="let filter of filterSelectObj">
                 <mat-form-field>

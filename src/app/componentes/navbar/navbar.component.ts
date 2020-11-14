@@ -77,6 +77,6 @@ changeLang() {
   this.lang = {esp: this.esp}
   this.languageService.esp$.next(this.lang)
   this.actualizaLang.emit(this.lang)
-}
+  }
 
 }

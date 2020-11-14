@@ -150,7 +150,7 @@ constructor(
       language: lang
     })
     
-    console.log(this.f.value)
+    // console.log(this.f.value)
 
     this.usuariosService.register(this.f.value)
     .subscribe( respuesta => {
@@ -185,11 +185,11 @@ constructor(
   }
 
   envioEmail(email: string) {
-    console.log(email)
+    // console.log(email)
     if (email !== '') {
       this.usuariosService.sendWelcome(email)
       .subscribe( respuesta => {
-        console.log(respuesta)
+        // console.log(respuesta)
 
         if (respuesta.dataUser) {
             // const accessToken = respuesta.dataUser.accessToken
