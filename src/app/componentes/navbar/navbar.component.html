@@ -62,7 +62,7 @@
           <a mat-list-item [matMenuTriggerFor]="menuCuenta">
             <ng-container *ngIf="cuenta.perfil==5">
               <i class="mdi mdi-bell-alert yellow mdi-rotate-45" data-toggle="tooltip" data-placement="left" 
-              title="{{esp ? 'Complete la Ficha de Proveedor' : 'Complete your profile account'}}"></i>
+              title="{{esp ? 'Complete la Ficha de Proveedor' : 'Complete the Supplier account'}}"></i>
             </ng-container>
             <i class="mdi mdi-account white"></i>
             {{cuenta.nombre}}
@@ -151,6 +151,7 @@
                 <ng-container *ngIf="cuenta.perfil!=3">
                   <button mat-menu-item routerLink="/seleccion">{{esp ? 'Seleccionar Productos' : 'Product Selection'}}</button>
                   <button mat-menu-item routerLink="/myproducts">{{esp ? 'Mis Productos' : 'My Products'}}</button>
+                  <button mat-menu-item routerLink="/myProdsAdm">{{esp ? 'Mis Productos Administración' : 'My Products Administration'}}</button>
                 </ng-container>
               </mat-menu>
   

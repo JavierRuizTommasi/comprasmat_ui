@@ -198,9 +198,9 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
-      console.log(params);
+      // console.log(params);
       this.newOffer = params['nuevaoferta']
-      console.log(this.newOffer);
+      // console.log(this.newOffer);
     })
 
     this.pedirDatos()
@@ -232,15 +232,18 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     // pedirOffers() Trae datos del Servicio Offers
     // pedirSampres() trae datos del Servicio Samples pero solo en caso que el usuario este logeado  
 
-    // console.log('pedirDatos')
+    console.log('pedirDatos')
     const user = await this.getUserData()
     this.checkCuenta(user)
 
     // await this.pedirTenders(user)
     // await this.pedirOffers(user)
     await this.pedirProducts()
+    console.log('Products')
     await this.pedirTenders(user)
+    console.log('Tenders')
     await this.pedirOffers(user)
+    console.log('Offers')
 
     this.notDone = false
 
@@ -301,7 +304,6 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       this.table.dataSource = this.dataSource
 
       // this.offers = resp.Offers
-      this.notDone = false
       // console.log(this.dataSource)
 
       this.filterSelectObj.filter((o) => {
@@ -467,33 +469,30 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   async agregarOferta() {
     let resp: any = await this.offersService.addOffer(this.offUpt).toPromise()
-
     if (resp) {
+      console.log(resp)
       let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
-      this.alertMsg()
+      await this.alertMsg()
     }
     await this.pedirDatos()
    }
 
   async borrarOferta() {
     let resp: any = await this.offersService.deleteOffer(this.idIdx).toPromise()
-  
     if (resp) {
-        let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
-        this.alertMsg()
+      console.log(resp)
+      let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
+      await this.alertMsg()
     }
     await this.pedirDatos()
   }
 
   async modificarOferta() {
     let resp: any = await this.offersService.putOffer(this.idIdx, this.offUpt).toPromise()
-    // console.log('Modif:', defOff)
-      
     if (resp) {
-        // console.log('Modif:', this.offUpt.licitacion_id)
-        let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
-        // console.log(newOff)
-        this.alertMsg()
+      console.log(resp)
+      let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
+      await this.alertMsg()
     }
     await this.pedirDatos()
   }
@@ -564,6 +563,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   }
 
   alertMsg(): void {
+    console.log('Alert')
     let strConfMsg = ''
     switch (this.strTipo) {
       case 'A':
@@ -597,7 +597,15 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       }
       return obj
     })
-    return uniqChk
+    return uniqChk.sort((a, b) => {
+        if (a > b) {
+            return 1;
+        }
+        if (a < b) {
+            return -1;
+        }
+        return 0;
+      }) 
   }
 
   // Called on Filter change
@@ -620,17 +628,20 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         }
       }
 
-      console.log(searchTerms);
+      // console.log(searchTerms);
 
       let nameSearch = () => {
         let found = false;
         if (isFilterSet) {
           for (const col in searchTerms) {
-            searchTerms[col].trim().toLowerCase().split(' ').forEach(word => {
-              if (data[col].toString().toLowerCase().indexOf(word) != -1 && isFilterSet) {
-                found = true
-              }
-            });
+            // searchTerms[col].trim().toLowerCase().split(' ').forEach(word => {
+            //   if (data[col].toString().toLowerCase().indexOf(word) != -1 && isFilterSet) {
+            //     found = true
+            //   }
+            // });
+            if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
+                  found = true
+            }
           }
           return found
         } else {

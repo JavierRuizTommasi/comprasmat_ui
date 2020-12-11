@@ -4,6 +4,7 @@ export class Suppliers {
     public nombre: string
     public usuario: string
     public domicilio: string
+    public telefono: string
     public c_postal: number
     public localidad: string
     public provincia: string

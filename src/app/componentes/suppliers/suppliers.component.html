@@ -86,16 +86,16 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>{{esp ? 'Acciones' : 'Acctions'}}</th>
         <td mat-cell *matCellDef="let row">
-          <ng-container *ngIf="cuenta">
-            <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2">
+          <!-- <ng-container *ngIf="cuenta"> -->
+            <!-- <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2"> -->
               <button mat-icon-button color="primary" (click)="openModal(editSupplierModal, row, 'M')">
                 <mat-icon>edit</mat-icon>
               </button>
               <button mat-icon-button color="primary" (click)="openModal(editSupplierModal, row, 'B')">
                 <mat-icon>delete</mat-icon>
               </button>
-            </ng-container>
-          </ng-container>
+            <!-- </ng-container> -->
+          <!-- </ng-container> -->
         </td>
       </ng-container>
 
@@ -130,14 +130,14 @@
     <div class="modal-body">
       <form [formGroup]="f" (ngSubmit)="onSubmit()">
         <div class="form-group row">
-          <label for="codigo" class="col-sm-3 col-form-label">{{esp ? 'Codigo' : 'Code'}}</label>
+          <label for="usuario" class="col-sm-3 col-form-label">{{esp ? 'Usuario' : 'User'}}</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" formControlName="codigo" id="codigo"
-              [readOnly]="this.strTipo == 'B'">
+            <input type="text" class="form-control" formControlName="usuario" id="usuario"
+              [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
             <!-- Error -->
-            <div *ngIf="f.controls.codigo.errors && f.controls.codigo.dirty" class="alert alert-danger mt-0">
-              <div *ngIf="f.controls.codigo.errors.required">Required</div>
-              <div *ngIf="f.controls.codigo.errors.pattern">Only Digits (0-9 Max 10)</div>
+            <div *ngIf="f.controls.usuario.errors && f.controls.usuario.dirty" class="alert alert-danger mt-0">
+              <div *ngIf="f.controls.usuario.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+              <div *ngIf="f.controls.usuario.errors.pattern">{{esp ? 'Solo Mayúsculas sin espacios (Max=10)' : 'Only Uppercase Characters whitout spaces (Max=10)'}}</div>
             </div>
           </div>
         </div>
@@ -149,21 +149,21 @@
               [readOnly]="this.strTipo == 'B'">
             <!-- Error -->
             <div *ngIf="f.controls.nombre.errors && f.controls.nombre.dirty" class="alert alert-danger mt-0">
-              <div *ngIf="f.controls.nombre.errors.required">Required</div>
-              <div *ngIf="f.controls.nombre.errors.pattern">Only Uppercase Characters (Max 50)</div>
+              <div *ngIf="f.controls.nombre.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+              <div *ngIf="f.controls.nombre.errors.pattern">{{esp ? 'Solo Mayúsculas (Max 50)' : 'Only Uppercase Characters (Max 50)'}}</div>
             </div>
           </div>
         </div>
 
         <div class="form-group row">
-          <label for="usuario" class="col-sm-3 col-form-label">{{esp ? 'Usuario' : 'User'}}</label>
+          <label for="codigo" class="col-sm-3 col-form-label">{{esp ? 'Codigo' : 'Code'}}</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" formControlName="usuario" id="usuario"
-              [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
+            <input type="text" class="form-control" formControlName="codigo" id="codigo"
+              [readOnly]="this.strTipo == 'B'">
             <!-- Error -->
-            <div *ngIf="f.controls.usuario.errors && f.controls.usuario.dirty" class="alert alert-danger mt-0">
-              <div *ngIf="f.controls.usuario.errors.required">Required</div>
-              <div *ngIf="f.controls.usuario.errors.pattern">Whitout spaces (Max=10)</div>
+            <div *ngIf="f.controls.codigo.errors && f.controls.codigo.dirty" class="alert alert-danger mt-0">
+              <div *ngIf="f.controls.codigo.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+              <div *ngIf="f.controls.codigo.errors.pattern">{{esp ? 'Solo Digitos (0-9 Max 10)' : 'Only Digits (0-9 Max 10)'}}</div>
             </div>
           </div>
         </div>
@@ -174,10 +174,23 @@
             <input type="text" class="form-control" formControlName="domicilio" id="domicilio"
               [readOnly]="this.strTipo == 'B'">
             <!-- Error -->
-            <!-- <div *ngIf="f.controls.domicilio.errors && f.controls.domicilio.dirty" class="alert alert-danger mt-0">
-                <div *ngIf="f.controls.domicilio.errors.required">Required</div>
-                <div *ngIf="f.controls.domicilio.errors.pattern">Only Uppercase Characters (Max 30)</div>
-              </div> -->
+            <div *ngIf="f.controls.domicilio.errors && f.controls.domicilio.dirty" class="alert alert-danger mt-0">
+                <div *ngIf="f.controls.domicilio.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+                <div *ngIf="f.controls.domicilio.errors.pattern">{{esp ? 'Solo Mayúsculas (Max 50)' : 'Only Uppercase Characters (Max 50)'}}</div>
+              </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="telefono" class="col-sm-3 col-form-label">{{esp ? 'Telefono' : 'Telephone'}}</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" formControlName="telefono" id="telefono"
+              [readOnly]="this.strTipo == 'B'">
+            <!-- Error -->
+            <div *ngIf="f.controls.telefono.errors && f.controls.telefono.dirty" class="alert alert-danger mt-0">
+                <div *ngIf="f.controls.telefono.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+                <!-- <div *ngIf="f.controls.telefono.errors.pattern">Only Uppercase Characters (Max 30)</div> -->
+              </div>
           </div>
         </div>
 
@@ -188,7 +201,7 @@
               [readOnly]="this.strTipo == 'B'">
             <!-- Error -->
             <div *ngIf="f.controls.c_postal.errors && f.controls.c_postal.dirty" class="alert alert-danger mt-0">
-              <div *ngIf="f.controls.c_postal.errors.required">Required</div>
+              <div *ngIf="f.controls.c_postal.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
             </div>
           </div>
         </div>
@@ -200,8 +213,7 @@
               [readOnly]="this.strTipo == 'B'">
             <!-- Error -->
             <div *ngIf="f.controls.localidad.errors && f.controls.localidad.dirty" class="alert alert-danger mt-0">
-              <div *ngIf="f.controls.localidad.errors.required">Required</div>
-              <div *ngIf="f.controls.localidad.errors.pattern">Only Uppercase Characters (Max 30)</div>
+              <div *ngIf="f.controls.localidad.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
             </div>
           </div>
         </div>
@@ -213,8 +225,7 @@
               [readOnly]="this.strTipo == 'B'">
             <!-- Error -->
             <div *ngIf="f.controls.provincia.errors && f.controls.provincia.dirty" class="alert alert-danger mt-0">
-              <div *ngIf="f.controls.provincia.errors.required">Required</div>
-              <div *ngIf="f.controls.provincia.errors.pattern">Only Uppercase Characters (Max 30)</div>
+              <div *ngIf="f.controls.provincia.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
             </div>
           </div>
         </div>
@@ -222,11 +233,14 @@
         <div class="form-group row">
           <label for="pais" class="col-sm-3 col-form-label">{{esp ? 'Pais' : 'Country'}}</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" formControlName="pais" id="pais" [readOnly]="this.strTipo == 'B'">
+            <!-- <input type="text" class="form-control" formControlName="pais" id="pais" [readOnly]="this.strTipo == 'B'"> -->
+            <select class="custom-select" formControlName="pais" id="pais" required="required">
+                <option [ngValue]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
+                <option [ngValue]="country.name" *ngFor="let country of countries">{{country.name}}</option>
+            </select>
             <!-- Error -->
             <div *ngIf="f.controls.pais.errors && f.controls.pais.dirty" class="alert alert-danger mt-0">
-              <div *ngIf="f.controls.pais.errors.required">Required</div>
-              <div *ngIf="f.controls.pais.errors.pattern">Only Uppercase Characters (Max 30)</div>
+              <div *ngIf="f.controls.pais.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
             </div>
           </div>
         </div>
@@ -234,16 +248,14 @@
         <div class="form-group row">
           <label for="desempeno" class="col-sm-3 col-form-label">{{esp ? 'Desempeño' : 'Performance'}}</label>
           <div class="col-sm-9">
-            <input type="number" class="form-control" formControlName="desempeno" id="desempeno"
-              [readOnly]="this.strTipo == 'B'">
+            <input type="number" class="form-control" formControlName="desempeno" id="desempeno" [readOnly]="this.strTipo == 'B'">
           </div>
         </div>
 
         <div class="form-group row">
           <label for="ultcompra" class="col-sm-3 col-form-label">{{esp ? 'Ult. Compra' : 'Last Buy'}}</label>
           <div class="col-sm-9">
-            <input type="date" class="form-control" formControlName="ultcompra" id="ultcompra"
-              [readOnly]="this.strTipo == 'B'">
+            <input type="date" class="form-control" formControlName="ultcompra" id="ultcompra" [readOnly]="this.strTipo == 'B'">
           </div>
         </div>
 
@@ -252,6 +264,7 @@
             <div class="p-0 m-0 col-3">
               <label for="constCUIT" class="mb-0">Constancia CUIT</label>
               <input id="constCUIT" style="visibility:hidden;" type="file"
+                accept="application/pdf,application/vnd.ms-excel"
                 (change)="onFileSelected($event, 'constCUIT')" [readOnly]="this.strTipo == 'B'">
             </div>
             <div class="mt-0 pt-0 col-9">

@@ -63,15 +63,15 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
       this.languageService.esp$.subscribe((lang: Language) => {
         this.esp = lang.esp
       })
+
+      this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
+        this.cuenta = cuenta
+      })
+
     }
 
   ngOnInit(): void {
-    this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
-      this.cuenta = cuenta
-    })
-
     this.pedirDatos()
-
   }
 
   ngAfterViewInit() {
@@ -117,6 +117,8 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
       }
     }
     else {
+      console.log('no logueado')
+      this.usuariosService.removeToken()
       this.router.navigateByUrl('/login')
     }
 

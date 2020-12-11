@@ -112,16 +112,21 @@
                 <input type="text" class="form-control" formControlName="usuario" id="usuario" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
                 <!-- Error -->
                 <div *ngIf="f.controls.usuario.errors && f.controls.usuario.dirty" class="alert alert-danger mt-0">
-                  <div *ngIf="f.controls.usuario.errors.required">Required</div>
-                  <div *ngIf="f.controls.usuario.errors.pattern">Whitout spaces (Max=10)</div>
+                  <div *ngIf="f.controls.usuario.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+                  <div *ngIf="f.controls.usuario.errors.pattern">{{esp ? 'Solo Mayúsculas sin espacios (Max=10)' : 'Only Uppercase Characters whitout spaces (Max=10)'}}</div>
                 </div>
             </div>
           </div>
 
           <div class="form-group row">
-            <label for="nombre" class="col-sm-3 col-form-label">{{esp ? 'Nombres' : 'Name'}}</label>
+            <label for="nombre" class="col-sm-3 col-form-label">{{esp ? 'Nombre' : 'Name'}}</label>
             <div class="col-sm-9">
               <input type="text" class="form-control" formControlName="nombre" id="nombre" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
+              <!-- Error -->
+              <div *ngIf="f.controls.nombre.errors && f.controls.nombre.dirty" class="alert alert-danger mt-0">
+                <div *ngIf="f.controls.nombre.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+                <div *ngIf="f.controls.nombre.errors.pattern">{{esp ? 'Solo Mayúsculas (Max 50)' : 'Only Uppercase Characters (Max 50)'}}</div>
+              </div>
             </div>  
           </div>
 
@@ -136,6 +141,11 @@
             <label for="email" class="col-sm-3 col-form-label">Email</label>
             <div class="col-sm-9">
               <input type="email" class="form-control" formControlName="email" id="email" [readOnly]="this.strTipo == 'B' || this.strTipo == 'P'">
+              <!-- Error -->
+              <div *ngIf="f.controls.email.errors && f.controls.email.dirty" class="alert alert-danger mt-0">
+                <div *ngIf="f.controls.email.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+                <div *ngIf="f.controls.email.errors.pattern">{{esp ? 'Ingrese una direccion de mail valida' : 'Enter a valid email address'}}</div>
+              </div>
             </div>  
           </div>
 
@@ -260,7 +270,7 @@
           <pre>{{f.controls.errors | json}}</pre>
           <hr>
           <hr>
-          <pre>{{f.controls.confpass.errors | json}}</pre>
+          <pre>{{f.controls.nombre.errors | json}}</pre>
           <hr> -->
 
         </form>

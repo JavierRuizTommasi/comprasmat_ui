@@ -85,7 +85,6 @@ export class ProductosComponent implements AfterViewInit, OnInit {
           Validators.pattern(this.urubrPattern)
         ])],
         subrubro: ['', Validators.compose([
-          Validators.required,
           Validators.pattern(this.urubrPattern)
         ])],
         unidad: ['', Validators.compose([
@@ -99,15 +98,12 @@ export class ProductosComponent implements AfterViewInit, OnInit {
         activo: true,
         historico: [0],
         detaeng: ['', Validators.compose([
-          Validators.required,
           Validators.pattern(this.udescPattern)
         ])],
         rubroeng: ['', Validators.compose([
-          Validators.required,
           Validators.pattern(this.urubrPattern)
         ])],
         subrueng: ['', Validators.compose([
-          Validators.required,
           Validators.pattern(this.urubrPattern)
         ])],
         caracteris: [''],

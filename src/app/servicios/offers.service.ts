@@ -13,7 +13,7 @@ export class OffersService {
     private http: HttpClient,
     public url: UrlproviderService) {
       // console.log('Servicio Offers OK')
-    }
+  }
 
   getHttpOptions() {
     const httpOptions = {
@@ -24,7 +24,7 @@ export class OffersService {
     return httpOptions
   }
 
-  getOffers() {
+  getOffers(): Observable<Offers[]>{
     return this.http.get<Offers[]>(this.url.baseApiUrl + 'offers', this.getHttpOptions())
   }
 

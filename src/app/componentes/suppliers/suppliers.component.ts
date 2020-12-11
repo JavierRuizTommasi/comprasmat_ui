@@ -18,6 +18,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
 import { UploadsService } from 'src/app/servicios/uploads.service'
 import { Uploads } from 'src/app/models/Uploads'
+import { arCountries } from 'src/app/models/Countries'
 
 interface HtmlInputEvent extends Event {
   target: HTMLInputElement & EventTarget
@@ -56,7 +57,7 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
 
   unumPattern = '^[0-9]{1,10}$'
   userPattern = '^[A-Z0-9]{1,10}$'
-  nombPattern = '^[a-zA-Z0-9 .+&]{1,30}$'
+  nombPattern = '^[A-Z0-9 .+&]{1,50}$'
 
   file: File
   myFiles: Uploads[] = []
@@ -69,6 +70,8 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
   filterValues = {}
   filterSelectObj = []
 
+  countries = arCountries
+  
   constructor(
     private fb: FormBuilder,
     private comunicacionService: ComunicacionService,
@@ -99,6 +102,7 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
           Validators.pattern(this.userPattern)
         ])],
         domicilio: [''],
+        telefono: [''],
         c_postal: [''],
         localidad: [''],
         provincia: [''],
@@ -169,13 +173,14 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
     await this.pedirSuppliers(user)
     await this.pedirUploads()
     
-  }
+    this.notDone = false
+ }
     
   checkCuenta(user) {
     // esta funcion verifica si el usuario esta logeado y asigna 
     // los datos del user a un objeto cuenta[] y tambien la variable esp
     // si no lo encuentra deberia devolver cuenta como undefined
-    console.log('checkUser')
+    // console.log('checkUser')
     // console.log(user)
     if (user) {
       // console.log(user)
@@ -215,16 +220,16 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         this.dataSource.data = await resp.Suppliers
       }
 
-      this.dataSource.sort = await this.sort
-      this.dataSource.paginator = await this.paginator
-      this.table.dataSource = await this.dataSource
+      this.dataSource.sort = this.sort
+      this.dataSource.paginator = this.paginator
+      this.table.dataSource = this.dataSource
 
       // this.productos = resp.Products
       // this.filterProducts = resp.Products
-      this.notDone = false
-      console.log(this.dataSource.data)
+      // console.log(this.dataSource.data)
 
-      let x: any = await this.filterSelectObj.filter((o) => {
+      // console.log(this.filterSelectObj)
+      this.filterSelectObj.filter((o) => {
         o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
       })
     }
@@ -258,18 +263,19 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         id: '',
         codigo: 0,
         nombre: '',
-        usuario: '',
+        usuario: this.cuenta.usuario,
         domicilio: '',
+        telefono: '',
         c_postal: 0,
         localidad: '',
         provincia: '',
         pais: '',
         desempeno: 0,
-        ultcompra: moment().format().substr(0, 10),
+        ultcompra: '',
         constCUIT: '',
         constGAN: '',
         upload: [],
-        activo: true
+        activo: false
       })
     } else {
 
@@ -279,6 +285,7 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         nombre: supplier.nombre,
         usuario: supplier.usuario,
         domicilio: supplier.domicilio,
+        telefono: supplier.telefono,
         c_postal: supplier.c_postal,
         localidad: supplier.localidad,
         provincia: supplier.provincia,
@@ -294,8 +301,15 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
       this.f.disable()
     } else {
       this.f.enable()
-    }
 
+      if (this.cuenta.perfil != 0 && this.cuenta.perfil != 2) {
+        this.f.get('codigo').disable({ onlySelf: true })
+        this.f.get('usuario').disable({ onlySelf: true })
+        this.f.get('desempeno').disable({ onlySelf: true })
+        this.f.get('ultcompra').disable({ onlySelf: true })
+        this.f.get('activo').disable({ onlySelf: true })
+      }
+    }
   }
 
   onSubmit() {
@@ -312,6 +326,7 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
       nombre: this.f.controls.nombre.value,
       usuario: this.f.controls.usuario.value,
       domicilio: this.f.controls.domicilio.value,
+      telefono: this.f.controls.telefono.value,
       c_postal: this.f.controls.c_postal.value,
       localidad: this.f.controls.localidad.value,
       provincia: this.f.controls.provincia.value,
@@ -344,18 +359,25 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
   }
 
   async agregarSupplier() {
-
     let supp: any = await this.suppliersService.addSuppliers(this.updtSupp).toPromise()
     console.log('Alta:', supp)
 
     if (supp) {
       this.alertMsg()
     }
-
     await this.pedirDatos()
   }
 
   async borrarSupplier() {
+    console.log(this.updtSupp.upload)
+    if (this.updtSupp.upload) {
+      for (let index = 0; index < Object.keys(this.updtSupp.upload).length; index++) {
+        const element = this.updtSupp.upload[index]
+        console.log(element)
+        let file: any = await this.uploadsService.deleteUploads(element).toPromise()
+        console.log(file)
+      }
+    }
 
     let supp: any = await this.suppliersService.deleteSuppliers(this.idIdx).toPromise()
     console.log('Baja:', supp)
@@ -363,20 +385,17 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
     if (supp) {
       this.alertMsg()
     }
-    
     await this.pedirDatos()
 
   }
 
   async modificarSupplier() {
-
     let supp: any = await this.suppliersService.putSuppliers(this.idIdx, this.updtSupp).toPromise()
     // console.log('Modif:', supp)
 
     if (supp) {
       this.alertMsg()
     }
-
     await this.pedirDatos()
 
   }
@@ -397,9 +416,13 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
     }
 
     let file: any = await this.uploadsService.deleteUploads(delfile._id).toPromise()
+    console.log(file)
 
-    let resp: any = await this.suppliersService.removeUpload(this.f.controls.id.value, delfile).toPromise() 
-    // console.log(resp)
+    console.log(this.f.controls.id.value)
+    if (this.f.controls.id.value !== '') {
+      let resp: any = await this.suppliersService.removeUpload(this.f.controls.id.value, delfile).toPromise() 
+      console.log(resp)
+    }
 
     if (file) {
       // console.log(this.f.controls.upload.value)
@@ -455,7 +478,7 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
     // console.log('id', this.f.controls.id.value)
     // console.log('file', file.body.Upload)
 
-    let resp: any = await this.suppliersService.assignUpload(this.f.controls.id.value, file.body.Upload).toPromise() 
+    // let resp: any = await this.suppliersService.assignUpload(this.f.controls.id.value, file.body.Upload).toPromise() 
     // console.log(resp)
 
     if (file) {
@@ -585,8 +608,9 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
   }
 
   getMyFiles(supplier) {
-    // console.log(supplier)
     this.myFiles = []
+    if(!supplier) return
+    // console.log(supplier)
     for (let index = 0; index < supplier.upload.length; index++) {
       const element = supplier.upload[index];
       // console.log(element)
@@ -609,7 +633,15 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
       }
       return obj
     })
-    return uniqChk
+    return uniqChk.sort((a, b) => {
+        if (a > b) {
+            return 1;
+        }
+        if (a < b) {
+            return -1;
+        }
+        return 0;
+      }) 
   }
 
   // Called on Filter change
@@ -632,17 +664,24 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         }
       }
 
-      console.log(searchTerms);
+      // console.log(searchTerms);
 
       let nameSearch = () => {
         let found = false;
         if (isFilterSet) {
           for (const col in searchTerms) {
-            searchTerms[col].trim().toLowerCase().split(' ').forEach(word => {
-              if (data[col].toString().toLowerCase().indexOf(word) != -1 && isFilterSet) {
-                found = true
+            // searchTerms[col].trim().toLowerCase().split(' ').forEach(word => {
+            //   if (data[col].toString().toLowerCase().indexOf(word) != -1 && isFilterSet) {
+            //     found = true
+            //   }
+            // });
+            if (data[col]) {
+              if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
+                  found = true
               }
-            });
+            } else {
+              found = false
+            }
           }
           return found
         } else {

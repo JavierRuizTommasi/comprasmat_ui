@@ -33,6 +33,7 @@ import { SuppliersComponent } from './componentes/suppliers/suppliers.component'
 import { ScoringsComponent } from './componentes/scorings/scorings.component'
 import { MailsToSuppliersComponent } from './componentes/mailsToSuppliers/mailsToSuppliers.component'
 import { FooterComponent } from './componentes/footer/footer.component'
+import { MyProdsAdmComponent } from './componentes/myprodsadm/myprodsadm.component'
 
 import { AlertMessagesComponent } from './componentes/alert-messages/alert-messages.component'
 
@@ -83,7 +84,8 @@ import Rutas from './routes';
     SuppliersComponent,
     ScoringsComponent,
     MailsToSuppliersComponent,
-    FooterComponent
+    FooterComponent,
+    MyProdsAdmComponent
   ],
   imports: [
     CommonModule,

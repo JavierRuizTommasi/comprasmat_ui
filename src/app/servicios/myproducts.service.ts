@@ -32,13 +32,13 @@ export class MyProductsService {
     return this.http.get<MyProducts[]>(this.url.baseApiUrl + 'findmyproducts/' + usuario, this.getHttpOptions())
   }
 
-  postMyProducts(myprod: MyProducts[]) {
-    return this.http.post<MyProducts[]>(this.url.baseApiUrl + 'myproducts', myprod, this.getHttpOptions())
+  addMyProducts(myprod: MyProducts) {
+    return this.http.post<MyProducts>(this.url.baseApiUrl + 'myproducts', myprod, this.getHttpOptions())
   }
 
-  // putMyProducts(id: number, myprod: IMyProdUpt) {
-  //   return this.http.put<IMyProdUpt>(this.url.baseApiUrl + 'myproducts/' + id, myprod, this.getHttpOptions())
-  // }
+  putMyProducts(id: string, myprod: MyProducts) {
+    return this.http.put<MyProducts>(this.url.baseApiUrl + 'myproducts/' + id, myprod, this.getHttpOptions())
+  }
 
   deleteMyProducts(id: string): Observable<MyProducts> {
     return this.http.delete<MyProducts>(this.url.baseApiUrl + 'myproducts/' + id, this.getHttpOptions())

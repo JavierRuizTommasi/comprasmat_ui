@@ -248,7 +248,7 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
         ultcompra: '',
         proveedor: 0,
         provenom: '',
-        estado: 1,
+        estado: 0,
         historico: 0
       })
     } else {

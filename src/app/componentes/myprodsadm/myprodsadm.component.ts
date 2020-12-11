@@ -5,35 +5,32 @@ import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Cuenta } from 'src/app/models/Cuenta'
 import { ComunicacionService } from 'src/app/servicios/comunicacion.service'
 import { UsuariosService } from 'src/app/servicios/usuarios.service'
+import { MyProductsService } from 'src/app/servicios/myproducts.service'
+import { MyProducts } from 'src/app/models/MyProducts'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { Router } from '@angular/router'
 import { Language } from 'src/app/models/Language'
 import { LanguageService } from 'src/app/servicios/language.service'
-import { SamplesService } from 'src/app/servicios/samples.service'
-import { Samples } from 'src/app/models/Samples';
 import { ProductosService } from 'src/app/servicios/productos.service'
 import { Productos } from 'src/app/models/Products'
-import * as moment from 'moment'
 import { MatDialog } from '@angular/material/dialog'
 import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
-import { arEstadosMuestras } from 'src/app/models/EstadosMuestras'
-import { arUnidades } from 'src/app/models/Unidades'
 
 @Component({
-  selector: 'app-samples',
-  templateUrl: './samples.component.html',
-  styleUrls: ['./samples.component.css']
+  selector: 'app-myprodsadm',
+  templateUrl: './myprodsadm.component.html',
+  styleUrls: ['./myprodsadm.component.css']
 })
-export class SamplesComponent implements AfterViewInit, OnInit {
+export class MyProdsAdmComponent implements AfterViewInit, OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator
   @ViewChild(MatSort) sort: MatSort
-  @ViewChild(MatTable) table: MatTable<Samples>
+  @ViewChild(MatTable) table: MatTable<MyProducts>
 
-  dataSource: MatTableDataSource<Samples> = new MatTableDataSource<Samples>()
+  dataSource: MatTableDataSource<MyProducts> = new MatTableDataSource<MyProducts>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['muestra', 'usuario', 'descrip', 'fecha', 'estado', 'actions']
+  displayedColumns: string[] = ['usuario', 'codigo', 'descrip', 'rubro', 'subrubro', 'actions']
 
   strTipo: string
   idIdx: string
@@ -45,21 +42,21 @@ export class SamplesComponent implements AfterViewInit, OnInit {
   public lang: Language = {esp: true}
   @Output() actualizaLang = new EventEmitter()
 
-  samples: Samples[] = []
-  sample: Samples
-  sampUpt: Samples
+  myproducts: MyProducts[] = []
+  myProdUpdt: MyProducts
 
   products: Productos[] = []
 
   f: FormGroup
 
+  unumPattern = '^[0-9]{1,10}$'
+  udescPattern = '^[A-Z0-9. !"#$%&()*+-./\_]{1,50}$'
+  urubrPattern = '^[A-Z0-9. !"#$%&()*+-./\_]{1,30}$'
+
   siGrabo: boolean
   msgGrabo: string
 
   notDone: boolean = true
-
-  estadosMuestras = arEstadosMuestras
-  unidades = arUnidades
 
   filterValues = {}
   filterSelectObj = []
@@ -67,10 +64,10 @@ export class SamplesComponent implements AfterViewInit, OnInit {
   constructor(
     private fb: FormBuilder,
     private comunicacionService: ComunicacionService,
-    private modalService: NgbModal,
     private languageService: LanguageService,
+    private modalService: NgbModal,
     private usuariosService: UsuariosService,
-    private samplesService: SamplesService,
+    private myproductsService: MyProductsService,
     private productosService: ProductosService,
     private router: Router,
     public dialog: MatDialog
@@ -80,53 +77,28 @@ export class SamplesComponent implements AfterViewInit, OnInit {
         this.router.navigateByUrl('/login')
       }
   
-        this.f = fb.group({
+      this.f = fb.group({
         id: [''],
-        muestra: [''],
-        usuario: [{value: '', disabled: true},
-          Validators.compose([
-          Validators.required
+        usuario: [''],
+        proveedor: ['', Validators.compose([
+          Validators.required,
+          Validators.pattern(this.unumPattern)
         ])],
-        email: [{value: '', disabled: true},
-          Validators.compose([
-          Validators.required
+        codigo: ['', Validators.compose([
+          Validators.required,
+          Validators.pattern(this.unumPattern)
         ])],
-        proveedor: [{value: '', disabled: true},
-          Validators.compose([
-          Validators.required
+        descrip: ['', Validators.compose([
+          Validators.required,
+          Validators.pattern(this.udescPattern)
         ])],
-        provenom: [{value: '', disabled: true},
-          Validators.compose([
-          Validators.required
+        rubro: ['', Validators.compose([
+          Validators.required,
+          Validators.pattern(this.urubrPattern)
         ])],
-        fecha: ['',
-          Validators.compose([
-          Validators.required
-        ])],
-        producto: [{value: '', disabled: true},
-          Validators.compose([
-          Validators.required
-        ])],
-        descrip: [{value: '', disabled: true},
-          Validators.compose([
-          Validators.required
-        ])],
-        cantidad: ['',
-          Validators.compose([
-          Validators.required
-        ])],
-        unidad: ['',
-          Validators.compose([
-          Validators.required
-        ])],
-        analisis: [''],
-        userlab: [''],
-        estado: [0,
-          Validators.compose([
-          Validators.required
-        ])],
-        resultado: [0],
-        detalle: ['']
+        subrubro: ['', Validators.compose([
+          Validators.pattern(this.urubrPattern)
+        ])]
       })
   
       this.languageService.esp$.subscribe((lang: Language) => {
@@ -169,7 +141,7 @@ export class SamplesComponent implements AfterViewInit, OnInit {
 
   async getUserData() {
     const resp: any = await this.usuariosService.checkUsuario().toPromise()
-    console.log(resp.user)
+    // console.log(resp.user)
     return resp.user
   }
 
@@ -188,9 +160,9 @@ export class SamplesComponent implements AfterViewInit, OnInit {
     // await this.pedirTenders(user)
     // await this.pedirOffers(user)
     await this.pedirProducts(user)
-    await this.pedirSamples(user)
+    await this.pedirMyProducts(user)
 
-    this.notDone = false
+    // this.notDone = false
   
   }
 
@@ -198,7 +170,7 @@ export class SamplesComponent implements AfterViewInit, OnInit {
     // esta funcion verifica si el usuario esta logeado y asigna 
     // los datos del user a un objeto cuenta[] y tambien la variable esp
     // si no lo encuentra deberia devolver cuenta como undefined
-    console.log('checkUser')
+    // console.log('checkUser')
     // console.log(user)
     if (user) {
       // console.log(user)
@@ -227,29 +199,22 @@ export class SamplesComponent implements AfterViewInit, OnInit {
 
   }
   
-  async pedirSamples(user) {
-    console.log('Samples')
-    // console.log(user)
-    let resp: any
+  async pedirMyProducts(user) {
     if (user) {
-      if (user.perfil == 4) {
-        console.log('Proveedor', user.perfil)
-        resp = await this.samplesService.findMySamples(user.usuario).toPromise()
-      } else {
-        console.log('Todos', user.perfil)
-        resp = await this.samplesService.getSamples().toPromise()
-      }
+      this.myproductsService.getMyProducts()
+      .subscribe((resp: any) => {
+        // console.log(resp)
+        this.dataSource.data = resp.myProducts
+        this.dataSource.sort = this.sort
+        this.dataSource.paginator = this.paginator
+        this.table.dataSource = this.dataSource
 
-      this.dataSource.data = resp.Samples
-      this.dataSource.sort = this.sort
-      this.dataSource.paginator = this.paginator
-      this.table.dataSource = this.dataSource
+        // this.myproducts = resp.myProducts
+        this.filterSelectObj.filter((o) => {
+          o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
+        })
 
-      // this.samples = resp.Samples
-      console.log(this.dataSource)
-
-      this.filterSelectObj.filter((o) => {
-        o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
+        this.notDone = false
       })
     }
   }
@@ -258,11 +223,11 @@ export class SamplesComponent implements AfterViewInit, OnInit {
       this.productosService.getProductos()
       .subscribe((resp: any) => {
         // console.log(resp)
-        this.products = resp.Products
+        this.products = resp.Products.sort((a, b) => a.codigo - b.codigo)
       })
   }
 
-  openModal(targetModal, sample, strTipoParam) {
+  openModal(targetModal, myprod, strTipoParam) {
     this.strTipo = strTipoParam
 
     this.modalService.open(targetModal, {
@@ -273,40 +238,22 @@ export class SamplesComponent implements AfterViewInit, OnInit {
     if (strTipoParam === 'A') {
       this.f.patchValue({
         id: '',
-        muestra: 0,
-        usuario: this.cuenta.usuario,
-        email: this.cuenta.email,
-        proveedor: this.cuenta.proveedor,
-        provenom: this.cuenta.nombre,
-        fecha: moment().format().substr(0, 10) ,
-        producto: 0,
+        usuario: '',
+        proveedor: 0,
+        codigo: 0,
         descrip: '',
-        cantidad: '',
-        unidad: '',
-        analisis: '',
-        userlab: '',
-        resultado: 0,
-        estado: 1,
-        detalle: ''
+        rubro: '',
+        subrubro: ''
       })
     } else {
       this.f.patchValue({
-        id: sample._id,
-        muestra: sample.muestra,
-        usuario: sample.usuario,
-        email: sample.email,
-        proveedor: sample.proveedor,
-        provenom: sample.provenom,
-        fecha: sample.fecha.substr(0,10) ,
-        producto: sample.producto,
-        descrip: sample.descrip,
-        cantidad: sample.cantidad,
-        unidad: sample.unidad,
-        analisis: sample.analisis ? sample.analisis.substr(0,10) : '',
-        userlab: sample.userlab,
-        resultado: sample.resultado,
-        estado: sample.estado,
-        detalle: sample.detalle
+        id: myprod._id,
+        usuario: myprod.usuario,
+        proveedor: myprod.proveedor,
+        codigo: myprod.codigo,
+        descrip: myprod.descrip,
+        rubro: myprod.rubro,
+        subrubro: myprod.subrubro
       })
     }
 
@@ -314,13 +261,7 @@ export class SamplesComponent implements AfterViewInit, OnInit {
       this.f.disable()
     } else {
       this.f.enable()
-
-      if (this.cuenta.perfil !== 0 && this.cuenta.perfil !== 3) {
-        this.f.get('analisis').disable({ onlySelf: true })
-        this.f.get('estado').disable({ onlySelf: true })
-      }
     }
-    
 
   }
 
@@ -331,22 +272,13 @@ export class SamplesComponent implements AfterViewInit, OnInit {
     // console.log('res:', this.f.getRawValue())
 
     this.idIdx = this.f.controls.id.value
-    this.sampUpt = {
-      muestra: this.f.controls.muestra.value,
+    this.myProdUpdt = {
       usuario: this.f.controls.usuario.value,
-      email: this.f.controls.email.value,
       proveedor: this.f.controls.proveedor.value,
-      provenom: this.f.controls.provenom.value,
-      fecha: this.f.controls.fecha.value,
-      producto: this.f.controls.producto.value,
+      codigo: this.f.controls.codigo.value,
       descrip: this.f.controls.descrip.value,
-      cantidad: this.f.controls.cantidad.value,
-      unidad: this.f.controls.unidad.value,
-      analisis: this.f.controls.analisis.value,
-      userlab: this.f.controls.userlab.value,
-      resultado: this.f.controls.resultado.value,
-      estado: this.f.controls.estado.value,
-      detalle: this.f.controls.detalle.value
+      rubro: this.f.controls.rubro.value,
+      subrubro: this.f.controls.subrubro.value
     }
 
     switch (this.strTipo) {
@@ -366,45 +298,41 @@ export class SamplesComponent implements AfterViewInit, OnInit {
   }
 
   agregarMuestra() {
-    this.samplesService.addSample(this.sampUpt)
-      .subscribe((sample: Samples) => {
-        console.log('Alta:', sample)
-        if (sample) {
+    this.myproductsService.addMyProducts(this.myProdUpdt)
+      .subscribe(myprod => {
+        console.log('Alta:', myprod)
+        if (myprod) {
           this.alertMsg()
         }
         this.pedirDatos()
       })
-
-   }
+  }
 
   borrarMuestra() {
-    this.samplesService.deleteSample(this.idIdx)
-     .subscribe((sample: Samples) => {
-       console.log('Baja:', sample)
-       if (sample) {
+    this.myproductsService.deleteMyProducts(this.idIdx)
+     .subscribe(myprod => {
+       console.log('Baja:', myprod)
+       if (myprod) {
         this.alertMsg()
       }
       this.pedirDatos()
     })
-
   }
 
   modificarMuestra() {
-    console.log(this.sampUpt)
-    this.samplesService.putSample(this.idIdx, this.sampUpt)
-      .subscribe((sample: Samples) => {
-      console.log('Modif:', sample)
-      if (sample) {
+    this.myproductsService.putMyProducts(this.idIdx, this.myProdUpdt)
+      .subscribe(myprod => {
+      console.log('Modif:', myprod)
+      if (myprod) {
         this.alertMsg()
       }
       this.pedirDatos()
     })
-  
   }
 
   changeProduct(ev) {
     // console.log(ev)
-    this.f.get('producto').setValue(ev.target.value, {
+    this.f.get('codigo').setValue(ev.target.value, {
       onlySelf: true
     })
     
@@ -423,13 +351,13 @@ export class SamplesComponent implements AfterViewInit, OnInit {
           onlySelf: true
         })
     
-        // this.f.get('costo').setValue((product.costo), {
-        //   onlySelf: true
-        // })
+        this.f.get('rubro').setValue((product.rubro), {
+          onlySelf: true
+        })
     
-        // this.f.get('cantidad').setValue((product.cantidad), {
-        //   onlySelf: true
-        // })
+        this.f.get('subrubro').setValue((product.subrubro), {
+          onlySelf: true
+        })
     
         // this.f.get('unidad').setValue((product.unidad), {
         //   onlySelf: true
@@ -438,10 +366,10 @@ export class SamplesComponent implements AfterViewInit, OnInit {
       }
     }
 
-    console.log(this.f.controls)
+    // console.log(this.f.controls)
 
   }
-  
+
   alertMsg(): void {
     let strConfMsg = ''
     switch (this.strTipo) {
@@ -468,7 +396,7 @@ export class SamplesComponent implements AfterViewInit, OnInit {
   
   }
 
-    getFilterObject(fullObj, key) {
+  getFilterObject(fullObj, key) {
       const uniqChk = []
       fullObj.filter((obj) => {
         if (!uniqChk.includes(obj[key])) {
@@ -476,8 +404,17 @@ export class SamplesComponent implements AfterViewInit, OnInit {
         }
         return obj
       })
-      return uniqChk
-    }
+      // console.log(uniqChk.sort((a, b) => a - b))
+      return uniqChk.sort((a, b) => {
+        if (a > b) {
+            return 1;
+        }
+        if (a < b) {
+            return -1;
+        }
+        return 0;
+      }) 
+  }
 
   // Called on Filter change
   filterChange(filter, event) {
@@ -504,18 +441,20 @@ export class SamplesComponent implements AfterViewInit, OnInit {
         if (isFilterSet) {
           for (const col in searchTerms) {
             // searchTerms[col].trim().toLowerCase().split(' ').forEach(word => {
+            //   // console.log(word)
             //   if (data[col].toString().toLowerCase().indexOf(word) != -1 && isFilterSet) {
             //     found = true
             //   }
             // });
-            console.log(searchTerms[col]);
-            console.log(data[col].toString().toLowerCase())
+
+            // console.log(searchTerms[col]);
+            // console.log(data[col].toString().toLowerCase())
             if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
-                found = true
+                  found = true
             }
           }
 
-          console.log(found)
+          // console.log(found)
           return found
         } else {
           return true;

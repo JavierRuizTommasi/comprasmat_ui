@@ -16,7 +16,7 @@
                                     <!-- Error -->
                                     <div *ngIf="f.controls.usuario.errors && f.controls.usuario.dirty" class="alert alert-danger mt-0">
                                         <div *ngIf="f.controls.usuario.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
-                                        <div *ngIf="f.controls.usuario.errors.pattern">{{esp ? 'Mayusculas sin espacios (Max=10)' : 'Uppercase characters without spaces (Max=10)'}}</div>
+                                        <div *ngIf="f.controls.usuario.errors.pattern">{{esp ? 'Solo Mayúsculas sin espacios (Max=10)' : 'Only Uppercase Characters whitout spaces (Max=10)'}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -27,7 +27,7 @@
                                     <!-- Error -->
                                     <div *ngIf="f.controls.nombre.errors && f.controls.nombre.dirty" class="alert alert-danger mt-0">
                                         <div *ngIf="f.controls.nombre.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
-                                        <div *ngIf="f.controls.nombre.errors.pattern">{{esp ? 'Max 30 caracteres' : 'Max 30 characters'}}</div>
+                                        <div *ngIf="f.controls.nombre.errors.pattern">{{esp ? 'Solo Mayúsculas (Max 50)' : 'Only Uppercase Characters (Max 50)'}}</div>
                                     </div>
                                 </div>
                             </div>

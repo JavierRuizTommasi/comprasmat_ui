@@ -46,7 +46,7 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
   f: FormGroup
   unumPattern = '^[0-9]{1,10}$'
   userPattern = '^[A-Z0-9]{1,10}$'
-  nombPattern = '^[a-zA-Z0-9 .+&]{1,30}$'
+  nombPattern = '^[A-Z0-9 .+&]{1,30}$'
   emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   passPattern = '((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,20})'
 
@@ -286,32 +286,6 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
 
     this.modalService.dismissAll()
 
-    // let strConfMsg = ''
-    // switch (this.strTipo) {
-    //   case 'A': 
-    //     strConfMsg = this.esp ? 'Confirma Alta?' : 'Confirm Add?' 
-    //     break
-    //   case 'B':
-    //     strConfMsg = this.esp ? 'Confirma Baja?' : 'Confirm Delete?' 
-    //     break
-    //   case 'M' || 'P':
-    //     strConfMsg = this.esp ? 'Confirma Modificación?' : 'Confirm Update?' 
-    //     break
-    //   default:
-    //     break
-    // }
-
-    // const dialogRef = this.dialog.open(AlertMessagesComponent, {
-    //   width: '300px',
-    //   data: {tipo: 'Confirma', mensaje: strConfMsg}
-    // })
-
-    // dialogRef.afterClosed().subscribe(res => {
-    //   if (res) {
-    //     this.confirmUsuario()
-    //   }
-    // })
-  
     this.saveUsuario()
 
   }

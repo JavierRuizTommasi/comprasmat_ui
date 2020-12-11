@@ -206,7 +206,7 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
     // console.log('Result', result)
     for(const prod of result){
         // console.log(result.codigo)
-        this.myproductsService.postMyProducts(prod)
+        this.myproductsService.addMyProducts(prod)
         .subscribe(prod => {
           // console.log('Alta:', prod)
         })

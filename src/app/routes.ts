@@ -17,6 +17,7 @@ import { ActivasComponent } from './componentes/activas/activas.component'
 import { SuppliersComponent } from './componentes/suppliers/suppliers.component'
 import { ScoringsComponent } from './componentes/scorings/scorings.component'
 import { MailsToSuppliersComponent } from './componentes/mailsToSuppliers/mailsToSuppliers.component'
+import { MyProdsAdmComponent } from './componentes/myprodsadm/myprodsadm.component'
 
 class Rutas {
   private routes: Routes = [
@@ -40,6 +41,7 @@ class Rutas {
     { path: 'proveedores', component: SuppliersComponent},
     { path: 'scorings', component: ScoringsComponent},
     { path: 'mailsToSuppliers', component: MailsToSuppliersComponent},
+    { path: 'myProdsAdm', component: MyProdsAdmComponent},
     { path: '**', component: InicioComponent}
   ]
 
