@@ -48,3 +48,11 @@ a + input {
 .filesicon {
     vertical-align: top;
 }
+
+.arglabel {
+    font-size: .75rem;
+    font-style: italic;
+    /* margin-top: 0; */
+    margin-bottom: 1rem; 
+    color: red;
+}

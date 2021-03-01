@@ -264,10 +264,10 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       this.cuenta = user
       this.esp = (this.cuenta.language === 'es')
 
-      if (user.perfil == 5) {
-        // User Pending
-        this.router.navigateByUrl('/inicio')
-      }
+      // if (user.perfil == 5) {
+      //   // User Pending
+      //   this.router.navigateByUrl('/inicio')
+      // }
     }
     else {
       console.log('no logueado')

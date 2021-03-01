@@ -17,7 +17,7 @@
               <a mat-menu-item routerLink="/licitaciones" (click)="drawer.close()">{{esp ? 'Licitaciones' : 'Tenders'}}</a>
               <a mat-menu-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Ofertas' : 'Offers'}}</a>
             </ng-container>
-            <ng-container *ngIf="cuenta.perfil==4">
+            <ng-container *ngIf="cuenta.perfil>=4">
               <a mat-menu-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Mis Ofertas' : 'My Offers'}}</a>
             </ng-container>
           </mat-menu>
@@ -40,7 +40,10 @@
               <a mat-menu-item routerLink="/seleccion" (click)="drawer.close()">{{esp ? 'Seleccionar Productos' : 'Product Selection'}}</a>
               <a mat-menu-item routerLink="/myproducts" (click)="drawer.close()">{{esp ? 'Mis Productos' : 'My Products'}}</a>
             </ng-container>
-          </mat-menu>
+            <ng-container *ngIf="cuenta.perfil<3">
+              <a mat-menu-item routerLink="/myProdsAdm" (click)="drawer.close()">{{esp ? 'Mis Productos Administración' : 'My Products Administration'}}</a>
+            </ng-container>
+      </mat-menu>
           
           <a mat-list-item [matMenuTriggerFor]="menuComunica">{{esp ? 'Comunicacion' : 'Communication'}}</a>
           <mat-menu #menuComunica="matMenu" yPosition="below"> 
@@ -53,9 +56,9 @@
           <ng-container *ngIf="cuenta.perfil<=2">
             <a mat-list-item [matMenuTriggerFor]="menuAnexo">{{esp ? 'Anexo' : 'Other'}}</a>
             <mat-menu #menuAnexo="matMenu" yPosition="below"> 
-              <button mat-menu-item routerLink="/usuarios">{{esp ? 'Usuarios' : 'Users'}}</button>
-              <button mat-menu-item routerLink="/proveedores">{{esp ? 'Proveedores' : 'Suppliers'}}</button>
-              <button mat-menu-item routerLink="/scorings">{{esp ? 'Scoring' : 'Scoring'}}</button>
+              <a mat-menu-item routerLink="/usuarios">{{esp ? 'Usuarios' : 'Users'}}</a>
+              <a mat-menu-item routerLink="/proveedores">{{esp ? 'Proveedores' : 'Suppliers'}}</a>
+              <a mat-menu-item routerLink="/scorings">{{esp ? 'Scoring' : 'Scoring'}}</a>
             </mat-menu>
           </ng-container>
   
@@ -127,7 +130,7 @@
                   <button mat-menu-item routerLink="/licitaciones">{{esp ? 'Licitaciones' : 'Tenders'}}</button>
                   <button mat-menu-item routerLink="/ofertas">{{esp ? 'Ofertas' : 'Offers'}}</button>
                 </ng-container>
-                <ng-container *ngIf="cuenta.perfil==4">
+                <ng-container *ngIf="cuenta.perfil>=4">
                   <button mat-menu-item routerLink="/ofertas">{{esp ? 'Mis Ofertas' : 'My Offers'}}</button>
                 </ng-container>
                 <!-- <ng-container *ngIf="cuenta.perfil==0">
@@ -151,6 +154,8 @@
                 <ng-container *ngIf="cuenta.perfil!=3">
                   <button mat-menu-item routerLink="/seleccion">{{esp ? 'Seleccionar Productos' : 'Product Selection'}}</button>
                   <button mat-menu-item routerLink="/myproducts">{{esp ? 'Mis Productos' : 'My Products'}}</button>
+                </ng-container>
+                <ng-container *ngIf="cuenta.perfil<3">
                   <button mat-menu-item routerLink="/myProdsAdm">{{esp ? 'Mis Productos Administración' : 'My Products Administration'}}</button>
                 </ng-container>
               </mat-menu>

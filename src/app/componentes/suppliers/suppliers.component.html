@@ -87,14 +87,14 @@
         <th mat-header-cell *matHeaderCellDef>{{esp ? 'Acciones' : 'Acctions'}}</th>
         <td mat-cell *matCellDef="let row">
           <!-- <ng-container *ngIf="cuenta"> -->
-            <!-- <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2"> -->
-              <button mat-icon-button color="primary" (click)="openModal(editSupplierModal, row, 'M')">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button color="primary" (click)="openModal(editSupplierModal, row, 'B')">
-                <mat-icon>delete</mat-icon>
-              </button>
-            <!-- </ng-container> -->
+          <!-- <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2"> -->
+          <button mat-icon-button color="primary" (click)="openModal(editSupplierModal, row, 'M')">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" (click)="openModal(editSupplierModal, row, 'B')">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <!-- </ng-container> -->
           <!-- </ng-container> -->
         </td>
       </ng-container>
@@ -137,7 +137,9 @@
             <!-- Error -->
             <div *ngIf="f.controls.usuario.errors && f.controls.usuario.dirty" class="alert alert-danger mt-0">
               <div *ngIf="f.controls.usuario.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
-              <div *ngIf="f.controls.usuario.errors.pattern">{{esp ? 'Solo Mayúsculas sin espacios (Max=10)' : 'Only Uppercase Characters whitout spaces (Max=10)'}}</div>
+              <div *ngIf="f.controls.usuario.errors.pattern">
+                {{esp ? 'Solo Mayúsculas sin espacios (Max=10)' : 'Only Uppercase Characters whitout spaces (Max=10)'}}
+              </div>
             </div>
           </div>
         </div>
@@ -150,7 +152,8 @@
             <!-- Error -->
             <div *ngIf="f.controls.nombre.errors && f.controls.nombre.dirty" class="alert alert-danger mt-0">
               <div *ngIf="f.controls.nombre.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
-              <div *ngIf="f.controls.nombre.errors.pattern">{{esp ? 'Solo Mayúsculas (Max 50)' : 'Only Uppercase Characters (Max 50)'}}</div>
+              <div *ngIf="f.controls.nombre.errors.pattern">
+                {{esp ? 'Solo Mayúsculas (Max 50)' : 'Only Uppercase Characters (Max 50)'}}</div>
             </div>
           </div>
         </div>
@@ -163,7 +166,8 @@
             <!-- Error -->
             <div *ngIf="f.controls.codigo.errors && f.controls.codigo.dirty" class="alert alert-danger mt-0">
               <div *ngIf="f.controls.codigo.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
-              <div *ngIf="f.controls.codigo.errors.pattern">{{esp ? 'Solo Digitos (0-9 Max 10)' : 'Only Digits (0-9 Max 10)'}}</div>
+              <div *ngIf="f.controls.codigo.errors.pattern">
+                {{esp ? 'Solo Digitos (0-9 Max 10)' : 'Only Digits (0-9 Max 10)'}}</div>
             </div>
           </div>
         </div>
@@ -175,9 +179,10 @@
               [readOnly]="this.strTipo == 'B'">
             <!-- Error -->
             <div *ngIf="f.controls.domicilio.errors && f.controls.domicilio.dirty" class="alert alert-danger mt-0">
-                <div *ngIf="f.controls.domicilio.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
-                <div *ngIf="f.controls.domicilio.errors.pattern">{{esp ? 'Solo Mayúsculas (Max 50)' : 'Only Uppercase Characters (Max 50)'}}</div>
-              </div>
+              <div *ngIf="f.controls.domicilio.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+              <div *ngIf="f.controls.domicilio.errors.pattern">
+                {{esp ? 'Solo Mayúsculas (Max 50)' : 'Only Uppercase Characters (Max 50)'}}</div>
+            </div>
           </div>
         </div>
 
@@ -188,9 +193,9 @@
               [readOnly]="this.strTipo == 'B'">
             <!-- Error -->
             <div *ngIf="f.controls.telefono.errors && f.controls.telefono.dirty" class="alert alert-danger mt-0">
-                <div *ngIf="f.controls.telefono.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
-                <!-- <div *ngIf="f.controls.telefono.errors.pattern">Only Uppercase Characters (Max 30)</div> -->
-              </div>
+              <div *ngIf="f.controls.telefono.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+              <!-- <div *ngIf="f.controls.telefono.errors.pattern">Only Uppercase Characters (Max 30)</div> -->
+            </div>
           </div>
         </div>
 
@@ -235,8 +240,8 @@
           <div class="col-sm-9">
             <!-- <input type="text" class="form-control" formControlName="pais" id="pais" [readOnly]="this.strTipo == 'B'"> -->
             <select class="custom-select" formControlName="pais" id="pais" required="required">
-                <option [ngValue]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
-                <option [ngValue]="country.name" *ngFor="let country of countries">{{country.name}}</option>
+              <option [ngValue]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
+              <option [ngValue]="country.name" *ngFor="let country of countries">{{country.name}}</option>
             </select>
             <!-- Error -->
             <div *ngIf="f.controls.pais.errors && f.controls.pais.dirty" class="alert alert-danger mt-0">
@@ -248,25 +253,69 @@
         <div class="form-group row">
           <label for="desempeno" class="col-sm-3 col-form-label">{{esp ? 'Desempeño' : 'Performance'}}</label>
           <div class="col-sm-9">
-            <input type="number" class="form-control" formControlName="desempeno" id="desempeno" [readOnly]="this.strTipo == 'B'">
+            <input type="number" class="form-control" formControlName="desempeno" id="desempeno"
+              [readOnly]="this.strTipo == 'B'">
           </div>
         </div>
 
         <div class="form-group row">
           <label for="ultcompra" class="col-sm-3 col-form-label">{{esp ? 'Ult. Compra' : 'Last Buy'}}</label>
           <div class="col-sm-9">
-            <input type="date" class="form-control" formControlName="ultcompra" id="ultcompra" [readOnly]="this.strTipo == 'B'">
+            <input type="date" class="form-control" formControlName="ultcompra" id="ultcompra"
+              [readOnly]="this.strTipo == 'B'">
           </div>
         </div>
 
         <ng-container *ngIf="f.controls.pais.value==='ARGENTINA'">
+          <label class="arglabel">Documentación para Proveedores de Argentina</label>
+          
+          <div class="form-group row">
+            <label for="fantasia" class="col-sm-3 col-form-label">Nomb. Fantasía</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" formControlName="fantasia" id="fantasia"
+                [readOnly]="this.strTipo == 'B'">
+            </div>
+          </div>
+          
+          <div class="form-group row">
+            <label for="actividad" class="col-sm-3 col-form-label">Actividad</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" formControlName="actividad" id="actividad"
+                [readOnly]="this.strTipo == 'B'">
+            </div>
+          </div>
+          
+          <div class="form-group row">
+            <label for="correspondencia" class="col-sm-3 col-form-label">Correspondencia</label>
+            <div class="col-sm-9">
+                <textarea class="form-control" formControlName="correspondencia" id="correspondencia" [readOnly]="this.strTipo == 'B'" rows="5" [readOnly]="this.strTipo == 'B'"></textarea>
+            </div>
+          </div>
+          
+          <div class="form-group row">
+            <label for="cuentacbu" class="col-sm-3 col-form-label">Cuenta/CBU</label>
+            <div class="col-sm-9">
+                <textarea class="form-control" formControlName="cuentacbu" id="cuentacbu" [readOnly]="this.strTipo == 'B'" rows="5" [readOnly]="this.strTipo == 'B'"></textarea>
+            </div>
+          </div>
+          
+          <div class="form-group row">
+            <label for="CUIT" class="col-sm-3 col-form-label">Nro. CUIT</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" formControlName="CUIT" id="CUIT"
+                [readOnly]="this.strTipo == 'B'">
+            </div>
+          </div>
+          
+          <!-- CUIT -->
           <div class="d-flex flex-nowrap upfiles">
             <div class="p-0 m-0 col-3">
               <label for="constCUIT" class="mb-0">Constancia CUIT</label>
               <input id="constCUIT" style="visibility:hidden;" type="file"
-                accept="application/pdf,application/vnd.ms-excel"
-                (change)="onFileSelected($event, 'constCUIT')" [readOnly]="this.strTipo == 'B'">
+                accept="application/pdf,application/vnd.ms-excel" (change)="onFileSelected($event, 'constCUIT')"
+                [readOnly]="this.strTipo == 'B'">
             </div>
+
             <div class="mt-0 pt-0 col-9">
               <table class="table table-responsive">
                 <tr *ngFor="let file of getFile('constCUIT');index as i">
@@ -289,7 +338,209 @@
               </div>
             </div>
           </ng-container>
+          <!-- CUIT -->
 
+          <!-- F1276 -->
+          <div class="d-flex flex-nowrap upfiles">
+            <div class="p-0 m-0 col-3">
+              <label for="F1276" class="mb-0">Formulario F1276</label>
+              <input id="F1276" style="visibility:hidden;" type="file"
+                accept="application/pdf,application/vnd.ms-excel" (change)="onFileSelected($event, 'F1276')"
+                [readOnly]="this.strTipo == 'B'">
+            </div>
+
+            <div class="mt-0 pt-0 col-9">
+              <table class="table table-responsive">
+                <tr *ngFor="let file of getFile('F1276');index as i">
+                  <td class="upfiles" (click)="onPreviewFile(file)">{{file.originalName}}</td>
+                  <td>
+                    <!-- <button mat-icon-button color="warn" (change)="onDeleteFile(file, 'F1276')"> -->
+                    <mat-icon class="pt-0 ml-2 filesicon" color="warn" (click)="onDeleteFile(file, 'F1276')">delete
+                    </mat-icon>
+                    <!-- </button> -->
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <ng-container *ngIf="f1276Done">
+            <div class="d-flex justify-content-center">
+              <div class="spinner-border m-2" role="status">
+                <span class="sr-only">Adding...</span>
+              </div>
+            </div>
+          </ng-container>
+          <!-- F1276 -->
+
+          <!-- IIBB -->
+          <div class="form-group row">
+            <label for="IIBB" class="col-sm-3 col-form-label">Nro. IIBB</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" formControlName="IIBB" id="IIBB"
+                [readOnly]="this.strTipo == 'B'">
+            </div>
+          </div>
+          
+          <div class="d-flex flex-nowrap upfiles">
+            <div class="p-0 m-0 col-3">
+              <label for="constIIBB" class="mb-0">Constancia IIBB</label>
+              <input id="constIIBB" style="visibility:hidden;" type="file"
+                accept="application/pdf,application/vnd.ms-excel" (change)="onFileSelected($event, 'constIIBB')"
+                [readOnly]="this.strTipo == 'B'">
+            </div>
+
+            <div class="mt-0 pt-0 col-9">
+              <table class="table table-responsive">
+                <tr *ngFor="let file of getFile('constIIBB');index as i">
+                  <td class="upfiles" (click)="onPreviewFile(file)">{{file.originalName}}</td>
+                  <td>
+                    <!-- <button mat-icon-button color="warn" (change)="onDeleteFile(file, 'constIIBB')"> -->
+                    <mat-icon class="pt-0 ml-2 filesicon" color="warn" (click)="onDeleteFile(file, 'constIIBB')">delete
+                    </mat-icon>
+                    <!-- </button> -->
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <ng-container *ngIf="iibbDone">
+            <div class="d-flex justify-content-center">
+              <div class="spinner-border m-2" role="status">
+                <span class="sr-only">Adding...</span>
+              </div>
+            </div>
+          </ng-container>
+          <!-- IIBB -->
+
+          <!-- retIIBBSF -->
+          <div class="form-group row">
+            <label for="retIIBBSF" class="col-sm-3 col-form-label">Ret. IIBB SF</label>
+            <div class="col-sm-9">
+              <div class="ml-2 mt-2">
+                <mat-slide-toggle formControlName="retIIBBSF" id="retIIBBSF" color=primary [readOnly]="this.strTipo == 'B'">
+                </mat-slide-toggle>
+              </div>
+            </div>
+          </div>
+          
+          <ng-container *ngIf="f.controls.retIIBBSF.value">
+            <div class="form-group row">
+              <label for="aliretIIBBSF" class="col-sm-3 col-form-label">Alicuota IIBB SF</label>
+              <div class="col-sm-9">
+                <input type="number" class="form-control" formControlName="aliretIIBBSF" id="aliretIIBBSF"
+                  [readOnly]="this.strTipo == 'B'">
+              </div>
+            </div>
+          </ng-container>
+            
+          <ng-container *ngIf="!f.controls.retIIBBSF.value">
+            <div class="d-flex flex-nowrap upfiles">
+              <div class="p-0 m-0 col-3">
+                <label for="constexenIIBBSF" class="mb-0">Constancia Exen. IIBB SF</label>
+                <input id="constexenIIBBSF" style="visibility:hidden;" type="file"
+                  accept="application/pdf,application/vnd.ms-excel" (change)="onFileSelected($event, 'constexenIIBBSF')"
+                  [readOnly]="this.strTipo == 'B'">
+              </div>
+
+              <div class="mt-0 pt-0 col-9">
+                <table class="table table-responsive">
+                  <tr *ngFor="let file of getFile('constexenIIBBSF');index as i">
+                    <td class="upfiles" (click)="onPreviewFile(file)">{{file.originalName}}</td>
+                    <td>
+                      <!-- <button mat-icon-button color="warn" (change)="onDeleteFile(file, 'constexenIIBBSF')"> -->
+                      <mat-icon class="pt-0 ml-2 filesicon" color="warn" (click)="onDeleteFile(file, 'constexenIIBBSF')">delete
+                      </mat-icon>
+                      <!-- </button> -->
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <ng-container *ngIf="iibbsfDone">
+              <div class="d-flex justify-content-center">
+                <div class="spinner-border m-2" role="status">
+                  <span class="sr-only">Adding...</span>
+                </div>
+              </div>
+            </ng-container>
+
+            <div class="form-group row">
+              <label for="motiexenIIBBSF" class="col-sm-3 col-form-label">Motivo exención</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" formControlName="motiexenIIBBSF" id="motiexenIIBBSF"
+                  [readOnly]="this.strTipo == 'B'">
+              </div>
+            </div>
+          </ng-container>
+          <!-- retIIBBSF -->
+
+          <!-- retIIBBMI -->
+          <div class="form-group row">
+            <label for="retIIBBMI" class="col-sm-3 col-form-label">Ret. IIBB Misiones</label>
+            <div class="col-sm-9">
+              <div class="ml-2 mt-2">
+                <mat-slide-toggle formControlName="retIIBBMI" id="retIIBBMI" color=primary [readOnly]="this.strTipo == 'B'">
+                </mat-slide-toggle>
+              </div>
+            </div>
+          </div>
+          
+          <ng-container *ngIf="f.controls.retIIBBMI.value">
+            <div class="form-group row">
+              <label for="aliretIIBBMI" class="col-sm-3 col-form-label">Alicuota IIBB Misiones</label>
+              <div class="col-sm-9">
+                <input type="number" class="form-control" formControlName="aliretIIBBMI" id="aliretIIBBMI"
+                  [readOnly]="this.strTipo == 'B'">
+              </div>
+            </div>
+          </ng-container>
+            
+          <ng-container *ngIf="!f.controls.retIIBBMI.value">
+            <div class="d-flex flex-nowrap upfiles">
+              <div class="p-0 m-0 col-3">
+                <label for="constexenIIBBMI" class="mb-0">Constancia Exen. IIBB Misiones</label>
+                <input id="constexenIIBBMI" style="visibility:hidden;" type="file"
+                  accept="application/pdf,application/vnd.ms-excel" (change)="onFileSelected($event, 'constexenIIBBMI')"
+                  [readOnly]="this.strTipo == 'B'">
+              </div>
+
+              <div class="mt-0 pt-0 col-9">
+                <table class="table table-responsive">
+                  <tr *ngFor="let file of getFile('constexenIIBBMI');index as i">
+                    <td class="upfiles" (click)="onPreviewFile(file)">{{file.originalName}}</td>
+                    <td>
+                      <!-- <button mat-icon-button color="warn" (change)="onDeleteFile(file, 'constexenIIBBMI')"> -->
+                      <mat-icon class="pt-0 ml-2 filesicon" color="warn" (click)="onDeleteFile(file, 'constexenIIBBMI')">delete
+                      </mat-icon>
+                      <!-- </button> -->
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <ng-container *ngIf="iibbmiDone">
+              <div class="d-flex justify-content-center">
+                <div class="spinner-border m-2" role="status">
+                  <span class="sr-only">Adding...</span>
+                </div>
+              </div>
+            </ng-container>
+
+            <div class="form-group row">
+              <label for="motiexenIIBBMI" class="col-sm-3 col-form-label">Motivo exención</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" formControlName="motiexenIIBBMI" id="motiexenIIBBMI"
+                  [readOnly]="this.strTipo == 'B'">
+              </div>
+            </div>
+          </ng-container>
+          <!-- retIIBBMI -->
+
+          <!-- Ganancias -->
           <div class="d-flex flex-nowrap upfiles">
             <div class="p-0 m-0 col-3">
               <label for="constGAN" class="mb-0">Constancia Ganancias</label>
@@ -316,6 +567,7 @@
               </div>
             </div>
           </ng-container>
+          <!-- Ganancias -->
 
         </ng-container>
 
