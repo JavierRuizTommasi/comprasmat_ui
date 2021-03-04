@@ -46,7 +46,7 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
   f: FormGroup
   unumPattern = '^[0-9]{1,10}$'
   userPattern = '^[A-Z0-9]{1,10}$'
-  nombPattern = '^[A-Z0-9 .+&]{1,30}$'
+  nombPattern = '^[A-Za-z0-9 .+&]{1,30}$'
   emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   passPattern = '((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,20})'
 

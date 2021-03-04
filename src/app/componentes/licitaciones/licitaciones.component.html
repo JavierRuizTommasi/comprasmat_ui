@@ -1,16 +1,17 @@
 <div class="jumbotron"> 
-    <h5 class="mt-2" *ngIf="cuenta">{{esp ? 'Licitaciones' : 'Tenders'}}</h5>
+  <h5 class="mt-2" *ngIf="cuenta && isActivas">{{esp ? 'Solicitudes de Cotizaci&oacute;n Activas' : 'Active Requests for quotation'}}</h5>
+  <h5 class="mt-2" *ngIf="cuenta && !isActivas">{{esp ? 'Solicitudes de Cotizaci&oacute;n' : 'Requests for quotation'}}</h5>
     <div class="d-flex flex-row flex-wrap">
       <div class="mr-auto pr-2 flex-grow-1">
         <mat-form-field>
           <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{esp ? 'Filtro' : 'Filter'}}" />
         </mat-form-field>
       </div>
-      <ng-container *ngIf="cuenta">
+      <ng-container *ngIf="cuenta && !isActivas">
         <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2">
           <div class="container-btn-new">
             <button id="newbutton" mat-raised-button color="primary" (click)="openModal(editTenderModal, tender, 'A')">
-              <mat-icon>note_add</mat-icon>&nbsp; {{esp ? 'Nueva Licitacion' : 'New Tender'}}
+              <mat-icon>note_add</mat-icon>&nbsp; {{esp ? 'Nueva Solicitud' : 'New Request'}}
             </button>
           </div>
         </ng-container>
@@ -68,8 +69,14 @@
                   </button>
                 </ng-container> 
               </ng-container>
+              <button mat-icon-button color="primary" data-toggle="tooltip" title="Ranking" (click)="openModal(editTenderCotizaciones, row, 'D')">
+                <mat-icon>assessment</mat-icon>
+              </button>
               <button mat-icon-button color="primary" data-toggle="tooltip" title="Details" (click)="openModal(editTenderDetalle, row, 'D')">
                 <mat-icon>description</mat-icon>
+              </button>
+              <button class="mb-0" id="newbutton" mat-raised-button color="primary" (click)="makeAnOffer(row)">
+                <mat-icon>note_add</mat-icon>&nbsp; {{esp ? 'Cotizar' : 'Quote'}}
               </button>
             </td>
           </ng-container>
@@ -268,23 +275,58 @@
   
       <ng-template #editTenderDetalle let-modal>
         <div class="modal-header">
-          <h5 class="modal-title">{{esp ? 'Detalles' : 'Details'}}</h5>
+          <h5 class="modal-title">{{esp ? 'CARACTERISTICAS DEL INSUMO SOLICITADO' : 'SUPPLIES REQUEST CHARACTERISTIC'}}</h5>
           <button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
     
-        <div class="modal-body">
+        <div class="modal-body p-0">
           <form [formGroup]="f" (ngSubmit)="onSubmit()">
-            <div class="form-group row">
-              <label for="detalle" class="col-sm-3 col-form-label">{{esp ? 'Detalle' : 'Detail'}}</label>
-              <div class="col-sm-9">
-                  <textarea class="form-control" formControlName="detalle" id="detalle" [readOnly]="this.strTipo == 'B'" rows="5"></textarea>
-              </div>
-            </div>
+            <div class="descrip">{{esp ? 'Producto: ' + producto.descrip : 'Product: ' + producto.detaeng}}</div>
+            <div class="descrip">{{esp ? 'Rubro: ' + producto.rubro : 'Category: ' + producto.rubroeng}}</div>
+            <div class="descrip">{{esp ? 'SubRubro: ' + producto.subrubro : 'SubCategory: ' + producto.subrueng}}</div>
+            <p class="descrip p-2" [innerHTML]="esp ? producto.caracteris : producto.caracteriseng"></p>
           </form>
         </div>
-  
+      </ng-template>
+        
+      <ng-template #editTenderCotizaciones let-modal>
+        <div class="modal-header">
+          <h5 class="modal-title">{{esp ? producto.descrip : producto.detaeng}}</h5>
+          <button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+    
+        <div class="modal-body p-0">
+          <div class="container pl-0 ml-0 m-0 pb-0 pr-2 overflow-auto">
+            <table class="table table-responsive" >
+              <thead class="offer-th">
+                <tr>
+                  <th>{{esp ? 'Rank.' : 'Rank.'}}</th>
+                  <th>{{esp ? 'Oferta' : 'Offer'}}</th>
+                  <th>{{esp ? 'Usuario' : 'User'}}</th>
+                  <th>{{esp ? 'Cantidad' : 'Quantity'}}</th>
+                  <th>{{esp ? 'Precio' : 'Price'}}</th>
+                  <th>{{esp ? 'Entrega' : 'Delivery'}}</th>
+                  <th>{{esp ? 'Scoring' : 'Scoring'}}</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let offer of getFilterByTender(f.controls.id.value);index as i">
+                <tr [style.background-color]="offer.usuario === cuenta.usuario ? 'lightyellow' : 'white'">
+                  <td>{{i+1}}</td>
+                  <td>{{offer.oferta}}</td> 
+                  <td>{{offer.usuario === cuenta.usuario ? offer.usuario : ''}}</td>
+                  <td>{{offer.cantidad}} {{offer.unidad}}</td>
+                  <td>U$S {{offer.precio}}</td>
+                  <td>{{offer.entrega.substring(0,10)}}</td>
+                  <td class="d-flex flex-nowrap">{{offer.scoring}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </ng-template>
         
   </div>

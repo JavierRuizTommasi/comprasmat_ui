@@ -55,7 +55,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   offer: Offers
   offUpt: Offers
 
-  tenders: Tenders[] = [] 
+  tenders: Tenders[] = []
+  tender: Tenders 
 
   products: Productos[] = [] 
 
@@ -74,7 +75,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   filterValues = {}
   filterSelectObj = []
 
-  newOffer: Observable<string>
+  tenderToOffer: string = ''
 
   constructor(
     private fb: FormBuilder,
@@ -198,9 +199,14 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
-      // console.log(params);
-      this.newOffer = params['nuevaoferta']
-      // console.log(this.newOffer);
+      if (params.tender) {
+        console.log(params);
+        this.tenderToOffer = params.tender+'/'+params.product
+      } else {
+        this.tenderToOffer = ''
+      }
+      // this.tenderToOffer = '246/1'
+      console.log(this.tenderToOffer);
     })
 
     this.pedirDatos()
@@ -239,18 +245,33 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     // await this.pedirTenders(user)
     // await this.pedirOffers(user)
     await this.pedirProducts()
-    console.log('Products')
+    // console.log('Products')
     await this.pedirTenders(user)
-    console.log('Tenders')
+    // console.log('Tenders')
     await this.pedirOffers(user)
-    console.log('Offers')
+    // sconsole.log('Offers')
 
     this.notDone = false
 
-    if (this.newOffer) {
+    if (this.tenderToOffer !== '') {
       // Que vino desde Activas
+      this.tender = await this.getTender()
+      console.log(this.tender)
+
+      console.log(this.tenderToOffer)
       await this.openModal(this.editOfferModal, this.offer, 'A')
+    } else {
+      this.tender = undefined
     }
+
+  }
+
+  async getTender() {
+    // Trae la tender elegida para Cotizar
+    const estaTend: any = await this.tenders.filter( x => x.licitacion == this.tenderToOffer)
+    console.log(estaTend[0])
+
+    return estaTend[0]
   }
 
   checkCuenta(user) {
@@ -340,22 +361,22 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       this.f.patchValue({
         id: '',
         oferta: 0,
-        licitacion: '',
-        licitacion_id: '',
+        licitacion: this.tender ? this.tender.licitacion : '',
+        licitacion_id: this.tender ? this.tender.id : '',
         usuario: this.cuenta.usuario,
         email: this.cuenta.email,
         proveedor: this.cuenta.proveedor,
         provenom: this.cuenta.nombre,
         fecha: moment().format().substr(0, 10) ,
         finaliza: moment().format().substr(0, 10),
-        producto: 0,
-        descrip: '',
-        cantidad: '',
-        unidad: '',
-        costo: '',
+        producto: this.tender ? this.tender.producto : '',
+        descrip: this.tender ? this.tender.descrip: '',
+        cantidad: this.tender ? this.tender.cantidad : '',
+        unidad: this.tender ? this.tender.unidad : '',
+        costo: this.tender ? this.tender.costo : '',
         precio: '',
         incoterm: 'FOB',
-        entrega: '',
+        entrega: moment().format().substr(0, 10),
         estado: 1,
         detalle: '',
         scoreProveedor: 0,
@@ -455,6 +476,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         break
       case 'B':
         // Baja
+        console.log('Baja')
         this.borrarOferta()
         break
       case 'M':
@@ -463,27 +485,43 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         break
     }
 
-    this.newOffer = undefined
-    console.log(this.newOffer)
   }
+
+  // onDismiss() {
+  //   // this.modal.close()
+  //   console.log('Dismiss')
+  //   this.router.navigateByUrl('/ofertas')
+
+  // }
 
   async agregarOferta() {
     let resp: any = await this.offersService.addOffer(this.offUpt).toPromise()
+    console.log(resp)
+
     if (resp) {
-      console.log(resp)
       let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
+      console.log(updScoring)
       await this.alertMsg()
     }
+
+    console.log('Agregó')
+
+    await this.tenderToOffer == ''
     await this.pedirDatos()
    }
 
   async borrarOferta() {
     let resp: any = await this.offersService.deleteOffer(this.idIdx).toPromise()
-    if (resp) {
-      console.log(resp)
+    console.log(resp)
+    // if (resp) {
       let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
+      console.log(updScoring)
       await this.alertMsg()
-    }
+    // }
+
+    console.log('Borró')
+
+    await this.tenderToOffer == ''
     await this.pedirDatos()
   }
 
@@ -494,25 +532,10 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
       await this.alertMsg()
     }
+
+    await this.tenderToOffer == ''
     await this.pedirDatos()
   }
-
-  // async calculaScoring(offer: Offers) {
-  //   console.log('Calcula')
-
-  //   let resp: any = this.products.filter( x => x.codigo == offer.producto)
-  //   // console.log(resp)
-
-  //   let valorHisto: number = 0
-  //   if (resp[0]) {
-  //     valorHisto = resp[0].historico
-  //   }
-
-  //   offer.scorePrecio = valorHisto
-
-  //   return offer
-  // }
-
 
   changeTender(ev) {
     // console.log(ev)

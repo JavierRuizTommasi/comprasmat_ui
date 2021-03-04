@@ -1,7 +1,7 @@
 <div class="jumbotron">
     <ng-container *ngIf="cuenta">
-        <h5 *ngIf="cuenta.perfil < 4">{{esp ? 'Ofertas' : 'Offers'}}</h5>
-        <h5 *ngIf="cuenta.perfil >= 4">{{esp ? 'Mis Ofertas' : 'My Offers'}}</h5>
+        <h5 *ngIf="cuenta.perfil < 4">{{esp ? 'Solicitudes Cotizadas' : 'Quoted Requests'}}</h5>
+        <h5 *ngIf="cuenta.perfil >= 4">{{esp ? 'Mis Solicitudes Cotizadas' : 'My Quoted Requests'}}</h5>
         <div class="d-flex flex-row flex-wrap">
             <div class="mr-auto pr-2 flex-grow-1" *ngFor="let filter of filterSelectObj">
                 <mat-form-field>
@@ -82,7 +82,7 @@
 
             <!-- Actions Column -->
             <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef>{{esp ? 'Acciones' : 'Acctions'}}</th>
+                <th mat-header-cell *matHeaderCellDef>{{esp ? 'Acciones' : 'Actions'}}</th>
                 <td mat-cell *matCellDef="let row">
                     <ng-container *ngIf="cuenta">
                         <ng-container *ngIf="cuenta.perfil!=1 && cuenta.perfil!=3">

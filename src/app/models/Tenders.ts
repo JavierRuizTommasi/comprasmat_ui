@@ -1,4 +1,5 @@
 export class Tenders {
+    public id?: string
     public licitacion: string
     public fecha: string
     public finaliza: string

@@ -125,7 +125,7 @@
               <!-- Error -->
               <div *ngIf="f.controls.nombre.errors && f.controls.nombre.dirty" class="alert alert-danger mt-0">
                 <div *ngIf="f.controls.nombre.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
-                <div *ngIf="f.controls.nombre.errors.pattern">{{esp ? 'Solo Mayúsculas (Max 50)' : 'Only Uppercase Characters (Max 50)'}}</div>
+                <div *ngIf="f.controls.nombre.errors.pattern">{{esp ? '(Max 50)' : '(Max 50)'}}</div>
               </div>
             </div>  
           </div>
@@ -266,12 +266,12 @@
             <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">{{esp ? 'Cancelar' : 'Cancel'}}</button>
           </div>
 
-          <!-- <hr>
+          <hr>
           <pre>{{f.controls.errors | json}}</pre>
           <hr>
           <hr>
           <pre>{{f.controls.nombre.errors | json}}</pre>
-          <hr> -->
+          <hr>
 
         </form>
       </div>
