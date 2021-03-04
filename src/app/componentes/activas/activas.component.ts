@@ -256,34 +256,7 @@ export class ActivasComponent implements AfterViewInit, OnInit {
   applyFilter(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase()
   }
-
-  alertMsg(): void {
-
-    let strConfMsg = ''
-    switch (this.strTipo) {
-      case 'A':
-        // Alta
-        strConfMsg = this.esp ? 'Licitación Creada!' : 'Tender Created!' 
-        break
-      case 'B':
-        // Baja
-        strConfMsg = this.esp ? 'Licitación Borrada!' : 'Tender Deleted!' 
-        break
-      case 'M':
-        // Modificar
-        strConfMsg = this.esp ? 'Licitación Modificada!' : 'Tender Updated!' 
-        break
-      default:
-        break
-    }
-    
-    const dialogRef = this.dialog.open(AlertMessagesComponent, {
-      width: '300px',
-      data: {tipo: 'Aviso', mensaje: strConfMsg}
-    })
   
-  }
-
   getFilterByTender(tender: string) {
     let newOff: Offers[] = []
     newOff = this.offers.filter( x => x.licitacion_id == tender)

@@ -7,11 +7,13 @@ import { ComunicacionService } from 'src/app/servicios/comunicacion.service'
 import { UsuariosService } from 'src/app/servicios/usuarios.service'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
-import { Router } from '@angular/router'
+import { Router, ActivatedRoute } from '@angular/router'
 import { Language } from 'src/app/models/Language'
 import { LanguageService } from 'src/app/servicios/language.service'
 import { TendersService } from 'src/app/servicios/tenders.service'
 import { Tenders } from 'src/app/models/Tenders'
+import { OffersService } from 'src/app/servicios/offers.service'
+import { Offers } from 'src/app/models/Offers';
 import * as moment from 'moment'
 import { ProductosService } from 'src/app/servicios/productos.service'
 import { Productos } from 'src/app/models/Products';
@@ -19,6 +21,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
 import { arEstadosLicitaciones } from 'src/app/models/EstadosLicitaciones'
 import { arUnidades } from 'src/app/models/Unidades'
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-licitaciones',
@@ -49,7 +52,10 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
   tender: Tenders
   updtTender: Tenders
 
+  offers: Offers[] = [] 
+
   products: Productos[] = [] 
+  producto: Productos[] = []
 
   f: FormGroup
 
@@ -61,6 +67,8 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
   estadosLicitaciones = arEstadosLicitaciones
   unidades = arUnidades
 
+  isActivas: Observable<string>
+
   constructor(
     private fb: FormBuilder,
     private comunicacionService: ComunicacionService,
@@ -68,10 +76,12 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
     private languageService: LanguageService,
     private usuariosService: UsuariosService,
     private tenderService: TendersService,
+    private offerService: OffersService,
     private productService: ProductosService,
     private router: Router,
-    public dialog: MatDialog
-    ) {
+    public dialog: MatDialog,
+    private activatedRoute: ActivatedRoute
+  ) {
       if (!this.usuariosService.isLogin()) {
         this.router.navigateByUrl('/login')
       }
@@ -118,8 +128,12 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
         historico: 0
       })
 
-        this.languageService.esp$.subscribe((lang: Language) => {
+      this.languageService.esp$.subscribe((lang: Language) => {
         this.esp = lang.esp
+      })
+
+      this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
+        this.cuenta = cuenta
       })
 
       // console.log('Tenders Constructor')
@@ -127,8 +141,10 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
 
   ngOnInit(): void {
     // console.log('Tenders OnInit')
-    this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
-      this.cuenta = cuenta
+    this.activatedRoute.params.subscribe(params => {
+      console.log(params);
+      this.isActivas = params['activas']
+      console.log(this.isActivas);
     })
 
     this.pedirDatos()
@@ -158,6 +174,7 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
     this.checkCuenta(user)
 
     await this.pedirProducts()
+    await this.pedirOffers()
     await this.pedirTenders(user)
   }
     
@@ -189,23 +206,10 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
   }
   
   async pedirTenders(user) {
-    if (user) {
-      // console.log('Tenders')
-      this.tenderService.getTenders()
-      .subscribe((resp: any) => {
-        // console.log(resp)
-        this.dataSource.data = resp.Tenders
-        this.dataSource.sort = this.sort
-        this.dataSource.paginator = this.paginator
-        this.table.dataSource = this.dataSource
-
-        // this.tenders = resp.Tenders        
-        this.notDone = false
-      })
-    } else {
-      // console.log('Actives')
-      this.tenderService.getActives()
-      .subscribe((resp: any) => {
+    if (this.isActivas) {
+      console.log('Actives')
+      let resp: any = await this.tenderService.getActives().toPromise()
+      // .subscribe((resp: any) => {
         // console.log(resp)
         this.dataSource.data = resp.Tenders
         this.dataSource.sort = this.sort
@@ -214,10 +218,31 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
 
         // this.tenders = resp.Tenders
         this.notDone = false
-      })
+      // })
+    } else {
+      console.log('Tenders')
+      let resp: any = await this.tenderService.getTenders().toPromise()
+      // .subscribe((resp: any) => {
+        // console.log(resp)
+        this.dataSource.data = resp.Tenders
+        this.dataSource.sort = this.sort
+        this.dataSource.paginator = this.paginator
+        this.table.dataSource = this.dataSource
+
+        // this.tenders = resp.Tenders        
+        this.notDone = false
+      // })
     }
   }
 
+  async pedirOffers() {
+    let resp: any = await this.offerService.getOffers().toPromise()
+    // .subscribe((resp: Offers) => {
+      // console.log(resp)
+      this.offers = resp.Offers
+    // })
+  }
+  
   async pedirProducts() {
     this.productService.getProductos()
     .subscribe((resp: any) => {
@@ -270,6 +295,11 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
       })
     }
 
+    let esteProd: any
+    esteProd = this.products.filter( x => x.codigo == tender.producto)
+    this.producto = esteProd[0]
+    console.log(this.producto)
+
     if (strTipoParam === 'B') {
       this.f.disable()
     } else {
@@ -301,7 +331,7 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
       estado: this.f.controls.estado.value,
       historico: this.f.controls.historico.value
     }
-
+    
     switch (this.strTipo) {
       case 'A':
         // Alta
@@ -430,5 +460,30 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
     })
   
   }
+
+  getFilterByTender(tender: string) {
+    let newOff: Offers[] = []
+    newOff = this.offers.filter( x => x.licitacion_id == tender)
+
+    newOff.sort((a, b) => {
+      if(a.scoring < b.scoring) {
+        return 1
+      } 
+      if (a.scoring > b.scoring) {
+        return -1
+      }
+      return 0
+    })
+    
+    // console.log(newOff)
+
+    // return this.offers.filter( x => x.licitacion_id == tender)
+    return newOff
+  }
+
+  makeAnOffer(tender){
+    this.router.navigateByUrl('/ofertas/'+tender.licitacion)
+  }
+
 }
 
