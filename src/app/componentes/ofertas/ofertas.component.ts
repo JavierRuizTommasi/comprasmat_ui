@@ -23,6 +23,7 @@ import { arEstadosOfertas } from 'src/app/models/EstadosOfertas'
 import { arIncoterms } from 'src/app/models/Incoterms'
 import { arUnidades } from 'src/app/models/Unidades'
 import { arFinanciacion } from 'src/app/models/Financiacion'
+import { arDiasEntrega } from 'src/app/models/DiasEntrega'
 import { Observable } from 'rxjs';
 
 @Component({
@@ -39,7 +40,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<Offers> = new MatTableDataSource<Offers>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['oferta', 'usuario', 'licitacion', 'descrip', 'cantidad', 'precio', 'incoterm', 'entrega', 'estado', 'actions']
+  displayedColumns: string[] = ['usuario', 'licitacion', 'descrip', 'cantidad', 'precio', 'total', 'incoterm', 'estado', 'actions']
 
   strTipo: string
   idIdx: string
@@ -56,7 +57,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   offUpt: Offers
 
   tenders: Tenders[] = []
-  tender: Tenders 
+  exTender: Tenders 
 
   products: Productos[] = [] 
 
@@ -71,6 +72,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   incoterms = arIncoterms
   unidades = arUnidades
   financiaciones = arFinanciacion
+  diasEntrega = arDiasEntrega
   
   filterValues = {}
   filterSelectObj = []
@@ -234,9 +236,10 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     // Esta funcion pide todos los datos previos antes de mostrar en el browser
     // getUserData() Chequea si el usuario esta logeado 
     // checkCuenta() Avisa al Navbar sino 
+    // pedirProductos() trae datos del Servicio Productos  
     // pedirTenders() Trae datos del Servicio Tenders
     // pedirOffers() Trae datos del Servicio Offers
-    // pedirSampres() trae datos del Servicio Samples pero solo en caso que el usuario este logeado  
+    // getTender() Trae los datos del Tender si vino desde Cotizar 
 
     console.log('pedirDatos')
     const user = await this.getUserData()
@@ -245,23 +248,23 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     // await this.pedirTenders(user)
     // await this.pedirOffers(user)
     await this.pedirProducts()
-    // console.log('Products')
+    console.log('Products')
     await this.pedirTenders(user)
-    // console.log('Tenders')
+    console.log('Tenders')
     await this.pedirOffers(user)
-    // sconsole.log('Offers')
+    console.log('Offers')
 
     this.notDone = false
 
     if (this.tenderToOffer !== '') {
       // Que vino desde Activas
-      this.tender = await this.getTender()
-      console.log(this.tender)
+      this.exTender = await this.getTender()
+      console.log(this.exTender)
 
       console.log(this.tenderToOffer)
       await this.openModal(this.editOfferModal, this.offer, 'A')
     } else {
-      this.tender = undefined
+      this.exTender = undefined
     }
 
   }
@@ -316,7 +319,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       } else {
         // console.log('Actives')
         resp = await this.offersService.getOffers().toPromise()
-        // console.log(resp)
+        console.log(resp)
       }
 
       this.dataSource.data = resp.Offers
@@ -333,18 +336,18 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     }
   }
 
-  async pedirTenders(user) {
+  pedirTenders(user) {
       this.tenderService.getTenders()
       .subscribe((resp: any) => {
-        // console.log(resp)
+        console.log(resp)
         this.tenders = resp.Tenders
       })
   }
 
-  async pedirProducts() {
+  pedirProducts() {
     this.productService.getProductos()
     .subscribe((resp: any) => {
-      // console.log(resp)
+      console.log(resp)
       this.products = resp.Products
     })
   }
@@ -361,23 +364,23 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       this.f.patchValue({
         id: '',
         oferta: 0,
-        licitacion: this.tender ? this.tender.licitacion : '',
-        licitacion_id: this.tender ? this.tender.id : '',
+        licitacion: this.exTender ? this.exTender.licitacion : '',
+        licitacion_id: this.exTender ? this.exTender.id : '',
         usuario: this.cuenta.usuario,
         email: this.cuenta.email,
         proveedor: this.cuenta.proveedor,
         provenom: this.cuenta.nombre,
         fecha: moment().format().substr(0, 10) ,
         finaliza: moment().format().substr(0, 10),
-        producto: this.tender ? this.tender.producto : '',
-        descrip: this.tender ? this.tender.descrip: '',
-        cantidad: this.tender ? this.tender.cantidad : '',
-        unidad: this.tender ? this.tender.unidad : '',
-        costo: this.tender ? this.tender.costo : '',
+        producto: this.exTender ? this.exTender.producto : '',
+        descrip: this.exTender ? this.exTender.descrip: '',
+        cantidad: this.exTender ? this.exTender.cantidad : '',
+        unidad: this.exTender ? this.exTender.unidad : '',
+        costo: this.exTender ? this.exTender.costo : '',
         precio: '',
         incoterm: 'FOB',
-        entrega: moment().format().substr(0, 10),
-        estado: 1,
+        entrega: 7,
+        estado: 0,
         detalle: '',
         scoreProveedor: 0,
         scorePrecio: 0,
@@ -406,7 +409,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         costo: offer.costo,
         precio: offer.precio,
         incoterm: offer.incoterm,
-        entrega: offer.entrega.substr(0,10),
+        entrega: offer.entrega,
         estado: offer.estado,
         detalle: offer.detalle,
         scoreProveedor: offer.scoreProveedor,
@@ -511,20 +514,23 @@ export class OfertasComponent implements AfterViewInit, OnInit {
    }
 
   async borrarOferta() {
-    let resp: any = await this.offersService.deleteOffer(this.idIdx).toPromise()
-    console.log(resp)
-    // if (resp) {
-      let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
-      console.log(updScoring)
-      await this.alertMsg()
-    // }
+    this.offersService.deleteOffer(this.idIdx)
+    .subscribe((resp: any) => {
+      if (resp) {
+          this.tenderService.updateScoring(this.offUpt.licitacion_id)
+          .subscribe((respUpdt: any) => {
+              if (respUpdt) {
+                console.log(respUpdt)
+                this.alertMsg()
 
-    console.log('Borró')
-
-    await this.tenderToOffer == ''
-    await this.pedirDatos()
+                this.tenderToOffer == ''
+              }
+              this.pedirDatos()
+          })
+      }
+      console.log('Borro')
+    })
   }
-
   async modificarOferta() {
     let resp: any = await this.offersService.putOffer(this.idIdx, this.offUpt).toPromise()
     if (resp) {
@@ -720,4 +726,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     }
   }
 
+  total(pre, can) {
+    return pre * can
+  }
 }

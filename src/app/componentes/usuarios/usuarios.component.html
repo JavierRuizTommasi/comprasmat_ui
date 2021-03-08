@@ -1,5 +1,5 @@
 <div class="jumbotron">
-  <h5 class="mt-2">{{esp ? 'Usuarios' : 'Users'}}</h5>
+  <h3 class="mt-2">{{esp ? 'Usuarios' : 'Users'}}</h3>
   <div class="d-flex flex-row flex-wrap">
     <div class="mr-auto pr-2 flex-grow-1">
       <mat-form-field>
@@ -39,8 +39,14 @@
 
         <!-- Perfil Column -->
         <ng-container matColumnDef="perfil">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Peril' : 'Profile'}}</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Perfil' : 'Profile'}}</th>
           <td mat-cell *matCellDef="let row">{{esp ? perfiles[row.perfil].perfilnom : perfiles[row.perfil].perfileng}}</td>
+        </ng-container>
+
+        <!-- Language Column -->
+        <ng-container matColumnDef="language">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Idiona' : 'Language'}}</th>
+          <td mat-cell *matCellDef="let row">{{row.language}}</td>
         </ng-container>
 
         <!-- Activo Column -->

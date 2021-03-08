@@ -1,6 +1,7 @@
 <div class="jumbotron"> 
-  <h5 class="mt-2" *ngIf="cuenta && isActivas">{{esp ? 'Solicitudes de Cotizaci&oacute;n Activas' : 'Active Requests for quotation'}}</h5>
-  <h5 class="mt-2" *ngIf="cuenta && !isActivas">{{esp ? 'Solicitudes de Cotizaci&oacute;n' : 'Requests for quotation'}}</h5>
+  <h3 class="mt-2" *ngIf="cuenta && isActivas">{{esp ? 'Solicitudes de Cotizaci&oacute;n Activas' : 'Active Requests for quotation'}}</h3>
+  <h3 class="mt-2" *ngIf="cuenta && !isActivas">{{esp ? 'Solicitudes de Cotizaci&oacute;n' : 'Requests for quotation'}}</h3>
+  <p class="mt-2">{{esp ? 'Elija el insumo solicitado y realice una Cotizaci&oacute;n. Este es un proceso de cotizaciones y no de adjudicaciones autom&aacute;ticas. Procederemos a analizar las ofertas y luego compras se encargar&aacute; de la adjudicaci&oacute;n' : 'Chouse the supplie requested and make a Requests for quotation. This is a quotation process, not an autoamtic adjudication process. We will analyze the offers and then Pruchase will comunicate the result.'}}</p>
     <div class="d-flex flex-row flex-wrap">
       <div class="mr-auto pr-2 flex-grow-1">
         <mat-form-field>
@@ -42,7 +43,7 @@
   
           <ng-container matColumnDef="finaliza">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Fin' : 'End'}}</th>
-              <td mat-cell *matCellDef="let row">{{row.finaliza.substring(0,10)}}</td>
+              <td mat-cell *matCellDef="let row">{{row.finaliza ? row.finaliza.substring(0,10) : ''}}</td>
           </ng-container>
   
           <ng-container matColumnDef="historico">
@@ -72,7 +73,7 @@
               <button mat-icon-button color="primary" data-toggle="tooltip" title="Ranking" (click)="openModal(editTenderCotizaciones, row, 'D')">
                 <mat-icon>assessment</mat-icon>
               </button>
-              <button mat-icon-button color="primary" data-toggle="tooltip" title="Details" (click)="openModal(editTenderDetalle, row, 'D')">
+              <button mat-icon-button color="primary" data-toggle="tooltip" title="Características" (click)="openModal(editTenderDetalle, row, 'D')">
                 <mat-icon>description</mat-icon>
               </button>
               <button class="mb-0" id="newbutton" mat-raised-button color="primary" (click)="makeAnOffer(row)">
@@ -293,7 +294,7 @@
         
       <ng-template #editTenderCotizaciones let-modal>
         <div class="modal-header">
-          <h5 class="modal-title">{{esp ? producto.descrip : producto.detaeng}}</h5>
+          <h5 class="modal-title">{{esp ? 'RANKING ' + f.controls.licitacion.value + ' ' + producto.descrip : 'RANKING ' + f.controls.licitacion.value + ' ' + producto.detaeng}}</h5>
           <button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -305,10 +306,11 @@
               <thead class="offer-th">
                 <tr>
                   <th>{{esp ? 'Rank.' : 'Rank.'}}</th>
-                  <th>{{esp ? 'Oferta' : 'Offer'}}</th>
+                  <th *ngIf="cuenta.perfil==0">{{esp ? 'Oferta' : 'Offer'}}</th>
                   <th>{{esp ? 'Usuario' : 'User'}}</th>
                   <th>{{esp ? 'Cantidad' : 'Quantity'}}</th>
                   <th>{{esp ? 'Precio' : 'Price'}}</th>
+                  <th>{{esp ? 'Total' : 'Total'}}</th>
                   <th>{{esp ? 'Entrega' : 'Delivery'}}</th>
                   <th>{{esp ? 'Scoring' : 'Scoring'}}</th>
                 </tr>
@@ -316,11 +318,12 @@
               <tbody *ngFor="let offer of getFilterByTender(f.controls.id.value);index as i">
                 <tr [style.background-color]="offer.usuario === cuenta.usuario ? 'lightyellow' : 'white'">
                   <td>{{i+1}}</td>
-                  <td>{{offer.oferta}}</td> 
+                  <td *ngIf="cuenta.perfil==0">{{offer.oferta}}</td> 
                   <td>{{offer.usuario === cuenta.usuario ? offer.usuario : ''}}</td>
                   <td>{{offer.cantidad}} {{offer.unidad}}</td>
                   <td>U$S {{offer.precio}}</td>
-                  <td>{{offer.entrega.substring(0,10)}}</td>
+                  <td>U$S {{total(offer.precio,offer.cantidad)}}</td>
+                  <td>{{offer.entrega}}</td>
                   <td class="d-flex flex-nowrap">{{offer.scoring}}</td>
                 </tr>
               </tbody>
