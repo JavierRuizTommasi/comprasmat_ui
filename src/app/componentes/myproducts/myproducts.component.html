@@ -1,18 +1,25 @@
-<div class="jumbotron"> 
-    <h5>{{esp ? 'Insumos que puedo proveer' : 'Supplies than I can provide'}}</h5>
+<div class="jumbotron">
+    <h3 class="mt-2">{{esp ? 'Insumos que puedo proveer' : 'Supplies than I can provide'}}</h3>
+    <p class="mt-2">{{esp ? 'Seleccione los insumos que desee eliminar y sobre los cuales no desea recibir
+        notificaciones de nuevas Solicitudes de Cotizaci&oacute;n. Una vez seleccionados presiones el bot&oacute;
+        Borrar Selecci&oacute;n para eliminarlos de su lista' : 'Select the supplies that you wish to delete
+        and you do not want to receive notifications on new Request for Quotations. Once you make the selecction press
+        the Delete Selection button to delete from your list.'}}
+    </p>
     <div class="d-flex flex-row flex-wrap">
         <!-- <div class="col-lg-10 col-md-8 col-sm-8 col-xs-6"> -->
         <div class="mr-auto pr-2 flex-grow-1">
-                <mat-form-field>
-          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{esp ? 'Filtro' : 'Filter'}}" />
-        </mat-form-field>
-      </div>
-      <!-- <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6 container-btn-new"> -->
-      <div class="container-btn-new">
-        <button id="newbutton" mat-raised-button color="warn" (click)="borrarMyProd()">
-          <mat-icon>delete</mat-icon>&nbsp; {{esp ? 'Borrar Seleccion' : 'Delete Selection'}}
-        </button>
-      </div>
+            <mat-form-field>
+                <input matInput (keyup)="applyFilter($event.target.value)"
+                    placeholder="{{esp ? 'Filtro' : 'Filter'}}" />
+            </mat-form-field>
+        </div>
+        <!-- <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6 container-btn-new"> -->
+        <div class="container-btn-new">
+            <button id="newbutton" mat-raised-button color="warn" (click)="borrarMyProd()">
+                <mat-icon>delete</mat-icon>&nbsp; {{esp ? 'Borrar Seleccion' : 'Delete Selection'}}
+            </button>
+        </div>
     </div>
 
     <!-- Productos -->
@@ -20,23 +27,21 @@
         <table mat-table [dataSource]='dataSource' matSort aria-label="Elements">
             <ng-container matColumnDef="checked">
                 <th mat-header-cell *matHeaderCellDef>
-                    <mat-checkbox 
-                        [checked]="isAllCheckBoxChecked()" 
-                        (change)="checkAllCheckBox($event)">
+                    <mat-checkbox [checked]="isAllCheckBoxChecked()" (change)="checkAllCheckBox($event)">
                     </mat-checkbox>
                 </th>
                 <td mat-cell *matCellDef="let row">
                     <mat-checkbox [checked]="row.checked" [(ngModel)]="row.checked"></mat-checkbox>
                 </td>
             </ng-container>
-      
+
             <ng-container matColumnDef="codigo">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Codigo' : 'Code'}}</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'C&oacute;digo' : 'Code'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.codigo}}</td>
             </ng-container>
 
             <ng-container matColumnDef="descrip">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Descripcion' : 'Descrip'}}</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Descripci&oacute;n' : 'Description'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.descrip}}</td>
             </ng-container>
 
@@ -44,32 +49,27 @@
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Rubro' : 'Category'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.rubro}}</td>
             </ng-container>
-    
+
             <ng-container matColumnDef="subrubro">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'SubRubro' : 'SubCategory'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.subrubro}}</td>
             </ng-container>
-      
+
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
         </table>
     </div>
 
-    <mat-paginator class="mat-elevation-z8 mb-3"
-        #paginator [length]="dataSource.data?.length" 
-        [pageIndex]="0" 
-        [pageSize]="25"
-        [pageSizeOptions]="[25, 50, 100, 250]">
+    <mat-paginator class="mat-elevation-z8 mb-3" #paginator [length]="dataSource.data?.length" [pageIndex]="0"
+        [pageSize]="25" [pageSizeOptions]="[25, 50, 100, 250]">
     </mat-paginator>
 
     <ng-container *ngIf="notDone">
         <div class="d-flex justify-content-center">
             <div class="spinner-border m-5" role="status">
-            <span class="sr-only">Loading...</span>
+                <span class="sr-only">Loading...</span>
             </div>
         </div>
     </ng-container>
 </div>
-
-

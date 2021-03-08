@@ -1,7 +1,10 @@
 <div class="jumbotron">
     <ng-container *ngIf="cuenta">
-        <h5 *ngIf="cuenta.perfil < 4">{{esp ? 'Solicitudes Cotizadas' : 'Quoted Requests'}}</h5>
-        <h5 *ngIf="cuenta.perfil >= 4">{{esp ? 'Mis Solicitudes Cotizadas' : 'My Quoted Requests'}}</h5>
+        <h3 class="mt-2" *ngIf="cuenta.perfil < 4">{{esp ? 'Solicitudes Cotizadas' : 'Quoted Requests'}}</h3>
+        <h3 class="mt-2" *ngIf="cuenta.perfil >= 4">{{esp ? 'Mis Solicitudes Cotizadas' : 'My Quoted Requests'}}</h3>
+        <p class="mt-2">{{esp ? 'Verifique el estado de sus Cotizaciones y modif&iacute;quelas para mejorar su ranking.
+            Complete la Ficha del proveedor para icrementar el % de Desempe&ntilde;o.' : 'Check the status of your
+            Quotations and modify them in order to improve their ranking. Complete the Supplier Card to increase your Performance.'}}</p>
         <div class="d-flex flex-row flex-wrap">
             <div class="mr-auto pr-2 flex-grow-1" *ngFor="let filter of filterSelectObj">
                 <mat-form-field>
@@ -21,7 +24,7 @@
             </div>
             &nbsp;
 
-            <ng-container *ngIf="cuenta.perfil!=1 && cuenta.perfil!=3">
+            <ng-container *ngIf="cuenta.perfil==0">
                 <div class="container-btn-new">
                     <button id="newbutton" mat-raised-button color="primary"
                         (click)="openModal(editOfferModal, offer, 'A')">
@@ -34,11 +37,11 @@
 
     <div class="mat-elevation-z8 table-responsive">
         <table mat-table [dataSource]='dataSource' matSort aria-label="Elements">
-            <ng-container matColumnDef="oferta">
+            <!-- <ng-container matColumnDef="oferta">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Oferta' : 'Offer'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.oferta}}</td>
             </ng-container>
-
+ -->
             <ng-container matColumnDef="licitacion">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Licit.' : 'Tender'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.licitacion}}</td>
@@ -59,20 +62,25 @@
                 <td mat-cell *matCellDef="let row">{{row.cantidad}} {{row.unidad}}</td>
             </ng-container>
 
-             <ng-container matColumnDef="precio">
+            <ng-container matColumnDef="precio">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Precio' : 'Price'}}</th>
                 <td mat-cell *matCellDef="let row">U$S {{row.precio}}</td>
             </ng-container>
 
+            <ng-container matColumnDef="total">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Total' : 'Total'}}</th>
+                <td mat-cell *matCellDef="let row">U$S {{total(row.precio,row.cantidad)}}</td>
+            </ng-container>
+
             <ng-container matColumnDef="incoterm">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Incoterm' : 'Incoterm'}}</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Incot.' : 'Incot.'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.incoterm}}</td>
             </ng-container>
 
-            <ng-container matColumnDef="entrega">
+            <!-- <ng-container matColumnDef="entrega">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Entrega' : 'Delivery'}}</th>
-                <td mat-cell *matCellDef="let row">{{row.entrega ? row.entrega.substring(0,10) : ''}}</td>
-            </ng-container>
+                <td mat-cell *matCellDef="let row">{{row.entrega}} {{esp ? 'D&iacute;as' : 'Days'}}</td>
+            </ng-container> -->
 
             <ng-container matColumnDef="estado">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Estado' : 'State'}}</th>
@@ -108,11 +116,8 @@
         </table>
     </div>
 
-    <mat-paginator  class="mat-elevation-z8 mb-3" 
-        #paginator [length]="dataSource.data?.length" 
-        [pageIndex]="0" 
-        [pageSize]="25"
-        [pageSizeOptions]="[25, 50, 100, 250]">
+    <mat-paginator class="mat-elevation-z8 mb-3" #paginator [length]="dataSource.data?.length" [pageIndex]="0"
+        [pageSize]="25" [pageSizeOptions]="[25, 50, 100, 250]">
     </mat-paginator>
 
     <ng-container *ngIf="notDone">
@@ -135,21 +140,25 @@
 
         <div class="modal-body">
             <form [formGroup]="f" (ngSubmit)="onSubmit()">
-                <div class="form-group row">
-                    <label for="oferta" class="col-sm-3 col-form-label">{{esp ? 'Oferta' : 'Offer'}}</label>
-                    <div class="col-sm-9">
-                        <input type="number" class="form-control" formControlName="oferta" id="oferta"
-                            [readOnly]="true">
-                        <!-- Error -->
-                        <div *ngIf="f.controls.oferta.errors && f.controls.oferta.dirty"
-                            class="alert alert-danger mt-0">
-                            <div *ngIf="f.controls.oferta.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+                <!-- Solo para el Administrador -->
+                <ng-container *ngIf="cuenta.perfil==0">
+                    <div class="form-group row">
+                        <label for="oferta" class="col-sm-3 col-form-label">{{esp ? 'Oferta' : 'Offer'}}</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" formControlName="oferta" id="oferta"
+                                [readOnly]="true">
+                            <!-- Error -->
+                            <div *ngIf="f.controls.oferta.errors && f.controls.oferta.dirty"
+                                class="alert alert-danger mt-0">
+                                <div *ngIf="f.controls.oferta.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </ng-container>
 
                 <div class="form-group row">
-                    <label for="licitacion" class="col-sm-3 col-form-label">{{esp ? 'Licitacion' : 'Tender'}}</label>
+                    <label for="licitacion" class="col-sm-3 col-form-label">{{esp ? 'Licitaci&oacute;n' :
+                        'Tender'}}</label>
                     <div class="col-sm-9">
                         <!-- <input type="number" class="form-control" formControlName="licitacion" id="licitacion" [readOnly]="this.strTipo == 'B'"> -->
                         <select class="custom-select" formControlName="licitacion" id="licitacion" required="required"
@@ -197,7 +206,7 @@
                     <div class="col-sm-9">
                         <input type="number" class="form-control" formControlName="proveedor" id="proveedor" [readOnly]="this.strTipo == 'B'">
                         <!-- Error -->
-                        <!-- <div *ngIf="f.controls.proveedor.errors && f.controls.proveedor.dirty" class="alert alert-danger mt-0">
+                    <!-- <div *ngIf="f.controls.proveedor.errors && f.controls.proveedor.dirty" class="alert alert-danger mt-0">
                             <div *ngIf="f.controls.proveedor.errors.required">Required</div>
                             </div>
                         </div>
@@ -216,30 +225,30 @@
                     </div>
                 </ng-container>
 
-                <div class="form-group row">
+                <!-- <div class="form-group row">
                     <label for="fecha" class="col-sm-3 col-form-label">{{esp ? 'Inicio' : 'Start'}}</label>
                     <div class="col-sm-9">
                         <input type="date" class="form-control" formControlName="fecha" id="fecha"
                             [readOnly]="this.strTipo == 'B'">
                         <!-- Error -->
-                        <div *ngIf="f.controls.fecha.errors && f.controls.fecha.dirty" class="alert alert-danger mt-0">
+                <!-- <div *ngIf="f.controls.fecha.errors && f.controls.fecha.dirty" class="alert alert-danger mt-0">
                             <div *ngIf="f.controls.fecha.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
-                <div class="form-group row">
+                <!-- <div class="form-group row">
                     <label for="finaliza" class="col-sm-3 col-form-label">{{esp ? 'Fin' : 'End'}}</label>
                     <div class="col-sm-9">
                         <input type="date" class="form-control" formControlName="finaliza" id="finaliza"
-                            [readOnly]="this.strTipo == 'B'">
-                        <!-- Error -->
-                        <div *ngIf="f.controls.finaliza.errors && f.controls.finaliza.dirty"
+                            [readOnly]="this.strTipo == 'B'"> -->
+                <!-- Error -->
+                <!-- <div *ngIf="f.controls.finaliza.errors && f.controls.finaliza.dirty"
                             class="alert alert-danger mt-0">
                             <div *ngIf="f.controls.finaliza.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="form-group row">
                     <label for="producto" class="col-sm-3 col-form-label">{{esp ? 'Producto' : 'Product'}}</label>
@@ -247,7 +256,8 @@
                         <!-- <input type="number" class="form-control" formControlName="producto" id="producto"
                             [readOnly]="true"> -->
                         <select class="custom-select" formControlName="producto" id="producto" required="required">
-                            <option [value]="product.codigo" *ngFor="let product of products">{{product.codigo}} {{product.descrip}}</option>
+                            <option [value]="product.codigo" *ngFor="let product of products">{{product.codigo}}
+                                {{product.descrip}}</option>
                         </select>
                         <!-- Error -->
                         <div *ngIf="f.controls.producto.errors && f.controls.producto.dirty"
@@ -263,7 +273,7 @@
                         <input type="text" class="form-control" formControlName="descrip" id="descrip"
                             [readOnly]="true">
                         <!-- Error -->
-                        <!-- <div *ngIf="f.controls.descrip.errors && f.controls.descrip.dirty"
+                <!-- <div *ngIf="f.controls.descrip.errors && f.controls.descrip.dirty"
                             class="alert alert-danger mt-0">
                             <div *ngIf="f.controls.descrip.errors.required">Required</div>
                         </div>
@@ -279,7 +289,8 @@
                         <div *ngIf="f.controls.cantidad.errors && f.controls.cantidad.dirty"
                             class="alert alert-danger mt-0">
                             <div *ngIf="f.controls.cantidad.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
-                            <div *ngIf="f.controls.cantidad.errors.Menor">{{esp ? 'Menor a lo requerido' : 'Less than required'}}</div>
+                            <div *ngIf="f.controls.cantidad.errors.Menor">{{esp ? 'Menor a lo requerido' : 'Less than
+                                required'}}</div>
                         </div>
                     </div>
                 </div>
@@ -307,7 +318,7 @@
                     <div class="col-sm-9">
                         <input type="number" class="form-control" formControlName="costo" id="costo" [readOnly]="this.strTipo == 'B'">
                         <!-- Error -->
-                        <!-- <div *ngIf="f.controls.costo.errors && f.controls.costo.dirty" class="alert alert-danger mt-0">
+                <!-- <div *ngIf="f.controls.costo.errors && f.controls.costo.dirty" class="alert alert-danger mt-0">
                         <div *ngIf="f.controls.costo.errors.required">Required</div>
                         </div>
                     </div>
@@ -326,9 +337,23 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="financiacion" class="col-sm-3 col-form-label">{{esp ? 'Financiacion' : 'Financing'}}</label>
+                    <label for="precio" class="col-sm-3 col-form-label">{{esp ? 'Total' : 'Total'}}</label>
                     <div class="col-sm-9">
-                        <select class="custom-select" formControlName="financiacion" id="financiacion" required="required">
+                        <label class="pt-2">U$S {{total(f.controls.precio.value,f.controls.cantidad.value)}}</label>
+                        <!-- {{f.controls.precio.value}} -->
+                        <!-- Error -->
+                        <!-- <div *ngIf="f.controls.precio.errors && f.controls.precio.dirty" class="alert alert-danger mt-0">
+                            <div *ngIf="f.controls.precio.errors.required">Required</div>
+                        </div> -->
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="financiacion" class="col-sm-3 col-form-label"> {{esp ? 'D&iacute;as Financ.' : 'Days
+                        Financ.'}}</label>
+                    <div class="col-sm-9">
+                        <select class="custom-select" formControlName="financiacion" id="financiacion"
+                            required="required">
                             <option [ngValue]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
                             <option [ngValue]="item.value" *ngFor="let item of financiaciones">{{item.value}}</option>
                         </select>
@@ -348,36 +373,43 @@
                 <div class="form-group row">
                     <label for="entrega" class="col-sm-3 col-form-label">{{esp ? 'Entrega' : 'Delivery'}}</label>
                     <div class="col-sm-9">
-                        <input type="date" class="form-control" formControlName="entrega" id="entrega"
-                            [readOnly]="this.strTipo == 'B'">
+                        <select class="custom-select" formControlName="entrega" id="entrega" required="required">
+                            <option [ngValue]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
+                            <option [ngValue]="item.value" *ngFor="let item of diasEntrega">{{item.value}}</option>
+                        </select>
+                        <!-- <input type="date" class="form-control" formControlName="entrega" id="entrega"
+                            [readOnly]="this.strTipo == 'B'"> -->
                         <!-- Error -->
                         <!-- <div *ngIf="f.controls.entrega.errors && f.controls.entrega.dirty" class="alert alert-danger mt-0">
-                  <div *ngIf="f.controls.entrega.errors.required">Required</div>
-                </div> -->
+                        <div *ngIf="f.controls.entrega.errors.required">Required</div>
+                        </div> -->
                     </div>
                 </div>
 
-                <div *ngIf="this.strTipo !== 'B' && this.strTipo !== 'P'" class="form-group row">
-                    <label for="estado" class="col-sm-3 col-form-label">{{esp ? 'Estado' : 'State'}}</label>
-                    <div class="col-sm-9">
-                        <select class="custom-select" formControlName="estado" id="estado" required="required">
-                            <option [value]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
-                            <option [value]="estado.estado" *ngFor="let estado of estadosOfertas">
-                                {{esp ? estado.estadoesp : estado.estadoeng}}</option>
-                        </select>
+                <!-- Solo para el Administrador -->
+                <ng-container *ngIf="cuenta.perfil==0">
+                    <div *ngIf="this.strTipo !== 'B' && this.strTipo !== 'P'" class="form-group row">
+                        <label for="estado" class="col-sm-3 col-form-label">{{esp ? 'Estado' : 'State'}}</label>
+                        <div class="col-sm-9">
+                            <select class="custom-select" formControlName="estado" id="estado" required="required">
+                                <option [value]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
+                                <option [value]="estado.estado" *ngFor="let estado of estadosOfertas">
+                                    {{esp ? estado.estadoesp : estado.estadoeng}}</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
+                </ng-container>
 
                 <div class="modal-footer">
                     <div *ngIf="this.strTipo === 'B'">
                         <button type="submit" class="btn btn-primary">{{esp ? 'Borrar' : 'Delete'}}</button>
                     </div>
                     <div *ngIf="this.strTipo !== 'B'">
-                        <button type="submit" class="btn btn-primary"
-                            [disabled]="!f.valid">{{esp ? 'Guardar' : 'Save'}}</button>
+                        <button type="submit" class="btn btn-primary" [disabled]="!f.valid">{{esp ? 'Guardar' :
+                            'Save'}}</button>
                     </div>
-                    <button type="button" class="btn btn-secondary"
-                        (click)="modal.dismiss()">{{esp ? 'Cancelar' : 'Cancel'}}</button>
+                    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">{{esp ? 'Cancelar' :
+                        'Cancel'}}</button>
                 </div>
 
                 <!-- <hr>

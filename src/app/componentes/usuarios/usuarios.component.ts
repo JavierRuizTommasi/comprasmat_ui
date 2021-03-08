@@ -29,7 +29,7 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<Usuarios> = new MatTableDataSource<Usuarios>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['usuario', 'nombre', 'email', 'perfil', 'activo', 'actions']
+  displayedColumns: string[] = ['usuario', 'nombre', 'email', 'perfil', 'language', 'activo', 'actions']
 
   strTipo: string
   idIdx: string

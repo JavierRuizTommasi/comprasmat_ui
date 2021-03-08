@@ -12,7 +12,7 @@
         <ng-container *ngIf="cuenta">
           <a mat-list-item [matMenuTriggerFor]="menuLicita">{{esp ? 'Solicitudes de Cotizaci&oacute;n' : 'Requests for quotation'}}</a>
           <mat-menu #menuLicita="matMenu" yPosition="below">
-            <a mat-menu-item routerLink="/licitaciones/:activas" (click)="drawer.close()">{{esp ? 'Solicitudes Activas' : 'Active Requests'}}</a>
+            <a mat-menu-item routerLink="/licitaciones/:activas" (click)="drawer.close()">{{esp ? 'Solicitudes de Cotizaci&oacute;n Activas' : 'Active Requests for quotation'}}</a>
             <ng-container *ngIf="cuenta.perfil<3">
               <a mat-menu-item routerLink="/licitaciones" (click)="drawer.close()">{{esp ? 'Solicitudes de Cotizaci&oacute;n' : 'Requests for quotation'}}</a>
               <a mat-menu-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Solicitudes Cotizadas' : 'Quotated Requests'}}</a>
@@ -127,7 +127,7 @@
             <ng-container *ngIf="cuenta">
               <button mat-button [matMenuTriggerFor]="menuLicita">{{esp ? 'Solicitudes de Cotizaci&oacute;n' : 'Requests for quotation'}}</button>
               <mat-menu #menuLicita="matMenu" yPosition="below">
-                <button mat-menu-item routerLink="/licitaciones/:activas">{{esp ? 'Solicitudes Activas' : 'Active Requests'}}</button>
+                <button mat-menu-item routerLink="/licitaciones/:activas">{{esp ? 'Solicitudes de Cotizaci&oacute;n Activas' : 'Active Requests for quotation'}}</button>
                 <ng-container *ngIf="cuenta.perfil<3">
                   <button mat-menu-item routerLink="/licitaciones">{{esp ? 'Solicitudes de Cotizaci&oacute;n' : 'Requests for quotation'}}</button>
                   <button mat-menu-item routerLink="/ofertas">{{esp ? 'Solicitudes Cotizadas' : 'Quoted Requests'}}</button>

@@ -375,15 +375,15 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
     switch (this.strTipo) {
       case 'A':
         // Alta
-        strConfMsg = this.esp ? 'Muestra Creada!' : 'Sample Created!' 
+        strConfMsg = this.esp ? 'Insumo Creada!' : 'Supply Created!' 
         break
       case 'B':
         // Baja
-        strConfMsg = this.esp ? 'Muestra Borrada!' : 'Sample Deleted!' 
+        strConfMsg = this.esp ? 'Insumo Borrada!' : 'Supply Deleted!' 
         break
       case 'M':
         // Modificar
-        strConfMsg = this.esp ? 'Muestra Modificada!' : 'Sample Updated!' 
+        strConfMsg = this.esp ? 'Insumo Modificada!' : 'Supply Updated!' 
         break
       default:
         break

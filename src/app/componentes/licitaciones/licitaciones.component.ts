@@ -280,8 +280,8 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
       this.f.patchValue({
         id: tender._id,
         licitacion: tender.licitacion,
-        fecha: tender.fecha.substr(0, 10) ,
-        finaliza: tender.finaliza.substr(0, 10),
+        fecha: tender.fecha ? tender.fecha.substr(0, 10) : '' ,
+        finaliza: tender.finaliza ? tender.finaliza.substr(0, 10) : '',
         producto: tender.producto,
         descrip: tender.descrip,
         cantidad: tender.cantidad,
@@ -483,6 +483,10 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
 
   makeAnOffer(tender){
     this.router.navigateByUrl('/ofertas/'+tender.licitacion)
+  }
+
+  total(pre, can) {
+    return pre * can
   }
 
 }

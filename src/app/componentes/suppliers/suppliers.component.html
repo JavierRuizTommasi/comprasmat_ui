@@ -1,7 +1,7 @@
 <div class="jumbotron">
   <ng-container *ngIf="cuenta">
-    <h5 *ngIf="cuenta.perfil < 4" class="mt-2">{{esp ? 'Proveedores' : 'Suppliers'}}</h5>
-    <h5 *ngIf="cuenta.perfil >= 4">{{esp ? 'Ficha de Proveedor' : 'Supplier Card'}}</h5>
+    <h3 class="mt-2" *ngIf="cuenta.perfil < 4" class="mt-2">{{esp ? 'Proveedores' : 'Suppliers'}}</h3>
+    <h3 class="mt-2" *ngIf="cuenta.perfil >= 4">{{esp ? 'Ficha de Proveedor' : 'Supplier Card'}}</h3>
     <div class="d-flex flex-row flex-wrap">
       <div class="mr-auto pr-2 flex-grow-1" *ngFor="let filter of filterSelectObj">
         <mat-form-field>

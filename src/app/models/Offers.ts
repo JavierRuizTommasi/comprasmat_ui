@@ -16,7 +16,7 @@ export class Offers {
     public costo: number
     public precio: number
     public incoterm: string
-    public entrega: string
+    public entrega: number
     public estado: number
     public detalle: string
     public scoreProveedor: number
