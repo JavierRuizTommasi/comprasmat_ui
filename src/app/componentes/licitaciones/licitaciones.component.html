@@ -315,9 +315,14 @@
                   <th>{{esp ? 'Scoring' : 'Scoring'}}</th>
                 </tr>
               </thead>
-              <tbody *ngFor="let offer of getFilterByTender(f.controls.id.value);index as i">
+              <tbody *ngFor="let offer of getFilterByTender(f.controls.id.value)">
                 <tr [style.background-color]="offer.usuario === cuenta.usuario ? 'lightyellow' : 'white'">
-                  <td>{{i+1}}</td>
+                  <td>
+                    <span [style.background-color]="offer.scoreRanking === 1 ? 'yellow' : 'white'"
+                      [style.color]="'black'"
+                      class="badge badge-primary badge-pill">{{offer.scoreRanking}}
+                    </span>
+                  </td>
                   <td *ngIf="cuenta.perfil==0">{{offer.oferta}}</td> 
                   <td>{{offer.usuario === cuenta.usuario ? offer.usuario : ''}}</td>
                   <td>{{offer.cantidad}} {{offer.unidad}}</td>

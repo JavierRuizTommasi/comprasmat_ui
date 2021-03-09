@@ -4,7 +4,8 @@
         <h3 class="mt-2" *ngIf="cuenta.perfil >= 4">{{esp ? 'Mis Solicitudes Cotizadas' : 'My Quoted Requests'}}</h3>
         <p class="mt-2">{{esp ? 'Verifique el estado de sus Cotizaciones y modif&iacute;quelas para mejorar su ranking.
             Complete la Ficha del proveedor para icrementar el % de Desempe&ntilde;o.' : 'Check the status of your
-            Quotations and modify them in order to improve their ranking. Complete the Supplier Card to increase your Performance.'}}</p>
+            Quotations and modify them in order to improve their ranking. Complete the Supplier Card to increase your
+            Performance.'}}</p>
         <div class="d-flex flex-row flex-wrap">
             <div class="mr-auto pr-2 flex-grow-1" *ngFor="let filter of filterSelectObj">
                 <mat-form-field>
@@ -72,15 +73,32 @@
                 <td mat-cell *matCellDef="let row">U$S {{total(row.precio,row.cantidad)}}</td>
             </ng-container>
 
-            <ng-container matColumnDef="incoterm">
+            <!-- <ng-container matColumnDef="incoterm">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Incot.' : 'Incot.'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.incoterm}}</td>
-            </ng-container>
+            </ng-container> -->
 
-            <!-- <ng-container matColumnDef="entrega">
+            <ng-container matColumnDef="entrega">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Entrega' : 'Delivery'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.entrega}} {{esp ? 'D&iacute;as' : 'Days'}}</td>
-            </ng-container> -->
+            </ng-container>
+
+            <ng-container matColumnDef="scoring">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Score' : 'Score'}}</th>
+                <td mat-cell *matCellDef="let row">{{row.scoring}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="ranking">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Rank' : 'Rank'}}</th>
+                <td mat-cell *matCellDef="let row">
+                    <span class="badge badge-primary badge-pill" 
+                        [style.background-color]="row.scoreRanking === 1 ? 'yellow' : 'white'"
+                        [style.font-weight]="row.scoreRanking === 1 ? 700 : 400"
+                        style="color:'black'">
+                        {{row.scoreRanking}}
+                    </span>
+                </td>
+            </ng-container>
 
             <ng-container matColumnDef="estado">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Estado' : 'State'}}</th>
