@@ -26,4 +26,5 @@ export class Offers {
     public scoring: number 
     public financiacion: number
     public scoreFinanciacion: number
+    public scoreRanking: number
 }

@@ -49,6 +49,7 @@ export class TendersService {
   }
 
   updateScoring(id: string): Observable<Tenders> {
+    console.log(this.url.baseApiUrl + 'updateScoring/' + id)
     return this.http.put<Tenders>(this.url.baseApiUrl + 'updateScoring/' + id, this.getHttpOptions())
   }
 

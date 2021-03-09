@@ -255,8 +255,9 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
     this.strTipo = strTipoParam
 
     this.modalService.open(targetModal, {
-     centered: true,
-     backdrop: 'static'
+      centered: true,
+      backdrop: 'static',
+      size: 'lg'
     })
 
     if (strTipoParam === 'A') {

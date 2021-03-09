@@ -40,7 +40,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<Offers> = new MatTableDataSource<Offers>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['usuario', 'licitacion', 'descrip', 'cantidad', 'precio', 'total', 'incoterm', 'estado', 'actions']
+  displayedColumns: string[] = ['usuario', 'licitacion', 'descrip', 'cantidad', 'precio', 'total', 'entrega', 'scoring', 'ranking', 'estado', 'actions']
 
   strTipo: string
   idIdx: string
@@ -172,7 +172,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       scoreCantidad: [0],
       scoring: [0],
       financiacion: [0],
-      scoreFinanciacion: [0]
+      scoreFinanciacion: [0],
+      scoreRanking: [0]
     }, { validators: this.validaCantidad('licitacion', 'cantidad')})
 
     this.languageService.esp$.subscribe((lang: Language) => {
@@ -388,7 +389,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         scoreCantidad: 0,
         scoring: 0,
         financiacion: 0,
-        scoreFinanciacion: 0
+        scoreFinanciacion: 0,
+        scoreRanking: 0
       })
     } else {
       this.f.patchValue({
@@ -418,7 +420,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         scoreCantidad: offer.scoreCantidad,
         scoring: offer.scoring,
         financiacion: offer.financiacion,
-        scoreFinanciacion: offer.scoreFinanciacion
+        scoreFinanciacion: offer.scoreFinanciacion,
+        scoreRanking: offer.scoreRanking
       })
     }
 
@@ -469,7 +472,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       scoreCantidad: this.f.controls.scoreCantidad.value,
       scoring: this.f.controls.scoring.value,
       financiacion: this.f.controls.financiacion.value,
-      scoreFinanciacion: this.f.controls.scoreFinanciacion.value
+      scoreFinanciacion: this.f.controls.scoreFinanciacion.value,
+      scoreRanking: this.f.controls.scoreRanking.value
     }
 
     switch (this.strTipo) {
