@@ -20,6 +20,21 @@
     font-size: 100%;
 }
 
+.modal-dialog.modal-800 {
+  max-width: 600px;
+  margin: 1.75rem auto;
+}
+
+.modal {
+    display:inherit;
+    /* width: 125%; */
+}
+
+/* .mmodal-content {
+    width: 900px;
+    margin: auto;
+} */
+
 /* @media (min-width: 768px) {
     .modal-dialog {
       width: 600;

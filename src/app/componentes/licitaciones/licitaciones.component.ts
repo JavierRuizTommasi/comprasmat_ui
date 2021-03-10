@@ -256,8 +256,7 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
 
     this.modalService.open(targetModal, {
       centered: true,
-      backdrop: 'static',
-      size: 'lg'
+      backdrop: 'static'
     })
 
     if (strTipoParam === 'A') {

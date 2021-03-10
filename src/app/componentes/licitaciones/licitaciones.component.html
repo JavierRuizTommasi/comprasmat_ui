@@ -293,46 +293,54 @@
       </ng-template>
         
       <ng-template #editTenderCotizaciones let-modal>
-        <div class="modal-header">
-          <h5 class="modal-title">{{esp ? 'RANKING ' + f.controls.licitacion.value + ' ' + producto.descrip : 'RANKING ' + f.controls.licitacion.value + ' ' + producto.detaeng}}</h5>
-          <button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-    
-        <div class="modal-body p-0">
-          <div class="container pl-0 ml-0 m-0 pb-0 pr-2 overflow-auto">
-            <table class="table table-responsive" >
-              <thead class="offer-th">
-                <tr>
-                  <th>{{esp ? 'Rank.' : 'Rank.'}}</th>
-                  <th *ngIf="cuenta.perfil==0">{{esp ? 'Oferta' : 'Offer'}}</th>
-                  <th>{{esp ? 'Usuario' : 'User'}}</th>
-                  <th>{{esp ? 'Cantidad' : 'Quantity'}}</th>
-                  <th>{{esp ? 'Precio' : 'Price'}}</th>
-                  <th>{{esp ? 'Total' : 'Total'}}</th>
-                  <th>{{esp ? 'Entrega' : 'Delivery'}}</th>
-                  <th>{{esp ? 'Scoring' : 'Scoring'}}</th>
-                </tr>
-              </thead>
-              <tbody *ngFor="let offer of getFilterByTender(f.controls.id.value)">
-                <tr [style.background-color]="offer.usuario === cuenta.usuario ? 'lightyellow' : 'white'">
-                  <td>
-                    <span [style.background-color]="offer.scoreRanking === 1 ? 'yellow' : 'white'"
-                      [style.color]="'black'"
-                      class="badge badge-primary badge-pill">{{offer.scoreRanking}}
-                    </span>
-                  </td>
-                  <td *ngIf="cuenta.perfil==0">{{offer.oferta}}</td> 
-                  <td>{{offer.usuario === cuenta.usuario ? offer.usuario : ''}}</td>
-                  <td>{{offer.cantidad}} {{offer.unidad}}</td>
-                  <td>U$S {{offer.precio}}</td>
-                  <td>U$S {{total(offer.precio,offer.cantidad)}}</td>
-                  <td>{{offer.entrega}}</td>
-                  <td class="d-flex flex-nowrap">{{offer.scoring}}</td>
-                </tr>
-              </tbody>
-            </table>
+        <div class="modal">
+          <div class="modal-dialog modal-800">
+            <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">{{esp ? 'RANKING ' + f.controls.licitacion.value + ' ' + producto.descrip : 'RANKING ' + f.controls.licitacion.value + ' ' + producto.detaeng}}</h5>
+              <button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+        
+            <div class="modal-body p-0">
+              <div class="container pl-0 ml-0 m-0 pb-0 pr-2 overflow-auto">
+                <table class="table table-responsive" >
+                  <thead class="offer-th">
+                    <tr>
+                      <th>{{esp ? 'Rank.' : 'Rank.'}}</th>
+                      <th *ngIf="cuenta.perfil==0">{{esp ? 'Oferta' : 'Offer'}}</th>
+                      <th>{{esp ? 'Usuario' : 'User'}}</th>
+                      <th>{{esp ? 'Cantidad' : 'Quantity'}}</th>
+                      <th>{{esp ? 'Precio' : 'Price'}}</th>
+                      <th>{{esp ? 'Total' : 'Total'}}</th>
+                      <th>{{esp ? 'Entrega' : 'Delivery'}}</th>
+                      <th>{{esp ? 'Scoring' : 'Scoring'}}</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngFor="let offer of getFilterByTender(f.controls.id.value)">
+                    <tr [style.background-color]="offer.usuario === cuenta.usuario ? 'lightyellow' : 'white'">
+                      <td>
+                        <span class="badge badge-primary badge-pill"
+                          [style.background-color]="offer.scoreRanking === 1 ? 'yellow' : 'white'"
+                          [style.font-weight]="offer.scoreRanking === 1 ? 700 : 400"
+                          [style.color]="'black'">
+                          {{offer.scoreRanking}}
+                        </span>
+                      </td>
+                      <td *ngIf="cuenta.perfil==0">{{offer.oferta}}</td> 
+                      <td>{{offer.usuario === cuenta.usuario ? offer.usuario : ''}}</td>
+                      <td>{{offer.cantidad}} {{offer.unidad}}</td>
+                      <td>U$S {{offer.precio}}</td>
+                      <td>U$S {{total(offer.precio,offer.cantidad)}}</td>
+                      <td>{{offer.entrega}}</td>
+                      <td class="d-flex flex-nowrap">{{offer.scoring}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
           </div>
         </div>
       </ng-template>
