@@ -13,19 +13,4 @@ export class Suppliers {
     public ultcompra: string
     public upload: object
     public activo: boolean
-    public cuentacbu: string
-    public fantasia: string
-    public actividad: string
-    public correspondencia: string
-    public CUIT: string
-    public IIBB: string
-    public retIIBBSF: boolean
-    public aliretIIBBSF: number
-    public motiexenIIBBSF: string
-    public retIIBBMI: boolean
-    public aliretIIBBMI: number
-    public motiexenIIBBMI: string
-    public retGAN: boolean
-    public aliretGAN: number
-    public motiexenGAN: string 
 }

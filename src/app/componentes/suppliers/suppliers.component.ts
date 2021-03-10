@@ -65,10 +65,6 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
 
   notDone: boolean = true
   cuitDone: boolean = false
-  f1276Done: boolean = false
-  iibbDone: boolean = false
-  iibbsfDone: boolean = false
-  iibbmiDone: boolean = false
   ganDone: boolean = false
 
   filterValues = {}
@@ -113,27 +109,8 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         pais: [''],
         desempeno: [0],
         ultcompra: [''],
-        fantasia: [''],
-        actividad: [''],
-        correspondencia: [''],
-        CUIT: [''],
         constCUIT: [''],
-        cuentacbu: [''],
-        F1276: [''],
-        IIBB: [''],
-        constIIBB: [''],
-        retIIBBSF: [''],
-        aliretIIBBSF: [''],
-        constexenIIBBSF: [''],
-        motiexenIIBBSF: [''],
-        retIIBBMI: [''],
-        aliretIIBBMI: [''],
-        constexenIIBBMI: [''],
-        motiexenIIBBMI: [''],
-        retGAN: [''],
-        aliretGAN: [''],
-        constexenGAN: [''],
-        motiexenGAN: [''],
+        constGAN: [''],
         upload: [''],
         activo: true
       })
@@ -295,27 +272,8 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         pais: '',
         desempeno: 0,
         ultcompra: '',
-        fantasia: '',
-        actividad: '',
-        correspondencia: '',
-        CUIT: '',
         constCUIT: '',
-        cuentacbu: '',
-        F1276: '',
-        IIBB: '',
-        constIIBB: '',
-        retIIBBSF: '',
-        aliretIIBBSF: '',
-        constexenIIBBSF: '',
-        motiexenIIBBSF: '',
-        retIIBBMI: '',
-        aliretIIBBMI: '',
-        constexenIIBBMI: '',
-        motiexenIIBBMI: '',
-        retGAN: '',
-        aliretGAN: '',
-        constexenGAN: '',
-        motiexenGAN: '',
+        constGAN: '',
         upload: [],
         activo: false
       })
@@ -334,21 +292,6 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         pais: supplier.pais,
         desempeno: supplier.desempeno,
         ultcompra: supplier.ultcompra?.substr(0,10),
-        fantasia: supplier.fantasia,
-        actividad: supplier.actividad,
-        correspondencia: supplier.correspondencia,
-        CUIT: supplier.CUIT,
-        cuentacbu: supplier.cuentacbu,
-        IIBB: supplier.IIBB,
-        retIIBBSF: supplier.retIIBBSF,
-        aliretIIBBSF: supplier.aliretIIBBSF,
-        motiexencretIIBBSF: supplier.motiexencretIIBBSF,
-        retIIBBMI: supplier.retIIBBMI,
-        aliretIIBBMI: supplier.aliretIIBBMI,
-        motiexenretIIBBMI: supplier.motiexenretIIBBMI,
-        retGAN: supplier.retGAN,
-        aliretGAN: supplier.aliretGAN,
-        motiexenGAN: supplier.motiexenGAN,
         upload: supplier.upload,
         activo: supplier.activo
       })
@@ -390,21 +333,6 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
       pais: this.f.controls.pais.value,
       desempeno: this.f.controls.desempeno.value,
       ultcompra: this.f.controls.ultcompra.value,
-      fantasia: this.f.controls.fantasia.value,
-      actividad: this.f.controls.actividad.value,
-      correspondencia: this.f.controls.correspondencia.value,
-      CUIT: this.f.controls.CUIT.value,
-      cuentacbu: this.f.controls.cuentacbu.value,
-      IIBB: this.f.controls.IIBB.value,
-      retIIBBSF: this.f.controls.retIIBBSF.value,
-      aliretIIBBSF: this.f.controls.aliretIIBBSF.value,
-      motiexenIIBBSF: this.f.controls.motiexenIIBBSF.value,
-      retIIBBMI: this.f.controls.retIIBBMI.value,
-      aliretIIBBMI: this.f.controls.aliretIIBBMI.value,
-      motiexenIIBBMI: this.f.controls.motiexenIIBBMI.value,
-      retGAN: this.f.controls.retGAN.value,
-      aliretGAN: this.f.controls.aliretGAN.value,
-      motiexenGAN: this.f.controls.motiexenGAN.value,
       upload: this.f.controls.upload.value,
       activo: this.f.controls.activo.value
     } 
@@ -479,22 +407,6 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         this.cuitDone = true
         break
     
-      case "F1276":
-        this.f1276Done = true
-        break
-    
-      case "constIIBB":
-        this.iibbDone = true
-        break
-    
-      case "constexenIIBBSF":
-        this.iibbsfDone = true
-        break
-    
-      case "constexenIIBBMI":
-        this.iibbmiDone = true
-        break
-    
       case "constGAN":
         this.ganDone = true
         break
@@ -529,27 +441,11 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
           this.cuitDone = false
           break
       
-      case "F1276":
-        this.f1276Done = false
-        break
-    
-      case "constIIBB":
-        this.iibbDone = false
-        break
-    
-      case "constexenIIBBSF":
-        this.iibbsfDone = false
-        break
-    
-      case "constexenIIBBMI":
-        this.iibbmiDone = false
-        break
-    
       case "constGAN":
         this.ganDone = false
         break
     
-      default:
+        default:
           break
       }
 
@@ -561,22 +457,6 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
     switch (wfile) {
       case "constCUIT":
         this.cuitDone = true
-        break
-    
-      case "F1276":
-        this.f1276Done = true
-        break
-    
-      case "constIIBB":
-        this.iibbDone = true
-        break
-    
-      case "constexenIIBBSF":
-        this.iibbsfDone = true
-        break
-    
-      case "constexenIIBBMI":
-        this.iibbmiDone = true
         break
     
       case "constGAN":
@@ -615,22 +495,6 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
           this.cuitDone = false
           break
       
-      case "F1276":
-        this.f1276Done = false
-        break
-    
-      case "constIIBB":
-        this.iibbDone = false
-        break
-    
-      case "constexenIIBBSF":
-        this.iibbsfDone = false
-        break
-    
-      case "constexenIIBBMI":
-        this.iibbmiDone = false
-        break
-    
       case "constGAN":
         this.ganDone = false
         break
