@@ -17,7 +17,7 @@
               <a mat-menu-item routerLink="/licitaciones" (click)="drawer.close()">{{esp ? 'Solicitudes de Cotizaci&oacute;n' : 'Requests for quotation'}}</a>
               <a mat-menu-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Solicitudes Cotizadas' : 'Quotated Requests'}}</a>
             </ng-container>
-            <ng-container *ngIf="cuenta.perfil==4">
+            <ng-container *ngIf="cuenta.perfil>=4">
               <a mat-menu-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Mis Solicitudes Cotizadas' : 'My Quoted Requests'}}</a>
             </ng-container>
           </mat-menu>
@@ -58,9 +58,9 @@
           <ng-container *ngIf="cuenta.perfil<=2">
             <a mat-list-item [matMenuTriggerFor]="menuAnexo">{{esp ? 'Anexo' : 'Other'}}</a>
             <mat-menu #menuAnexo="matMenu" yPosition="below"> 
-              <button mat-menu-item routerLink="/usuarios">{{esp ? 'Usuarios' : 'Users'}}</button>
-              <button mat-menu-item routerLink="/proveedores">{{esp ? 'Proveedores' : 'Suppliers'}}</button>
-              <button mat-menu-item routerLink="/scorings">{{esp ? 'Scoring' : 'Scoring'}}</button>
+              <a mat-menu-item routerLink="/usuarios">{{esp ? 'Usuarios' : 'Users'}}</a>
+              <a mat-menu-item routerLink="/proveedores">{{esp ? 'Proveedores' : 'Suppliers'}}</a>
+              <a mat-menu-item routerLink="/scorings">{{esp ? 'Scoring' : 'Scoring'}}</a>
             </mat-menu>
           </ng-container>
   
@@ -132,7 +132,7 @@
                   <button mat-menu-item routerLink="/licitaciones">{{esp ? 'Solicitudes de Cotizaci&oacute;n' : 'Requests for quotation'}}</button>
                   <button mat-menu-item routerLink="/ofertas">{{esp ? 'Solicitudes Cotizadas' : 'Quoted Requests'}}</button>
                 </ng-container>
-                <ng-container *ngIf="cuenta.perfil==4">
+                <ng-container *ngIf="cuenta.perfil>=4">
                   <button mat-menu-item routerLink="/ofertas">{{esp ? 'Mis Solicitudes Cotizadas' : 'My Quoted Requests'}}</button>
                 </ng-container>
                 <!-- <ng-container *ngIf="cuenta.perfil==0">
