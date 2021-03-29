@@ -15,6 +15,7 @@ import { Offers } from 'src/app/models/Offers';
 import { TendersService } from 'src/app/servicios/tenders.service'
 import { Tenders } from 'src/app/models/Tenders';
 import { ProductosService } from 'src/app/servicios/productos.service'
+import { CotizacionesService } from 'src/app/servicios/cotizaciones.service'
 import { Productos } from 'src/app/models/Products';
 import * as moment from 'moment'
 import { MatDialog } from '@angular/material/dialog'
@@ -40,7 +41,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<Offers> = new MatTableDataSource<Offers>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['usuario', 'licitacion', 'descrip', 'cantidad', 'precio', 'total', 'entrega', 'scoring', 'ranking', 'estado', 'actions']
+  displayedColumns: string[] = ['usuario', 'licitacion', 'descrip', 'detalle', 'cantidad', 'precio', 'total', 'entrega', 'financiacion', 'scoring', 'scoreRanking', 'dueDays', 'estado', 'actions']
 
   strTipo: string
   idIdx: string
@@ -57,9 +58,10 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   offUpt: Offers
 
   tenders: Tenders[] = []
-  exTender: Tenders 
-
+  exTender: Tenders
+  
   products: Productos[] = [] 
+  producto: Productos[] = []
 
   f: FormGroup
 
@@ -79,6 +81,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   tenderToOffer: string = ''
 
+  cotiza: number = 0
+
   constructor(
     private fb: FormBuilder,
     private comunicacionService: ComunicacionService,
@@ -88,6 +92,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     private offersService: OffersService,
     private tenderService: TendersService,
     private productService: ProductosService,
+    private cotizacionesService: CotizacionesService,
     private router: Router,
     public dialog: MatDialog,
     private activatedRoute: ActivatedRoute
@@ -149,10 +154,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         Validators.compose([
         Validators.required
       ])],
-      precio: ['',
-        Validators.compose([
-        Validators.required
-      ])],
+      precio: [0],
       incoterm: ['',
         Validators.compose([
         Validators.required
@@ -173,7 +175,10 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       scoring: [0],
       financiacion: [0],
       scoreFinanciacion: [0],
-      scoreRanking: [0]
+      scoreRanking: [0],
+      precioPesos: [0],
+      cotizacion: [0],
+      total: [0]
     }, { validators: this.validaCantidad('licitacion', 'cantidad')})
 
     this.languageService.esp$.subscribe((lang: Language) => {
@@ -203,7 +208,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
       if (params.tender) {
-        console.log(params);
+        // console.log(params);
         this.tenderToOffer = params.tender+'/'+params.product
       } else {
         this.tenderToOffer = ''
@@ -246,6 +251,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     const user = await this.getUserData()
     this.checkCuenta(user)
 
+    await this.pedirCotizDolar()
     // await this.pedirTenders(user)
     // await this.pedirOffers(user)
     await this.pedirProducts()
@@ -259,23 +265,47 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
     if (this.tenderToOffer !== '') {
       // Que vino desde Activas
-      this.exTender = await this.getTender()
-      console.log(this.exTender)
+      await this.getTender()
+      // console.log(this.exTender)
 
-      console.log(this.tenderToOffer)
-      await this.openModal(this.editOfferModal, this.offer, 'A')
     } else {
-      this.exTender = undefined
+
+      // console.log(this.exTender)
     }
 
   }
 
   async getTender() {
-    // Trae la tender elegida para Cotizar
-    const estaTend: any = await this.tenders.filter( x => x.licitacion == this.tenderToOffer)
-    console.log(estaTend[0])
+    // console.log(this.tenderToOffer)
+    // console.log(this.cuenta.usuario)
+    const offExist: any = await this.dataSource.data.filter( x => x.licitacion == this.tenderToOffer && x.usuario == this.cuenta.usuario)
+    // console.log('offExist', offExist.length)
 
-    return estaTend[0]
+    if (offExist.length > 0) {
+      let strConfMsg = this.esp ? 'Oferta ya Existente!' : 'Offer already Exist!' 
+      let strConfMsg2 = this.esp ? 'Modifiquela para mejorar su Ranking!' : 'Update it in order to inprove your Ranking!' 
+      // console.log(strConfMsg)
+      const dialogRef = await this.dialog.open(AlertMessagesComponent, {
+        width: '300px',
+        data: {tipo: 'Alerta', mensaje: strConfMsg, mensaje2: strConfMsg2}
+      })
+
+      await this.tenderToOffer == ''
+      this.exTender == undefined
+
+    } else {
+      // Trae la tender elegida para Cotizar
+      const estaTend: any = await this.tenders.filter( x => x.licitacion == this.tenderToOffer)
+      // console.log('estaTend', estaTend[0])
+      this.exTender = estaTend[0]
+      // console.log('exTender', this.exTender)
+      this.exTender.id = estaTend[0]._id
+
+      // console.log(this.tenderToOffer)
+      await this.openModal(this.editOfferModal, this.offer, 'A')
+    }
+    
+    return 
   }
 
   checkCuenta(user) {
@@ -324,6 +354,16 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       }
 
       this.dataSource.data = resp.Offers
+      this.dataSource.sortingDataAccessor = (item, property) => {
+        switch (property) {
+            case 'total':
+                return this.calcTotal(item.precio, item.precioPesos, item.cantidad)
+            case 'dueDays':
+                return this.calcDueDays(item.licitacion)
+            default:
+                return item[property]
+        }
+      }
       this.dataSource.sort = this.sort
       this.dataSource.paginator = this.paginator
       this.table.dataSource = this.dataSource
@@ -337,20 +377,33 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     }
   }
 
-  pedirTenders(user) {
-      this.tenderService.getTenders()
-      .subscribe((resp: any) => {
+  async pedirTenders(user) {
+      let resp: any
+      resp = await this.tenderService.getTenders().toPromise()
+      // .subscribe((resp: any) => {
         console.log(resp)
         this.tenders = resp.Tenders
-      })
+      // })
+      // this.tenderService.getTenders()
+      // .subscribe((resp: any) => {
+      //   console.log(resp)
+      //   this.tenders = resp.Tenders
+      // })
+
   }
 
-  pedirProducts() {
-    this.productService.getProductos()
-    .subscribe((resp: any) => {
+  async pedirProducts() {
+    let resp: any
+    resp = await this.productService.getProductos().toPromise()
+    // .subscribe((resp: any) => {
       console.log(resp)
       this.products = resp.Products
-    })
+    // })
+    // this.productService.getProductos()
+    // .subscribe((resp: any) => {
+    //   console.log(resp)
+    //   this.products = resp.Products
+    // })
   }
 
   openModal(targetModal, offer, strTipoParam) {
@@ -360,6 +413,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
      centered: true,
      backdrop: 'static'
     })
+
+    console.log(this.exTender)
 
     if (strTipoParam === 'A') {
       this.f.patchValue({
@@ -371,14 +426,14 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         email: this.cuenta.email,
         proveedor: this.cuenta.proveedor,
         provenom: this.cuenta.nombre,
-        fecha: moment().format().substr(0, 10) ,
-        finaliza: moment().format().substr(0, 10),
-        producto: this.exTender ? this.exTender.producto : '',
+        fecha: 0,
+        finaliza: 0,
+        producto: this.exTender ? this.exTender.producto : 0,
         descrip: this.exTender ? this.exTender.descrip: '',
-        cantidad: this.exTender ? this.exTender.cantidad : '',
+        cantidad: this.exTender ? this.exTender.cantidad : 0,
         unidad: this.exTender ? this.exTender.unidad : '',
-        costo: this.exTender ? this.exTender.costo : '',
-        precio: '',
+        costo: this.exTender ? this.exTender.costo : 0,
+        precio: 0,
         incoterm: 'FOB',
         entrega: 7,
         estado: 0,
@@ -390,7 +445,10 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         scoring: 0,
         financiacion: 0,
         scoreFinanciacion: 0,
-        scoreRanking: 0
+        scoreRanking: 0,
+        precioPesos: 0,
+        cotizacion: this.cotiza,
+        total: 0
       })
     } else {
       this.f.patchValue({
@@ -421,9 +479,19 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         scoring: offer.scoring,
         financiacion: offer.financiacion,
         scoreFinanciacion: offer.scoreFinanciacion,
-        scoreRanking: offer.scoreRanking
+        scoreRanking: offer.scoreRanking,
+        precioPesos: offer.precioPesos,
+        cotizacion: this.cotiza, 
+        total: 0
+        // total: this.calcTotal(offer.precio,offer.precioPesos,offer.cantidad)
       })
     }
+
+    let esteProd: any
+    esteProd = this.products.filter( x => x.codigo == this.f.controls.producto.value)
+    this.producto = esteProd[0]
+
+    // console.log(this.f.controls)
 
     if (strTipoParam === 'B') {
       this.f.disable()
@@ -473,7 +541,9 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       scoring: this.f.controls.scoring.value,
       financiacion: this.f.controls.financiacion.value,
       scoreFinanciacion: this.f.controls.scoreFinanciacion.value,
-      scoreRanking: this.f.controls.scoreRanking.value
+      scoreRanking: this.f.controls.scoreRanking.value,
+      precioPesos: this.f.controls.precioPesos.value,
+      cotizacion: this.f.controls.cotizacion.value
     }
 
     switch (this.strTipo) {
@@ -507,13 +577,16 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
     if (resp) {
       let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
-      console.log(updScoring)
+      // console.log(updScoring)
       await this.alertMsg()
     }
 
     console.log('Agregó')
 
-    await this.tenderToOffer == ''
+    if(this.tenderToOffer !== '') {
+      this.tenderToOffer = ''
+      this.router.navigateByUrl('/ofertas')
+    }
     await this.pedirDatos()
    }
 
@@ -524,9 +597,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
           this.tenderService.updateScoring(this.offUpt.licitacion_id)
           .subscribe((respUpdt: any) => {
               if (respUpdt) {
-                console.log(respUpdt)
+                // console.log(respUpdt)
                 this.alertMsg()
-
                 this.tenderToOffer == ''
               }
               this.pedirDatos()
@@ -535,10 +607,12 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       console.log('Borro')
     })
   }
+
   async modificarOferta() {
     let resp: any = await this.offersService.putOffer(this.idIdx, this.offUpt).toPromise()
     if (resp) {
       console.log(resp)
+      console.log(this.offUpt.licitacion_id)
       let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
       await this.alertMsg()
     }
@@ -580,9 +654,9 @@ export class OfertasComponent implements AfterViewInit, OnInit {
           onlySelf: true
         })
     
-        // this.f.get('cantidad').setValue((resp.cantidad), {
-        //   onlySelf: true
-        // })
+        this.f.get('cantidad').setValue((resp[0].cantidad), {
+          onlySelf: true
+        })
     
         this.f.get('unidad').setValue((resp[0].unidad), {
           onlySelf: true
@@ -730,7 +804,103 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     }
   }
 
-  total(pre, can) {
-    return pre * can
+  // calcTotalValidator() {
+  //   return (formGroup: FormGroup) => {
+  //     let pre: number = formGroup.controls[precio]
+  //     let pes: number = formGroup.controls[precioPesos]
+  //     let can: number = formGroup.controls[cantidad]
+  //     if (pes != 0) {
+  //       if (this.cotiza != 0) {
+  //         pre = this.round(pes / this.cotiza, 2)
+  //         this.f.get('precio').setValue(pre, {onlySelf: true})
+  //           // console.log('pre', this.f.controls.precio.value)
+  //       }
+  //     }
+      
+  //     let total: number = this.round(pre * can, 2)
+  //     // console.log(total)
+
+  //     this.f.get('total').setValue(total, {onlySelf: true})
+  //     // console.log('precio', this.f.controls.precio.value)
+      
+  //     return true
+  //   }
+  // }
+
+  calcTotal(pre, pes, can) {
+    let ret = 0
+    console.log(pes)
+    console.log(pre)
+    console.log(can)
+    if (!pes) pes = 0
+    if (pes != 0) {
+      if (this.cotiza != 0) {
+        // console.log(pre)
+        if (this.f.controls.precio && pes !== 0) {
+          pre = this.round(pes / this.cotiza, 2)
+          // console.log(pre)
+          // this.f.get('precio').setValue(pre, {onlySelf: true})
+          // this.f.patchValue({precio: pre})
+          // console.log('precio', this.f.controls.precio.value)
+        }
+      } else {
+        pre = 0
+        // console.log(pre)
+      }
+    } 
+
+    ret = this.round(pre * can, 2)
+    // console.log(ret)
+
+    // if (this.f.controls.total) {
+      // this.f.get('total').setValue(ret, {onlySelf: true})
+      // console.log('precio', this.f.controls.precio.value)
+    // }
+
+    return ret
+  }
+
+  round(value, digits) {
+    if(!digits){
+        digits = 2;
+    }
+    value = value * Math.pow(10, digits);
+    value = Math.round(value);
+    value = value / Math.pow(10, digits);
+    return value;
+  }
+
+  calcDueDays(offerTender: string) {
+    // console.log(offerTender)
+    if (!offerTender) return 0
+
+    let resp: any = this.tenders.filter( x => x.licitacion == offerTender) 
+    // console.log(resp)
+
+    if (resp.length > 0) {
+      var startDate = moment(resp[0].finaliza);
+      // console.log('startDate',startDate)
+      var currentDate = moment(new Date());
+      // console.log('currentDate',currentDate)
+      var result = startDate.diff(currentDate, 'days')
+      // console.log('result',result)
+    } else {
+      result = 0
+    }
+    return result
+  }
+
+  async pedirCotizDolar() {
+    let resp: any
+    resp = await this.cotizacionesService.getCotizacionBNA().toPromise()
+    // .subscribe((resp: any) => {
+      console.log(resp)
+      this.cotiza = resp.compra
+    // })
+    // this.cotizacionesService.getCotizacionBNA()
+    // .subscribe((resp: any) => {
+    //   console.log(resp)
+    //   this.cotiza = resp.compra
+    // })
   }
 }

@@ -52,3 +52,18 @@
     </mat-dialog-actions>
     <br>
 </ng-container>
+
+<ng-container *ngIf="data.tipo=='Alerta'">
+    <h1 mat-dialog-title>{{esp ? 'Alerta' : 'Alerta'}}</h1>
+    <mat-dialog-content class='dialog-alerta'>
+        <h2>{{data.mensaje}}</h2>
+        <h5>{{data.mensaje2}}</h5>
+        <!-- <br> -->
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+        <button mat-button mat-dialog-close (click)="onClickNo()">
+            <mat-icon class="red">error</mat-icon>
+        </button>
+    </mat-dialog-actions>
+    <!-- <br> -->
+</ng-container>

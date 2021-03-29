@@ -36,7 +36,7 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<Tenders> = new MatTableDataSource<Tenders>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['licitacion', 'descrip', 'cantidad', 'fecha', 'finaliza', 'historico', 'estado', 'actions']
+  displayedColumns: string[] = ['licitacion', 'descrip', 'detalle', 'oferta', 'cantidad', 'fecha', 'finaliza', 'historico', 'estado', 'actions']
 
   strTipo: string
   idIdx: string
@@ -174,8 +174,12 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
     this.checkCuenta(user)
 
     await this.pedirProducts()
+    console.log('Products', this.products)
     await this.pedirOffers()
+    console.log('Offers', this.offers)
     await this.pedirTenders(user)
+    console.log('Tenders', this.dataSource.data)
+
   }
     
   checkCuenta(user) {
@@ -244,11 +248,11 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
   }
   
   async pedirProducts() {
-    this.productService.getProductos()
-    .subscribe((resp: any) => {
-      // console.log(resp)
+    let resp: any = await this.productService.getProductos().toPromise()
+    // .subscribe((resp: any) => {
+      console.log('Products', resp)
       this.products = resp.Products
-    })
+    // })
   }
 
   openModal(targetModal, tender, strTipoParam) {
@@ -487,6 +491,16 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
 
   total(pre, can) {
     return pre * can
+  }
+
+  showFecha(parFecha){
+    let retFecha = ''
+    if (this.esp) {
+      retFecha = moment(parFecha).format("DD/MM/YYYY")
+    } else {
+      retFecha = moment(parFecha).format("MM/DD/YYYY")
+    }
+    return retFecha
   }
 
 }

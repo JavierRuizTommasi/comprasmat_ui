@@ -1,11 +1,21 @@
 <div class="jumbotron">
-    <h3 class="mt-2">{{esp ? 'Insumos que puedo proveer' : 'Supplies than I can provide'}}</h3>
-    <p class="mt-2">{{esp ? 'Seleccione los insumos que desee eliminar y sobre los cuales no desea recibir
-        notificaciones de nuevas Solicitudes de Cotizaci&oacute;n. Una vez seleccionados presiones el bot&oacute;
-        Borrar Selecci&oacute;n para eliminarlos de su lista' : 'Select the supplies that you wish to delete
-        and you do not want to receive notifications on new Request for Quotations. Once you make the selecction press
-        the Delete Selection button to delete from your list.'}}
-    </p>
+    <div class="flex-container">
+        <h3 class="mt-2">{{esp ? 'Insumos que puedo proveer' : 'Supplies than I can provide'}}</h3>
+        <a class="btn btn-link mt-2" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+            {{esp ? 'Ver m&aacute;s' : 'See more'}}
+        </a>
+    </div>
+    <div id="accordion">
+      <div class="card border border-white">
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+          <div class="card-body descrip mb-2">
+            {{esp ? 'Seleccione los insumos sobre los cuales no desea recibir notificaciones de nuevas Solicitudes de Cotizaci&oacute;n 
+            y eliminelos de su lista' : 'Select the supplies that you do not want to receive notifications on new Request for Quotations 
+            and delete them from your list.'}}
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="d-flex flex-row flex-wrap">
         <!-- <div class="col-lg-10 col-md-8 col-sm-8 col-xs-6"> -->
         <div class="mr-auto pr-2 flex-grow-1">

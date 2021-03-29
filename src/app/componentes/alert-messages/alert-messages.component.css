@@ -2,6 +2,10 @@ mat-dialog-content {
     text-align: center;
 }
 
+.dialog-alerta {
+    background-color:greenyellow;
+}
+
 .mdi.green { 
     color: green;
     transform: scale(2);

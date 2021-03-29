@@ -55,6 +55,7 @@ import { SuppliersService } from './servicios/suppliers.service'
 import { ScoringsService } from './servicios/scorings.service'
 import { MailsToSuppliersService } from './servicios/mailsToSuppliers.service'
 import { UploadsService } from './servicios/uploads.service'
+import { CotizacionesService } from './servicios/cotizaciones.service'
 
 import { AngularFileUploaderModule } from "angular-file-uploader"
 
@@ -121,6 +122,7 @@ import Rutas from './routes';
     ScoringsService,
     MailsToSuppliersService,
     UploadsService,
+    CotizacionesService,
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'legacy' } }
   ],
   bootstrap: [AppComponent]

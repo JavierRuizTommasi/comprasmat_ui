@@ -5,5 +5,15 @@
     margin: auto;
     margin-top: 1rem;
     padding: 0;
-  }
+}
 
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.descrip {
+    background-color: lemonchiffon;
+    padding: .5rem;
+}

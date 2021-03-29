@@ -8,7 +8,7 @@ export class Offers {
     public proveedor: number
     public provenom: string
     public fecha: string
-    public finaliza: string
+    public finaliza?: number
     public producto: number
     public descrip: string
     public cantidad: number
@@ -27,4 +27,6 @@ export class Offers {
     public financiacion: number
     public scoreFinanciacion: number
     public scoreRanking: number
+    public precioPesos: number
+    public cotizacion: number
 }

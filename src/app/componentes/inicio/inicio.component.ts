@@ -11,6 +11,7 @@ import { TendersService } from 'src/app/servicios/tenders.service'
 import { Tenders } from 'src/app/models/Tenders';
 import { arEstadosLicitaciones } from 'src/app/models/EstadosLicitaciones'
 import { Router } from '@angular/router'
+import * as moment from 'moment'
 
 @Component({
   selector: 'app-inicio',
@@ -134,6 +135,16 @@ export class InicioComponent implements AfterViewInit, OnInit {
 
   applyFilter(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase()
+  }
+
+  showFecha(parFecha){
+    let retFecha = ''
+    if (this.esp) {
+      retFecha = moment(parFecha).format("DD/MM/YYYY")
+    } else {
+      retFecha = moment(parFecha).format("MM/DD/YYYY")
+    }
+    return retFecha
   }
 }
 
