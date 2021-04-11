@@ -48,4 +48,8 @@ export class OffersService {
     return this.http.delete<Offers>(this.url.baseApiUrl + 'offers/' + id, this.getHttpOptions())
   }
 
+  updateOfferStates(id: string): Observable<Offers> {
+    return this.http.put<Offers>(this.url.baseApiUrl + 'updateOfferStates/' + id, this.getHttpOptions())
+  }
+
 }

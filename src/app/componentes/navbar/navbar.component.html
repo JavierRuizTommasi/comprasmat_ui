@@ -58,9 +58,9 @@
           <ng-container *ngIf="cuenta.perfil<=2">
             <a mat-list-item [matMenuTriggerFor]="menuAnexo">{{esp ? 'Anexo' : 'Other'}}</a>
             <mat-menu #menuAnexo="matMenu" yPosition="below"> 
-              <a mat-menu-item routerLink="/usuarios">{{esp ? 'Usuarios' : 'Users'}}</a>
-              <a mat-menu-item routerLink="/proveedores">{{esp ? 'Proveedores' : 'Suppliers'}}</a>
-              <a mat-menu-item routerLink="/scorings">{{esp ? 'Scoring' : 'Scoring'}}</a>
+              <a mat-menu-item routerLink="/usuarios" (click)="drawer.close()">{{esp ? 'Usuarios' : 'Users'}}</a>
+              <a mat-menu-item routerLink="/proveedores" (click)="drawer.close()">{{esp ? 'Proveedores' : 'Suppliers'}}</a>
+              <a mat-menu-item routerLink="/scorings" (click)="drawer.close()">{{esp ? 'Scoring' : 'Scoring'}}</a>
             </mat-menu>
           </ng-container>
   
@@ -99,7 +99,7 @@
           <a mat-list-item routerLink="/login" (click)="drawer.close()">{{esp ? 'Ingreso' : 'Login'}}</a>
         </ng-container>
   
-        <a mat-list-item (click)="changeLang()">
+        <a mat-list-item (click)="changeLang(); drawer.close()">
           <img *ngIf="esp" src="../../assets/uk.png" width="20" height="20">
           <img *ngIf="!esp" src="../../assets/spain.png" width="20" height="20">
         </a>

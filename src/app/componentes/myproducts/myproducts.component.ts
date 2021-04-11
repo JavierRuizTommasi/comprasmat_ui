@@ -7,6 +7,8 @@ import { ComunicacionService } from 'src/app/servicios/comunicacion.service'
 import { UsuariosService } from 'src/app/servicios/usuarios.service'
 import { MyProductsService } from 'src/app/servicios/myproducts.service'
 import { MyProducts } from 'src/app/models/MyProducts'
+import { ProductosService } from 'src/app/servicios/productos.service'
+import { Productos } from 'src/app/models/Products'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { Router } from '@angular/router'
 import { Language } from 'src/app/models/Language'
@@ -14,6 +16,8 @@ import { LanguageService } from 'src/app/servicios/language.service'
 import { MensajesService } from 'src/app/servicios/mensajes.service'
 import { MatDialog } from '@angular/material/dialog'
 import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
+import { Observable } from 'rxjs'
 
 @Component({
   selector: 'app-myproducts',
@@ -29,7 +33,7 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<MyProducts> = new MatTableDataSource<MyProducts>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['checked', 'codigo', 'descrip', 'rubro', 'subrubro']
+  displayedColumns: string[] = ['checked', 'codigo', 'descrip', 'detalle', 'rubro', 'subrubro']
 
   strTipo: string
   idIdx: number
@@ -42,7 +46,8 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
   @Output() actualizaLang = new EventEmitter()
 
   myproducts: MyProducts[] = []
- 
+  producto: Productos[] = []
+  
   public checkAll = false
     
   notDone: boolean = true
@@ -51,8 +56,10 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
     private comunicacionService: ComunicacionService,
     private languageService: LanguageService,
     private myproductsService: MyProductsService,
+    private productosService: ProductosService,
     private usuariosService: UsuariosService,
     private mensajesService: MensajesService,
+    private modalService: NgbModal,
     private router: Router,
     public dialog: MatDialog)
     {
@@ -212,6 +219,21 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
       data: {tipo: 'Aviso', mensaje: strConfMsg}
     })
   
+  }
+
+  openModal(targetModal, prod, strTipoParam) {
+    this.strTipo = strTipoParam
+
+    this.modalService.open(targetModal, {
+     centered: true,
+     backdrop: 'static'
+    })
+
+    let esteProd: any
+    esteProd = this.dataSource.data.filter( x => x.codigo == prod.codigo)
+    console.log(esteProd)
+    this.producto = esteProd[0]
+
   }
 
 }

@@ -29,4 +29,5 @@ export class Offers {
     public scoreRanking: number
     public precioPesos: number
     public cotizacion: number
+    public desempeno: number
 }

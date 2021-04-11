@@ -26,6 +26,8 @@ import { arUnidades } from 'src/app/models/Unidades'
 import { arFinanciacion } from 'src/app/models/Financiacion'
 import { arDiasEntrega } from 'src/app/models/DiasEntrega'
 import { Observable } from 'rxjs';
+import { SuppliersService } from 'src/app/servicios/suppliers.service'
+import { Suppliers } from 'src/app/models/Suppliers'
 
 @Component({
   selector: 'app-ofertas',
@@ -41,7 +43,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<Offers> = new MatTableDataSource<Offers>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['usuario', 'licitacion', 'descrip', 'detalle', 'cantidad', 'precio', 'total', 'entrega', 'financiacion', 'scoring', 'scoreRanking', 'dueDays', 'estado', 'actions']
+  displayedColumns: string[]
 
   strTipo: string
   idIdx: string
@@ -83,6 +85,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   cotiza: number = 0
 
+  suppliers: Suppliers[] = []
+
   constructor(
     private fb: FormBuilder,
     private comunicacionService: ComunicacionService,
@@ -95,7 +99,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     private cotizacionesService: CotizacionesService,
     private router: Router,
     public dialog: MatDialog,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private suppliersService: SuppliersService
   ) {
 
     if (!this.usuariosService.isLogin()) {
@@ -178,7 +183,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       scoreRanking: [0],
       precioPesos: [0],
       cotizacion: [0],
-      total: [0]
+      total: [0],
+      desempeno: [0]
     }, { validators: this.validaCantidad('licitacion', 'cantidad')})
 
     this.languageService.esp$.subscribe((lang: Language) => {
@@ -187,22 +193,55 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
     this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
       this.cuenta = cuenta
+      // console.log(this.cuenta)
+      if (cuenta) {
+        if (this.cuenta.perfil < 4) {
+          // Si no es Proveedor o Pendiente agrega filtro de USUARIO
+          this.filterSelectObj = [
+            {
+              name: 'USUARIO',
+              nameeng: 'USER',
+              columnProp: 'usuario',
+              options: []
+            },
+            {
+              name: 'SOLICITUD',
+              nameeng: 'REQUEST',
+              columnProp: 'licitacion',
+              options: []
+            },
+            {
+              name: 'PRODUCTO',
+              nameeng: 'PRODUCT',
+              columnProp: 'descrip',
+              options: []
+            }
+          ]
+
+          this.displayedColumns = ['usuario', 'licitacion', 'descrip', 'detalle', 'cantidad', 'precio', 'total', 'entrega', 'financiacion', 'desempeno', 'scoring', 'scoreRanking', 'dueDays', 'estado', 'actions']
+        
+        } else {
+          this.filterSelectObj = [
+            {
+              name: 'SOLICITUD',
+              nameeng: 'REQUEST',
+              columnProp: 'licitacion',
+              options: []
+            },
+            {
+              name: 'PRODUCTO',
+              nameeng: 'PRODUCT',
+              columnProp: 'descrip',
+              options: []
+            }
+          ]
+        
+          this.displayedColumns = ['usuario', 'licitacion', 'descrip', 'detalle', 'cantidad', 'precio', 'total', 'entrega', 'financiacion', 'scoring', 'scoreRanking', 'dueDays', 'estado', 'actions']
+
+        }
+      }
     })
 
-    this.filterSelectObj = [
-      {
-        name: 'USUARIO',
-        nameeng: 'USER',
-        columnProp: 'usuario',
-        options: []
-      },
-      {
-        name: 'PRODUCTO',
-        nameeng: 'PRODUCT',
-        columnProp: 'descrip',
-        options: []
-      }
-    ]
   }
 
   ngOnInit(): void {
@@ -251,15 +290,16 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     const user = await this.getUserData()
     this.checkCuenta(user)
 
-    await this.pedirCotizDolar()
-    // await this.pedirTenders(user)
-    // await this.pedirOffers(user)
+    await this.pedirSuppliers()
+    console.log('Suppliers')
     await this.pedirProducts()
     console.log('Products')
     await this.pedirTenders(user)
     console.log('Tenders')
     await this.pedirOffers(user)
     console.log('Offers')
+
+    await this.pedirCotizDolar()
 
     this.notDone = false
 
@@ -350,7 +390,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       } else {
         // console.log('Actives')
         resp = await this.offersService.getOffers().toPromise()
-        console.log(resp)
+        // console.log(resp)
       }
 
       this.dataSource.data = resp.Offers
@@ -380,30 +420,19 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   async pedirTenders(user) {
       let resp: any
       resp = await this.tenderService.getTenders().toPromise()
-      // .subscribe((resp: any) => {
-        console.log(resp)
-        this.tenders = resp.Tenders
-      // })
-      // this.tenderService.getTenders()
-      // .subscribe((resp: any) => {
-      //   console.log(resp)
-      //   this.tenders = resp.Tenders
-      // })
-
+      this.tenders = resp.Tenders
   }
 
   async pedirProducts() {
     let resp: any
     resp = await this.productService.getProductos().toPromise()
-    // .subscribe((resp: any) => {
-      console.log(resp)
-      this.products = resp.Products
-    // })
-    // this.productService.getProductos()
-    // .subscribe((resp: any) => {
-    //   console.log(resp)
-    //   this.products = resp.Products
-    // })
+    this.products = resp.Products
+  }
+
+  async pedirSuppliers() {
+    let resp: any
+    resp = await this.suppliersService.getSuppliers().toPromise()
+    this.suppliers = resp.Suppliers
   }
 
   openModal(targetModal, offer, strTipoParam) {
@@ -448,7 +477,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         scoreRanking: 0,
         precioPesos: 0,
         cotizacion: this.cotiza,
-        total: 0
+        total: 0,
+        desempeno: 0
       })
     } else {
       this.f.patchValue({
@@ -482,7 +512,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         scoreRanking: offer.scoreRanking,
         precioPesos: offer.precioPesos,
         cotizacion: this.cotiza, 
-        total: 0
+        total: 0,
+        desempeno: offer.desempeno
         // total: this.calcTotal(offer.precio,offer.precioPesos,offer.cantidad)
       })
     }
@@ -543,7 +574,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       scoreFinanciacion: this.f.controls.scoreFinanciacion.value,
       scoreRanking: this.f.controls.scoreRanking.value,
       precioPesos: this.f.controls.precioPesos.value,
-      cotizacion: this.f.controls.cotizacion.value
+      cotizacion: this.f.controls.cotizacion.value,
+      desempeno: this.f.controls.desempeno.value
     }
 
     switch (this.strTipo) {
@@ -612,11 +644,17 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     let resp: any = await this.offersService.putOffer(this.idIdx, this.offUpt).toPromise()
     if (resp) {
       console.log(resp)
-      console.log(this.offUpt.licitacion_id)
+      // console.log(this.offUpt.licitacion_id)
       let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
-      await this.alertMsg()
     }
 
+    if (this.offUpt.estado === 1) {
+      console.log(this.idIdx)
+      let resp: any = await this.offersService.updateOfferStates(this.idIdx).toPromise()
+      console.log(resp)
+    }
+
+    await this.alertMsg()
     await this.tenderToOffer == ''
     await this.pedirDatos()
   }
@@ -829,9 +867,9 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   calcTotal(pre, pes, can) {
     let ret = 0
-    console.log(pes)
-    console.log(pre)
-    console.log(can)
+    // console.log(pes)
+    // console.log(pre)
+    // console.log(can)
     if (!pes) pes = 0
     if (pes != 0) {
       if (this.cotiza != 0) {
@@ -888,6 +926,18 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       result = 0
     }
     return result
+  }
+
+  traerDesempeno(user: string) {
+    if (!user) return 0
+
+    let resp: any = this.suppliers.filter( x => x.usuario == user )
+
+    if (resp.length > 0) {
+      return resp[0].desempeno
+    } else {
+      return 0
+    }
   }
 
   async pedirCotizDolar() {

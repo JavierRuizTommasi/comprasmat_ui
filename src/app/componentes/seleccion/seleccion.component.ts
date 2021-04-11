@@ -16,6 +16,8 @@ import { MensajesService } from 'src/app/servicios/mensajes.service'
 import { MatDialog } from '@angular/material/dialog'
 import { Router } from '@angular/router';
 import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
+import { Observable } from 'rxjs'
 
 @Component({
   selector: 'app-seleccion',
@@ -31,7 +33,7 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<MyProducts> = new MatTableDataSource<MyProducts>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['checked', 'codigo', 'descrip', 'rubro', 'subrubro']
+  displayedColumns: string[] = ['checked', 'codigo', 'descrip', 'detalle', 'rubro', 'subrubro']
 
   strTipo: string
   idIdx: number
@@ -45,6 +47,7 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
 
   myproducts: MyProducts[] = []
   products: Productos[] = [] 
+  producto: Productos[] = []
   
   siGrabo: boolean
   msgGrabo: string
@@ -62,6 +65,7 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
     private productosService: ProductosService,
     private usuariosService: UsuariosService,
     private mensajesService: MensajesService,
+    private modalService: NgbModal,
     private router: Router,
     public dialog: MatDialog)
     { 
@@ -253,6 +257,21 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
       data: {tipo: 'Aviso', mensaje: strConfMsg}
     })
   
+  }
+
+  openModal(targetModal, prod, strTipoParam) {
+    this.strTipo = strTipoParam
+
+    this.modalService.open(targetModal, {
+     centered: true,
+     backdrop: 'static'
+    })
+
+    let esteProd: any
+    esteProd = this.dataSource.data.filter( x => x.codigo == prod.codigo)
+    console.log(esteProd)
+    this.producto = esteProd[0]
+
   }
 
 }

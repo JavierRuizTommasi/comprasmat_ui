@@ -79,9 +79,9 @@
                     <mat-icon>description</mat-icon>&nbsp; {{esp ? 'Ver' : 'See'}}
                   </button>
                 </td>
-              </ng-container>
+            </ng-container>
         
-                    <ng-container matColumnDef="cantidad">
+            <ng-container matColumnDef="cantidad">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Cantidad' : 'Quantity'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.cantidad}} {{row.unidad}}</td>
             </ng-container>
@@ -109,6 +109,13 @@
             <ng-container matColumnDef="financiacion">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Financiacion' : 'Financial'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.financiacion}} {{esp ? 'D&iacute;as' : 'Days'}}</td>
+            </ng-container>
+
+            <ng-container *ngIf="cuenta">
+                <ng-container *ngIf="cuenta.perfil < 4" matColumnDef="desempeno">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Desempe&ntilde;o' : 'Performance'}}</th>
+                    <td mat-cell *matCellDef="let row">{{row.desempeno}}</td>
+                </ng-container>
             </ng-container>
 
             <ng-container matColumnDef="scoring">
@@ -447,8 +454,8 @@
                     </div>
                 </div>
 
-                <!-- Solo para el Administrador -->
-                <ng-container *ngIf="cuenta.perfil==0">
+                <!-- Solo para el Administrador y Compras -->
+                <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2">
                     <div *ngIf="this.strTipo !== 'B' && this.strTipo !== 'P'" class="form-group row">
                         <label for="estado" class="col-sm-3 col-form-label">{{esp ? 'Estado' : 'State'}}</label>
                         <div class="col-sm-9">
@@ -461,11 +468,21 @@
                     </div>
                 </ng-container>
 
+                <!-- Solo para el Estado = 1 Aprobada -->
+                <ng-container *ngIf="f.controls.estado.value==1">
+                    <div *ngIf="this.strTipo !== 'B' && this.strTipo !== 'P'" class="form-group row">
+                        <label for="detalle" class="col-sm-3 col-form-label">{{esp ? 'Comentario' : 'Comment'}}</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" formControlName="detalle" id="detalle" [readOnly]="this.strTipo == 'B'" rows="5"></textarea>
+                        </div>
+                    </div>
+                </ng-container>
+
                 <div class="modal-footer">
                     <div *ngIf="this.strTipo === 'B'">
                         <button type="submit" class="btn btn-primary">{{esp ? 'Borrar' : 'Delete'}}</button>
                     </div>
-                    <div *ngIf="this.strTipo !== 'B'">
+                    <div *ngIf="this.strTipo === 'M'">
                         <button type="submit" class="btn btn-primary" [disabled]="!f.valid">{{esp ? 'Guardar' :
                             'Save'}}</button>
                     </div>

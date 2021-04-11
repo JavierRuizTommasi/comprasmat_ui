@@ -174,11 +174,11 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
     this.checkCuenta(user)
 
     await this.pedirProducts()
-    console.log('Products', this.products)
+    // console.log('Products', this.products)
     await this.pedirOffers()
-    console.log('Offers', this.offers)
+    // console.log('Offers', this.offers)
     await this.pedirTenders(user)
-    console.log('Tenders', this.dataSource.data)
+    // console.log('Tenders', this.dataSource.data)
 
   }
     
@@ -250,7 +250,7 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
   async pedirProducts() {
     let resp: any = await this.productService.getProductos().toPromise()
     // .subscribe((resp: any) => {
-      console.log('Products', resp)
+      // console.log('Products', resp)
       this.products = resp.Products
     // })
   }
