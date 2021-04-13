@@ -311,7 +311,7 @@
           <div *ngIf="this.strTipo === 'B'">
             <button type="submit" class="btn btn-primary">{{esp ? 'Borrar' : 'Delete'}}</button>
           </div>
-          <div *ngIf="this.strTipo !== 'M'">
+          <div *ngIf="this.strTipo !== 'B'">
             <button type="submit" class="btn btn-primary" [disabled]="!f.valid">{{esp ? 'Guardar' : 'Save'}}</button>
           </div>
           <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">{{esp ? 'Cancelar' :

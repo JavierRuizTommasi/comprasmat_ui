@@ -326,13 +326,31 @@
                     </div>
                 </div>
 
+                <div class="form-group row">
+                    <a class="btn btn-link" data-toggle="collapse" data-target="#caracteris" aria-expanded="false" aria-controls="caracteris">
+                        {{esp ? 'Caracter&iacute;sticas del Producto' : 'Product Caracteristics'}}
+                    </a>
+                    <div id="accordion2">
+                        <div class="card border mb-0 pb-0 border-white">
+                            <div id="caracteris" class="collapse" aria-labelledby="headingOne" data-parent="#accordion2">
+                                <div class="caracteris pt-1">{{esp ? 'Producto: ' + producto.descrip : 'Product: ' + producto.detaeng}}</div>
+                                <div class="caracteris">{{esp ? 'Rubro: ' + producto.rubro : 'Category: ' + producto.rubroeng}}</div>
+                                <div class="caracteris">{{esp ? 'SubRubro: ' + producto.subrubro : 'SubCategory: ' + producto.subrueng}}</div>
+                                <p class="card-body caracteris" 
+                                    [innerHTML]="esp ? producto.caracteris : producto.caracteriseng">
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- <div class="form-group row">
                     <label for="descrip" class="col-sm-3 col-form-label">{{esp ? 'Descrip' : 'Descrip'}}</label>
                     <div class="col-sm-9">
                         <input type="text" class="form-control" formControlName="descrip" id="descrip"
                             [readOnly]="true">
                         <!-- Error -->
-                <!-- <div *ngIf="f.controls.descrip.errors && f.controls.descrip.dirty"
+                        <!-- <div *ngIf="f.controls.descrip.errors && f.controls.descrip.dirty"
                             class="alert alert-danger mt-0">
                             <div *ngIf="f.controls.descrip.errors.required">Required</div>
                         </div>
@@ -372,17 +390,6 @@
                     </div>
                 </div>
 
-                <!-- <div class="form-group row">
-                    <label for="costo" class="col-sm-3 col-form-label">{{esp ? 'Costo' : 'Cost'}}</label>
-                    <div class="col-sm-9">
-                        <input type="number" class="form-control" formControlName="costo" id="costo" [readOnly]="this.strTipo == 'B'">
-                        <!-- Error -->
-                <!-- <div *ngIf="f.controls.costo.errors && f.controls.costo.dirty" class="alert alert-danger mt-0">
-                        <div *ngIf="f.controls.costo.errors.required">Required</div>
-                        </div>
-                    </div>
-                </div>  -->
-
                 <div class="form-group row">
                     <label for="precioPesos" class="col-sm-3 col-form-label">{{esp ? 'Precio' : 'Price'}} $</label>
                     <div class="col-sm-4">
@@ -400,8 +407,11 @@
                     <div class="col-sm-4">
                         <input type="number" class="form-control" formControlName="precio" id="precio"
                             [readOnly]="this.strTipo == 'B'">
-                        <div class="col-sm-6">
-                        </div>
+                    </div>
+                    <label for="costo" class="col-sm-2 col-form-label pl-0 pr-0">{{esp ? 'Precio Hist.' : 'Hist. Price'}}</label>
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control" formControlName="costo" id="costo" readOnly>
+                        <!-- Error -->
                     </div>
                 </div>
 
@@ -417,15 +427,15 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="financiacion" class="col-sm-3 col-form-label"> {{esp ? 'D&iacute;as Financ.' : 'Days
-                        Financ.'}}</label>
-                    <div class="col-sm-9">
+                    <label for="financiacion" class="col-sm-3 col-form-label"> {{esp ? 'Financiaci&oacute;n' : 'Financial'}}</label>
+                    <div class="col-sm-4">
                         <select class="custom-select" formControlName="financiacion" id="financiacion"
                             required="required">
                             <option [ngValue]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
                             <option [ngValue]="item.value" *ngFor="let item of financiaciones">{{item.value}}</option>
                         </select>
                     </div>
+                    <label for="dias" class="col-sm-5 col-form-label pl-0 pr-0">{{esp ? 'D&iacute;as' : 'Days'}}</label>
                 </div>
 
                 <div class="form-group row">
@@ -453,6 +463,37 @@
                         </div> -->
                     </div>
                 </div>
+
+                <!-- docOffer -->
+                <div class="d-flex flex-nowrap upfiles">
+                    <div class="p-0 m-0 col-3">
+                        <label for="docOffer" class="mb-0">{{esp ? 'Documentos Adjuntos' : 'Attached Documents'}}</label>
+                        <input id="docOffer" style="visibility:hidden;" type="file"
+                            accept="application/pdf,application/vnd.ms-excel" (change)="onFileSelected($event, 'docOffer')"
+                            [readOnly]="this.strTipo == 'B'">
+                    </div>
+
+                    <div class="mt-0 pt-0 col-9">
+                        <table class="table table-responsive">
+                            <tr *ngFor="let file of getFile('docOffer');index as i">
+                            <td class="upfiles" (click)="onPreviewFile(file)">{{file.originalName}}</td>
+                            <td>
+                                <mat-icon class="pt-0 ml-2 filesicon" color="warn" (click)="onDeleteFile(file, 'docOffer')">delete
+                                </mat-icon>
+                            </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <ng-container *ngIf="docOfferDone">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border m-2" role="status">
+                            <span class="sr-only">Adding...</span>
+                        </div>
+                    </div>
+                </ng-container>
+                <!-- docOffer -->
 
                 <!-- Solo para el Administrador y Compras -->
                 <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2">
@@ -482,7 +523,11 @@
                     <div *ngIf="this.strTipo === 'B'">
                         <button type="submit" class="btn btn-primary">{{esp ? 'Borrar' : 'Delete'}}</button>
                     </div>
-                    <div *ngIf="this.strTipo === 'M'">
+                    <div *ngIf="this.strTipo === 'M' && f.controls.estado.value==1">
+                        <button type="submit" class="btn btn-primary" [disabled]="!f.valid">{{esp ? 'Aceptar' :
+                            'Acept'}}</button>
+                    </div>
+                    <div *ngIf="(this.strTipo === 'M' || this.strTipo === 'A') && f.controls.estado.value!=1">
                         <button type="submit" class="btn btn-primary" [disabled]="!f.valid">{{esp ? 'Guardar' :
                             'Save'}}</button>
                     </div>

@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
+import { HttpResponse } from '@angular/common/http'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
@@ -28,6 +29,12 @@ import { arDiasEntrega } from 'src/app/models/DiasEntrega'
 import { Observable } from 'rxjs';
 import { SuppliersService } from 'src/app/servicios/suppliers.service'
 import { Suppliers } from 'src/app/models/Suppliers'
+import { UploadsService } from 'src/app/servicios/uploads.service'
+import { Uploads } from 'src/app/models/Uploads'
+
+interface HtmlInputEvent extends Event {
+  target: HTMLInputElement & EventTarget
+} 
 
 @Component({
   selector: 'app-ofertas',
@@ -87,6 +94,12 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   suppliers: Suppliers[] = []
 
+  file: File
+  myFiles: Uploads[] = []
+  uploads: Uploads[] = []
+
+  docOfferDone: boolean = false
+
   constructor(
     private fb: FormBuilder,
     private comunicacionService: ComunicacionService,
@@ -100,7 +113,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     private router: Router,
     public dialog: MatDialog,
     private activatedRoute: ActivatedRoute,
-    private suppliersService: SuppliersService
+    private suppliersService: SuppliersService,
+    public uploadsService: UploadsService
   ) {
 
     if (!this.usuariosService.isLogin()) {
@@ -183,8 +197,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       scoreRanking: [0],
       precioPesos: [0],
       cotizacion: [0],
-      total: [0],
-      desempeno: [0]
+      desempeno: [0],
+      upload: []
     }, { validators: this.validaCantidad('licitacion', 'cantidad')})
 
     this.languageService.esp$.subscribe((lang: Language) => {
@@ -298,6 +312,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     console.log('Tenders')
     await this.pedirOffers(user)
     console.log('Offers')
+    await this.pedirUploads()
+    console.log('Uploads')
 
     await this.pedirCotizDolar()
 
@@ -435,9 +451,17 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     this.suppliers = resp.Suppliers
   }
 
+  async pedirUploads() {
+    let resp: any = await this.uploadsService.getUploads().toPromise()
+    this.uploads = resp.Uploads
+    // console.log(this.uploads)
+  }
+
   openModal(targetModal, offer, strTipoParam) {
     this.strTipo = strTipoParam
 
+    this.getMyFiles(offer)
+ 
     this.modalService.open(targetModal, {
      centered: true,
      backdrop: 'static'
@@ -477,8 +501,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         scoreRanking: 0,
         precioPesos: 0,
         cotizacion: this.cotiza,
-        total: 0,
-        desempeno: 0
+        desempeno: 0,
+        upload: []
       })
     } else {
       this.f.patchValue({
@@ -512,8 +536,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         scoreRanking: offer.scoreRanking,
         precioPesos: offer.precioPesos,
         cotizacion: this.cotiza, 
-        total: 0,
-        desempeno: offer.desempeno
+        desempeno: offer.desempeno,
+        upload: offer.upload
         // total: this.calcTotal(offer.precio,offer.precioPesos,offer.cantidad)
       })
     }
@@ -521,8 +545,9 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     let esteProd: any
     esteProd = this.products.filter( x => x.codigo == this.f.controls.producto.value)
     this.producto = esteProd[0]
+    console.log(this.producto)
 
-    // console.log(this.f.controls)
+    this.f.get('costo').setValue(esteProd[0].historico, {onlySelf: true})
 
     if (strTipoParam === 'B') {
       this.f.disable()
@@ -575,7 +600,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       scoreRanking: this.f.controls.scoreRanking.value,
       precioPesos: this.f.controls.precioPesos.value,
       cotizacion: this.f.controls.cotizacion.value,
-      desempeno: this.f.controls.desempeno.value
+      desempeno: this.f.controls.desempeno.value,
+      upload: this.f.controls.upload.value
     }
 
     switch (this.strTipo) {
@@ -623,6 +649,16 @@ export class OfertasComponent implements AfterViewInit, OnInit {
    }
 
   async borrarOferta() {
+    console.log(this.offUpt.upload)
+    if (this.offUpt.upload) {
+      for (let index = 0; index < Object.keys(this.offUpt.upload).length; index++) {
+        const element = this.offUpt.upload[index]
+        console.log(element)
+        let file: any = await this.uploadsService.deleteUploads(element).toPromise()
+        console.log(file)
+      }
+    }
+
     this.offersService.deleteOffer(this.idIdx)
     .subscribe((resp: any) => {
       if (resp) {
@@ -721,7 +757,12 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         break
       case 'M':
         // Modificar
-        strConfMsg = this.esp ? 'Oferta Modificada!' : 'Offer Updated!' 
+        if (this.f.controls.estado.value == 1) {
+          strConfMsg = this.esp ? 'Oferta Aceptada!' : 'Offer Acepted!' 
+        } else
+        {
+          strConfMsg = this.esp ? 'Oferta Modificada!' : 'Offer Updated!' 
+        }
         break
       default:
         break
@@ -953,4 +994,153 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     //   this.cotiza = resp.compra
     // })
   }
+
+  onPreviewFile(file) {
+    if(file) {
+      // console.log(file)
+  
+      this.uploadsService.download(file._id)
+        .subscribe(
+        (response: HttpResponse<Blob>) => {
+          let filename: string = file.originalName
+          let binaryData = [];
+          binaryData.push(response.body);
+          let downloadLink = document.createElement('a');
+          downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: 'blob' }));
+          downloadLink.setAttribute('download', filename);
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+        })
+    }
+  }
+  
+  getFile(type: string) {
+    // console.log(product)
+    let sfile: any
+    sfile = this.myFiles.filter( x => x.fileType == type)
+
+    // let ret: string = " "
+    // if (sfile[0]) {
+    //     ret = sfile[0].originalName ? sfile[0].originalName : " "
+    // }
+    // console.log(sfile)
+    return sfile
+  }
+
+  getMyFiles(oferta) {
+    this.myFiles = []
+    if(!oferta) return
+    // console.log(oferta)
+    for (let index = 0; index < oferta.upload.length; index++) {
+      const element = oferta.upload[index];
+      // console.log(element)
+      
+      this.uploads.forEach(item => {
+        if (item._id == element) this.myFiles.push(item)
+      });
+      
+      // this.myFiles.push(this.uploads.filter( x => {x._id == element}))
+
+    }
+    // console.log(this.myFiles)
+  }
+
+  async onFileSelected(e: HtmlInputEvent, wfile: string) {
+    // console.log(e)
+    if(e.target.files && e.target.files[0]) {
+      this.file = await <File>e.target.files[0]
+
+      await this.onAddFile(wfile)
+    }
+  }
+
+  async onAddFile(wfile: string) {
+    // console.log(this.updtSupp)
+    switch (wfile) {
+      case "docOffer":
+        this.docOfferDone = true
+        break
+    
+      default:
+        break
+    }
+
+    const fd = new FormData()
+    fd.append('file', this.file)
+    fd.append('fileType', wfile)
+    fd.append('originalName', this.file.name)
+    fd.append('usuario', this.f.controls.usuario.value)
+    fd.append('offer', this.f.controls.oferta.value)
+    // console.log(fd)
+
+    let file: any = await this.uploadsService.upload(fd).toPromise()
+    // console.log('id', this.f.controls.id.value)
+    // console.log('file', file.body.Upload)
+
+    // let resp: any = await this.suppliersService.assignUpload(this.f.controls.id.value, file.body.Upload).toPromise() 
+    // console.log(resp)
+
+    if (file) {
+      // console.log(file.body.Upload)
+      this.myFiles.push(file.body.Upload)
+      // console.log(this.myFiles)
+
+      // console.log(this.f.controls.upload.value)
+      this.f.controls.upload.value.push(file.body.Upload._id)
+      // console.log(this.f.controls.upload.value)
+
+      switch (wfile) {
+        case "docOffer":
+          this.docOfferDone = false
+          break
+      
+        default:
+          break
+      }
+    } 
+  }
+
+  async onDeleteFile(delfile, wfile: string) {
+    // console.log(delfile)
+    switch (wfile) {
+      case "docOffer":
+        this.docOfferDone = true
+        break
+    
+      default:
+        break
+    }
+
+    let file: any = await this.uploadsService.deleteUploads(delfile._id).toPromise()
+    console.log(file)
+
+    console.log(this.f.controls.id.value)
+    if (this.f.controls.id.value !== '') {
+      let resp: any = await this.offersService.removeUpload(this.f.controls.id.value, delfile).toPromise() 
+      console.log(resp)
+    }
+
+    if (file) {
+      // console.log(this.f.controls.upload.value)
+      // console.log(this.myFiles)
+
+      this.myFiles = this.myFiles.filter( x => x._id !== delfile._id)
+      this.f.controls.upload.value.pop(delfile._id)
+      // this.f.patchValue({
+      //   upload: this.myFiles._id
+      // })
+
+      // console.log(this.f.controls.upload.value)
+
+      switch (wfile) {
+        case "docOffer":
+          this.docOfferDone = false
+          break
+      
+      default:
+          break
+      }
+    } 
+  }
+ 
 }

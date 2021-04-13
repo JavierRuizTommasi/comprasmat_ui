@@ -6,4 +6,5 @@ export class Uploads {
     public filename: string
     public createdAt: string
     public usuario: string
+    public offer?: number
 }

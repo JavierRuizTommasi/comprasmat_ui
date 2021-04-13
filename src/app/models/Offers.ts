@@ -30,4 +30,5 @@ export class Offers {
     public precioPesos: number
     public cotizacion: number
     public desempeno: number
+    public upload: object
 }

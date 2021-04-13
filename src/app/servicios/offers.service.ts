@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { UrlproviderService } from './urlprovider.service'
 import { Observable } from 'rxjs';
 import { Offers } from 'src/app/models/Offers'
+import { Uploads } from 'src/app/models/Uploads'
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +51,10 @@ export class OffersService {
 
   updateOfferStates(id: string): Observable<Offers> {
     return this.http.put<Offers>(this.url.baseApiUrl + 'updateOfferStates/' + id, this.getHttpOptions())
+  }
+
+  removeUpload(id: string, upload: Uploads): Observable<Uploads> {
+    return this.http.put<Uploads>(this.url.baseApiUrl + 'offersRemoveUpload/' + id, upload, this.getHttpOptions())
   }
 
 }
