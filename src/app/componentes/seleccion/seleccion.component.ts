@@ -89,9 +89,9 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit() {
     // console.log(this.dataSource)
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    this.table.dataSource = this.dataSource;
+    // this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
+    // this.table.dataSource = this.dataSource;
   }
 
   async getUserData() {
@@ -126,8 +126,8 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
       this.cuenta = user
       this.esp = (this.cuenta.language === 'es')
 
-      if (user.perfil == 5) {
-        // User Pending
+      if (user.perfil == 3) {
+        // User Laboratorio
         this.router.navigateByUrl('/inicio')
       }
 
@@ -183,15 +183,16 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
 
     let result = []
 
-    // console.log(this.filterProducts)
+    // console.log(this.dataSource.data)
 
     for(const product of this.dataSource.data){
       // console.log(product.codigo)
       // console.log(product.checked)
-      if (product.checked
-        && (product.descrip.trim().toLowerCase().includes(this.dataSource.filter)
-        || product.rubro.trim().toLowerCase().includes(this.dataSource.filter)
-        || product.subrubro.trim().toLowerCase().includes(this.dataSource.filter))) {
+      // if (product.checked
+      //   && (product.descrip.trim().toLowerCase().includes(this.dataSource.filter)
+      //   || product.rubro.trim().toLowerCase().includes(this.dataSource.filter)
+      //   || product.subrubro.trim().toLowerCase().includes(this.dataSource.filter))) {
+      if (product.checked) {
         // console.log(product.codigo)
         if (!this.myproducts.some(p => p.codigo === product.codigo)) {
           result.push({

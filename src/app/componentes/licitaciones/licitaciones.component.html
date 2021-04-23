@@ -30,7 +30,7 @@
       </mat-form-field>
     </div>
     <ng-container *ngIf="cuenta && !isActivas">
-      <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2">
+      <ng-container *ngIf="cuenta.perfil==0">
         <div class="container-btn-new">
           <button id="newbutton" mat-raised-button color="primary" (click)="openModal(editTenderModal, tender, 'A')">
             <mat-icon>note_add</mat-icon>&nbsp; {{esp ? 'Nueva Solicitud' : 'New Request'}}
@@ -43,7 +43,7 @@
   <div class="mat-elevation-z8 table-responsive">
     <table mat-table [dataSource]='dataSource' matSort aria-label="Elements">
       <ng-container matColumnDef="licitacion">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Req.' : 'Order'}}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Solicitud' : 'Request'}}</th>
         <td mat-cell *matCellDef="let row">{{row.licitacion}}</td>
       </ng-container>
 
@@ -67,7 +67,7 @@
         <td mat-cell *matCellDef="let row">
           <button class="m-0 ml-0.5" mat-raised-button color="primary" data-toggle="tooltip" title="Ranking"
             (click)="openModal(editTenderCotizaciones, row, 'D')">
-            <mat-icon>assessment</mat-icon>&nbsp; {{esp ? 'Ver' : 'See'}}
+            <span class="badge badge-pill" [ngStyle]="{'background-color': (row.offer.length>0) ? 'white' : 'yellow'}">{{row.offer.length ? row.offer.length : 0}}</span> &nbsp; {{esp ? 'Ver' : 'See'}}
           </button>
         </td>
       </ng-container>
@@ -75,6 +75,13 @@
       <ng-container matColumnDef="cantidad">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Cantidad' : 'Quantity'}}</th>
         <td mat-cell *matCellDef="let row">{{row.cantidad}} {{row.unidad}}</td>
+      </ng-container>
+
+      <ng-container *ngIf="cuenta">
+        <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2" matColumnDef="sugerida">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Sugerida' : 'Suggested'}}</th>
+          <td mat-cell *matCellDef="let row">{{row.sugerida}} {{row.unidad}}</td>
+        </ng-container>
       </ng-container>
 
       <ng-container matColumnDef="fecha">
@@ -103,7 +110,7 @@
         <!-- <th mat-header-cell *matHeaderCellDef>{{esp ? 'Acciones' : 'Actions'}}</th> -->
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let row">
-          <ng-container *ngIf="cuenta">
+          <ng-container *ngIf="cuenta && !isActivas">
             <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2">
               <button mat-icon-button color="primary" data-toggle="tooltip" title="Update"
                 (click)="openModal(editTenderModal, row, 'M')">
@@ -123,9 +130,13 @@
             (click)="openModal(editTenderDetalle, row, 'D')">
             <mat-icon>description</mat-icon>
           </button> -->
-          <button class="m-1" id="newbutton" mat-raised-button color="primary" (click)="makeAnOffer(row)">
-            <mat-icon>note_add</mat-icon>&nbsp; {{esp ? 'Cotizar' : 'Quote'}}
-          </button>
+          <ng-container *ngIf="cuenta && isActivas">
+            <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil>=4">
+              <button class="m-1" id="newbutton" mat-raised-button color="primary" (click)="makeAnOffer(row)">
+                <mat-icon>note_add</mat-icon>&nbsp; {{esp ? 'Cotizar' : 'Quote'}}
+              </button>
+            </ng-container>
+          </ng-container>
         </td>
       </ng-container>
 
@@ -159,7 +170,7 @@
     <div class="modal-body">
       <form [formGroup]="f" (ngSubmit)="onSubmit()">
         <div class="form-group row">
-          <label for="licitacion" class="col-sm-3 col-form-label">{{esp ? 'Licitacion' : 'Tender'}}</label>
+          <label for="licitacion" class="col-sm-3 col-form-label">{{esp ? 'Solicitud' : 'Request'}}</label>
           <div class="col-sm-9">
             <input type="string" class="form-control" formControlName="licitacion" id="licitacion"
               [readOnly]="this.strTipo == 'B'">
@@ -222,13 +233,18 @@
 
         <div class="form-group row">
           <label for="cantidad" class="col-sm-3 col-form-label">{{esp ? 'Cantidad' : 'Quantity'}}</label>
-          <div class="col-sm-9">
+          <div class="col-sm-4">
             <input type="number" class="form-control" formControlName="cantidad" id="cantidad"
               [readOnly]="this.strTipo == 'B'">
             <!-- Error -->
             <div *ngIf="f.controls.cantidad.errors && f.controls.cantidad.dirty" class="alert alert-danger mt-0">
               <div *ngIf="f.controls.cantidad.errors.required">Required</div>
             </div>
+          </div>
+          <label for="sugerida" class="col-sm-2 col-form-label pl-0 pr-0">{{esp ? 'Sugerida' : 'Suggested'}}</label>
+          <div class="col-sm-3">
+              <input type="number" class="form-control" formControlName="sugerida" id="sugerida" readOnly>
+              <!-- Error -->
           </div>
         </div>
 
@@ -366,11 +382,13 @@
                   <tr>
                     <th>{{esp ? 'Rank.' : 'Rank.'}}</th>
                     <th *ngIf="cuenta.perfil==0">{{esp ? 'Oferta' : 'Offer'}}</th>
-                    <th>{{esp ? 'Usuario' : 'User'}}</th>
+                    <th>{{esp ? 'Empresa' : 'Brand'}}</th>
                     <th>{{esp ? 'Cantidad' : 'Quantity'}}</th>
                     <th>{{esp ? 'Precio' : 'Price'}}</th>
                     <th>{{esp ? 'Total' : 'Total'}}</th>
                     <th>{{esp ? 'Entrega' : 'Delivery'}}</th>
+                    <th>{{esp ? 'Financ.' : 'Financ.'}}</th>
+                    <th *ngIf="cuenta.perfil<=2">{{esp ? 'Desemp.' : 'Perform.'}}</th>
                     <th>{{esp ? 'Scoring' : 'Scoring'}}</th>
                   </tr>
                 </thead>
@@ -384,11 +402,14 @@
                       </span>
                     </td>
                     <td *ngIf="cuenta.perfil==0">{{offer.oferta}}</td>
-                    <td>{{offer.usuario === cuenta.usuario ? offer.usuario : ''}}</td>
+                    <td *ngIf="cuenta.perfil<=2">{{offer.usuario}}</td>
+                    <td *ngIf="cuenta.perfil>=3">{{offer.usuario === cuenta.usuario ? offer.usuario : ''}}</td>
                     <td>{{offer.cantidad}} {{offer.unidad}}</td>
                     <td>U$S {{offer.precio}}</td>
                     <td>U$S {{total(offer.precio,offer.cantidad)}}</td>
                     <td>{{offer.entrega}}</td>
+                    <td>{{offer.financiacion}}</td>
+                    <td *ngIf="cuenta.perfil<=2">{{offer.desempeno}}</td>
                     <td class="d-flex flex-nowrap">{{offer.scoring}}</td>
                   </tr>
                 </tbody>

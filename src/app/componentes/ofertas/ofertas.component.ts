@@ -100,6 +100,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   docOfferDone: boolean = false
 
+  params: {}
+
   constructor(
     private fb: FormBuilder,
     private comunicacionService: ComunicacionService,
@@ -169,10 +171,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         Validators.compose([
         Validators.required
       ])],
-      costo: ['',
-        Validators.compose([
-        Validators.required
-      ])],
+      costo: [0],
       precio: [0],
       incoterm: ['',
         Validators.compose([
@@ -198,7 +197,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       precioPesos: [0],
       cotizacion: [0],
       desempeno: [0],
-      upload: []
+      upload: [],
+      sugerida: 0
     }, { validators: this.validaCantidad('licitacion', 'cantidad')})
 
     this.languageService.esp$.subscribe((lang: Language) => {
@@ -208,13 +208,13 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
       this.cuenta = cuenta
       // console.log(this.cuenta)
-      if (cuenta) {
+      if (this.cuenta) {
         if (this.cuenta.perfil < 4) {
           // Si no es Proveedor o Pendiente agrega filtro de USUARIO
           this.filterSelectObj = [
             {
-              name: 'USUARIO',
-              nameeng: 'USER',
+              name: 'EMPRESA',
+              nameeng: 'BRAND',
               columnProp: 'usuario',
               options: []
             },
@@ -232,7 +232,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
             }
           ]
 
-          this.displayedColumns = ['usuario', 'licitacion', 'descrip', 'detalle', 'cantidad', 'precio', 'total', 'entrega', 'financiacion', 'desempeno', 'scoring', 'scoreRanking', 'dueDays', 'estado', 'actions']
+          this.displayedColumns = ['usuario', 'licitacion', 'descrip', 'detalle', 'cantidad', 'sugerida', 'precio', 'total', 'entrega', 'financiacion', 'desempeno', 'scoring', 'scoreRanking', 'dueDays', 'estado', 'actions']
         
         } else {
           this.filterSelectObj = [
@@ -261,14 +261,17 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
       if (params.tender) {
-        // console.log(params);
+        console.log(params);
         this.tenderToOffer = params.tender+'/'+params.product
       } else {
         this.tenderToOffer = ''
       }
       // this.tenderToOffer = '246/1'
       console.log(this.tenderToOffer);
+      this.params = params
     })
+
+    console.log(this.params);
 
     this.pedirDatos()
 
@@ -276,11 +279,11 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit() {
     // console.log(this.dataSource)
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    this.table.dataSource = this.dataSource;
+    // this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
+    // this.table.dataSource = this.dataSource;
 
-    // Overrride default filter behaviour of Material Datatable
+    // // Overrride default filter behaviour of Material Datatable
     this.dataSource.filterPredicate = this.createFilter()
 
   }
@@ -379,8 +382,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       //   // User Pending
       //   this.router.navigateByUrl('/inicio')
       // }
-    }
-    else {
+    } else {
       console.log('no logueado')
       this.usuariosService.removeToken()
       this.router.navigateByUrl('/login')
@@ -400,7 +402,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   async pedirOffers(user) {
     let resp: any
     if (user) {
-      if (user.perfil == 4) {
+      if (user.perfil >= 4) {
         // console.log('Proveedor', user.perfil)
         resp = await this.offersService.findMyOffers(user.usuario).toPromise()
       } else {
@@ -502,7 +504,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         precioPesos: 0,
         cotizacion: this.cotiza,
         desempeno: 0,
-        upload: []
+        upload: [],
+        sugerida: this.traerSugerida(this.exTender ? this.exTender.licitacion : '')
       })
     } else {
       this.f.patchValue({
@@ -537,7 +540,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         precioPesos: offer.precioPesos,
         cotizacion: this.cotiza, 
         desempeno: offer.desempeno,
-        upload: offer.upload
+        upload: offer.upload,
+        sugerida: this.traerSugerida(offer.licitacion)
         // total: this.calcTotal(offer.precio,offer.precioPesos,offer.cantidad)
       })
     }
@@ -545,14 +549,23 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     let esteProd: any
     esteProd = this.products.filter( x => x.codigo == this.f.controls.producto.value)
     this.producto = esteProd[0]
-    console.log(this.producto)
+    // console.log(this.producto)
 
     this.f.get('costo').setValue(esteProd[0].historico, {onlySelf: true})
 
+    // console.log(this.f)
+    
     if (strTipoParam === 'B') {
       this.f.disable()
     } else {
-      this.f.enable()
+
+      if (this.cuenta.perfil === 2) {
+        this.f.disable()
+        this.f.get('estado').enable({ onlySelf: true })
+        this.f.get('detalle').enable({ onlySelf: true })
+      } else {
+        this.f.enable()
+      }
 
       if (this.cuenta.perfil !== 0 && this.cuenta.perfil !== 2) {
         this.f.get('estado').disable({ onlySelf: true })
@@ -684,8 +697,9 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       let updScoring: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
     }
 
-    if (this.offUpt.estado === 1) {
-      console.log(this.idIdx)
+    // console.log(this.offUpt.estado)
+    if (this.offUpt.estado == 1) {
+      // console.log(this.idIdx)
       let resp: any = await this.offersService.updateOfferStates(this.idIdx).toPromise()
       console.log(resp)
     }
@@ -733,6 +747,10 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         })
     
         this.f.get('unidad').setValue((resp[0].unidad), {
+          onlySelf: true
+        })
+    
+        this.f.get('sugerida').setValue((resp[0].sugerida), {
           onlySelf: true
         })
     
@@ -976,6 +994,18 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
     if (resp.length > 0) {
       return resp[0].desempeno
+    } else {
+      return 0
+    }
+  }
+
+  traerSugerida(tender: string) {
+    if (!tender) return 0
+
+    let resp: any = this.tenders.filter( x => x.licitacion == tender )
+
+    if (resp.length > 0) {
+      return resp[0].sugerida
     } else {
       return 0
     }

@@ -13,5 +13,6 @@ export class Tenders {
     public provenom: string
     public estado: number
     public historico: number
+    public sugerida?: number
     // public offer: []
 }

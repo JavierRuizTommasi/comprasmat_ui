@@ -10,7 +10,7 @@
                     <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
                     <form [formGroup]="f">
                         <mat-form-field>
-                        <mat-label>{{esp ? 'Usuario' : 'User'}}</mat-label>
+                        <mat-label>{{esp ? 'Empresa (Identificaci&oacute;n &uacute;nica para Proagro)' : 'Brand (Unique Id for Proagro)'}}</mat-label>
                             <input matInput type="text" formControlName="usuario" id="usuario">
                             <!-- Error -->
                             <div *ngIf="f.controls.usuario.errors && f.controls.usuario.dirty">
@@ -18,7 +18,7 @@
                                     {{esp ? 'Requerido' : 'Required'}}
                                 </mat-error>
                                 <mat-error *ngIf="f.controls.usuario.errors.pattern">
-                                    {{esp ? 'Mayusuclas sin espacios (Max=10)' : 'Uppercase characters without spaces (Max=10)'}}
+                                    {{esp ? 'May&uacute;sculas sin espacios (Max=10)' : 'Uppercase characters without spaces (Max=10)'}}
                                 </mat-error>
                             </div>
                         </mat-form-field>
@@ -31,7 +31,7 @@
                                     {{esp ? 'Requerido' : 'Required'}}
                                 </mat-error>
                                 <mat-error *ngIf="f.controls.nombre.errors.pattern">
-                                    {{esp ? 'Maximo 30 caracteres' : 'Max 30 characters'}}
+                                    {{esp ? 'M&aacute;ximo 30 caracteres' : 'Max 30 characters'}}
                                 </mat-error>
                             </div>
                         </mat-form-field>
@@ -44,7 +44,7 @@
                                     {{esp ? 'Requerido' : 'Required'}}
                                 </mat-error>
                                 <mat-error *ngIf="f.controls.email.errors.pattern">
-                                    {{esp ? 'Ingrese una dirección email válida' : 'Enter a valid email address'}}
+                                    {{esp ? 'Ingrese una direcci&oacute;n email válida' : 'Enter a valid email address'}}
                                 </mat-error>
                             </div>
                         </mat-form-field>
@@ -57,7 +57,7 @@
                                     {{esp ? 'Requerido' : 'Required'}}
                                 </mat-error>
                                 <mat-error *ngIf="f.controls.pass.errors.pattern">
-                                    {{esp ? 'Debe contener dígitos, minúsculas y mayúsculas (Min=6 / Max=20)' : 'Must contains digits, lower an uppercase (Min=6 / Max=20)'}}
+                                    {{esp ? 'Debe contener d&iacute;gitos, min&uacute;sculas y may&uacute;sculas (Min=6 / Max=20)' : 'Must contains digits, lower an uppercase (Min=6 / Max=20)'}}
                                 </mat-error>
                             </div>
                         </mat-form-field>
@@ -70,10 +70,10 @@
                                     {{esp ? 'Requerido' : 'Required'}}
                                 </mat-error>
                                 <mat-error *ngIf="f.controls.confpass.errors.pattern">
-                                    {{esp ? 'Debe contener dígitos, minusculas, mayusculas (Min=6 / Max=20)' : 'Must contains digits, lower an uppercase (Min=6 / Max=20)'}}
+                                    {{esp ? 'Debe contener d&iacute;gitos, min&uacute;sculas, may&uacute;sculas (Min=6 / Max=20)' : 'Must contains digits, lower an uppercase (Min=6 / Max=20)'}}
                                 </mat-error>
                                 <mat-error *ngIf="f.controls.confpass.errors.mustMatch">
-                                    {{esp ? 'Passwords deben coincidir' : 'Passwords must match'}}
+                                    {{esp ? 'Las passwords deben coincidir' : 'Passwords must match'}}
                                 </mat-error>
                             </div>
                         </mat-form-field>
@@ -89,7 +89,7 @@
 
                         <div *ngIf="siRegistro" class="form-group row mt-4 m-1">
                             <ngb-alert *ngIf="esp" type="warning" close="!siRegistro">
-                                <p><strong>Atención!!!</strong> - Un email fue enviado a su Correo para activar la cuenta de usuario.</p>
+                                <p><strong>Atenci&oacute;n!!!</strong> - Un email fue enviado a su Correo para activar la cuenta de su usuario.</p>
                                 <p>Verifique la casilla de Spam en caso de que no lo encuentre.</p>
                             </ngb-alert>
                             <ngb-alert *ngIf="!esp" type="warning" close="!siRegistro">

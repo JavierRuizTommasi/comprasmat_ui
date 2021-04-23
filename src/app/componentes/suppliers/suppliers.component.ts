@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core'
+import { Component, OnInit, Output, EventEmitter, AfterViewInit, ViewChild, TemplateRef } from '@angular/core'
 import { HttpResponse } from '@angular/common/http'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -33,6 +33,7 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator
   @ViewChild(MatSort) sort: MatSort
   @ViewChild(MatTable) table: MatTable<Suppliers>
+  @ViewChild('editSupplierModal') templateRef: TemplateRef<any>;
 
   dataSource: MatTableDataSource<Suppliers> = new MatTableDataSource<Suppliers>()
 
@@ -76,6 +77,8 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
 
   countries = arCountries
   
+  modalReference = null;     
+
   constructor(
     private fb: FormBuilder,
     private comunicacionService: ComunicacionService,
@@ -122,15 +125,15 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         F1276: [''],
         IIBB: [''],
         constIIBB: [''],
-        retIIBBSF: [''],
+        retIIBBSF: false,
         aliretIIBBSF: [''],
         constexenIIBBSF: [''],
         motiexenIIBBSF: [''],
-        retIIBBMI: [''],
+        retIIBBMI: false,
         aliretIIBBMI: [''],
         constexenIIBBMI: [''],
         motiexenIIBBMI: [''],
-        retGAN: [''],
+        retGAN: false,
         aliretGAN: [''],
         constexenGAN: [''],
         motiexenGAN: [''],
@@ -144,8 +147,8 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
 
       this.filterSelectObj = [
         {
-          name: 'USUARIO',
-          nameeng: 'USER',
+          name: 'EMPRESA',
+          nameeng: 'BRAND',
           columnProp: 'usuario',
           options: []
         },
@@ -168,11 +171,11 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit() {
     // console.log(this.dataSource)
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    this.table.dataSource = this.dataSource;
+    // this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
+    // this.table.dataSource = this.dataSource
 
-    // Overrride default filter behaviour of Material Datatable
+    // // Overrride default filter behaviour of Material Datatable
     this.dataSource.filterPredicate = this.createFilter()
 
   }
@@ -196,7 +199,19 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
     await this.pedirSuppliers(user)
     await this.pedirUploads()
     
+    if (this.cuenta.perfil >= 4) {
+      // console.log(this.dataSource.data)
+      // console.log(this.supplier)
+      if (this.dataSource.data.length == 0) {
+        await this.openModal(this.templateRef, this.supplier, 'A')
+      } else {
+        this.supplier = this.dataSource.data[0]
+        await this.openModal(this.templateRef, this.supplier, 'M')
+      }
+    }
+
     this.notDone = false
+
  }
     
   checkCuenta(user) {
@@ -211,7 +226,7 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
       this.esp = (this.cuenta.language === 'es')
 
       if (user.perfil == 3) {
-        // User Pending
+        // User Laboratorio
         this.router.navigateByUrl('/inicio')
       }
     }
@@ -238,19 +253,16 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
       if (user.perfil >= 4) {
         resp = await this.suppliersService.getMySupplier(user.usuario).toPromise()
         this.dataSource.data = await resp.Supplier
-    } else {
+      } else {
         resp = await this.suppliersService.getSuppliers().toPromise()
         this.dataSource.data = await resp.Suppliers
       }
 
-      this.dataSource.sort = this.sort
-      this.dataSource.paginator = this.paginator
-      this.table.dataSource = this.dataSource
+      this.dataSource.sort = await this.sort
+      this.dataSource.paginator = await this.paginator
+      this.table.dataSource = await this.dataSource
 
-      // this.productos = resp.Products
-      // this.filterProducts = resp.Products
       // console.log(this.dataSource.data)
-
       // console.log(this.filterSelectObj)
       this.filterSelectObj.filter((o) => {
         o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
@@ -269,12 +281,13 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
   }
 
   openModal(targetModal, supplier, strTipoParam) {
- 
+    // console.log(targetModal)
+
     this.getMyFiles(supplier)
  
     this.strTipo = strTipoParam
 
-    this.modalService.open(targetModal, {
+    this.modalReference = this.modalService.open(targetModal, {
      centered: true,
      backdrop: 'static'
     })
@@ -304,15 +317,15 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         F1276: '',
         IIBB: '',
         constIIBB: '',
-        retIIBBSF: '',
+        retIIBBSF: false,
         aliretIIBBSF: '',
         constexenIIBBSF: '',
         motiexenIIBBSF: '',
-        retIIBBMI: '',
+        retIIBBMI: false,
         aliretIIBBMI: '',
         constexenIIBBMI: '',
         motiexenIIBBMI: '',
-        retGAN: '',
+        retGAN: false,
         aliretGAN: '',
         constexenGAN: '',
         motiexenGAN: '',
@@ -320,7 +333,6 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         activo: false
       })
     } else {
-
       this.f.patchValue({
         id: supplier._id,
         codigo: supplier.codigo,
@@ -354,7 +366,7 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
       })
     }
 
-    if (strTipoParam === 'B') {
+    if (strTipoParam === 'B' || strTipoParam === 'V' ) {
       this.f.disable()
     } else {
       this.f.enable()
@@ -431,13 +443,21 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
   }
 
   async agregarSupplier() {
+    console.log(this.updtSupp)
+
     let supp: any = await this.suppliersService.addSuppliers(this.updtSupp).toPromise()
     console.log('Alta:', supp)
 
     if (supp) {
       this.alertMsg()
     }
-    await this.pedirDatos()
+
+    if (this.cuenta.perfil >= 4) {
+      // User Proveedor y Pendiente
+      this.router.navigateByUrl('/inicio')
+    } else {
+      await this.pedirDatos()
+    }
   }
 
   async borrarSupplier() {
@@ -457,7 +477,13 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
     if (supp) {
       this.alertMsg()
     }
-    await this.pedirDatos()
+
+    if (this.cuenta.perfil >= 4) {
+      // User Proveedor y Pendiente
+      this.router.navigateByUrl('/inicio')
+    } else {
+      await this.pedirDatos()
+    }
 
   }
 
@@ -468,7 +494,13 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
     if (supp) {
       this.alertMsg()
     }
-    await this.pedirDatos()
+
+    if (this.cuenta.perfil >= 4) {
+      // User Proveedor y Pendiente
+      this.router.navigateByUrl('/inicio')
+    } else {
+      await this.pedirDatos()
+    }
 
   }
 
@@ -837,5 +869,18 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
     })
     this.dataSource.filter = "";
   }
+
+  async onClose() {
+    this.modalReference.close()
+
+    if (this.cuenta.perfil >= 4) {
+      // User Proveedor y Pendiente
+      this.router.navigateByUrl('/inicio')
+    } else {
+      this.pedirDatos()
+    }
+
+  }
+
 
 }

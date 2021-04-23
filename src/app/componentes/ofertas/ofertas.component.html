@@ -57,12 +57,12 @@
             </ng-container>
  -->
             <ng-container matColumnDef="licitacion">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Req.' : 'Order'}}</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Solicitud' : 'Order'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.licitacion}}</td>
             </ng-container>
 
             <ng-container matColumnDef="usuario">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Usuario' : 'User'}}</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Empresa' : 'Brand'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.usuario}}</td>
             </ng-container>
 
@@ -86,6 +86,13 @@
                 <td mat-cell *matCellDef="let row">{{row.cantidad}} {{row.unidad}}</td>
             </ng-container>
 
+            <ng-container *ngIf="cuenta">
+                <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2" matColumnDef="sugerida">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Sugerida' : 'Suggested'}}</th>
+                    <td mat-cell *matCellDef="let row">{{traerSugerida(row.licitacion)}} {{row.unidad}}</td>
+                </ng-container>
+            </ng-container>
+        
             <ng-container matColumnDef="precio">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Precio' : 'Price'}}</th>
                 <td mat-cell *matCellDef="let row">U$S {{row.precio}}</td>
@@ -157,6 +164,8 @@
                                 (click)="openModal(editOfferModal, row, 'M')">
                                 <mat-icon>edit</mat-icon>
                             </button>
+                        </ng-container>
+                        <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil>=4">
                             <button mat-icon-button color="primary" data-toggle="tooltip" title="Delete"
                                 (click)="openModal(editOfferModal, row, 'B')">
                                 <mat-icon>delete</mat-icon>
@@ -216,8 +225,7 @@
                 </ng-container>
 
                 <div class="form-group row">
-                    <label for="licitacion" class="col-sm-3 col-form-label">{{esp ? 'Licitaci&oacute;n' :
-                        'Tender'}}</label>
+                    <label for="licitacion" class="col-sm-3 col-form-label">{{esp ? 'Solicitud' : 'Request'}}</label>
                     <div class="col-sm-9">
                         <!-- <input type="number" class="form-control" formControlName="licitacion" id="licitacion" [readOnly]="this.strTipo == 'B'"> -->
                         <select class="custom-select" formControlName="licitacion" id="licitacion" required="required"
@@ -237,7 +245,7 @@
                 <!-- Solo para el Administrador -->
                 <ng-container *ngIf="cuenta.perfil==0">
                     <div class="form-group row">
-                        <label for="usuario" class="col-sm-3 col-form-label">{{esp ? 'Usuario' : 'User'}}</label>
+                        <label for="usuario" class="col-sm-3 col-form-label">{{esp ? 'Empresa' : 'Brand'}}</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" formControlName="usuario" id="usuario"
                                 [readOnly]="true">
@@ -327,7 +335,7 @@
                 </div>
 
                 <div class="form-group row">
-                    <a class="btn btn-link" data-toggle="collapse" data-target="#caracteris" aria-expanded="false" aria-controls="caracteris">
+                    <a class="btn btn-link upfiles" data-toggle="collapse" data-target="#caracteris" aria-expanded="false" aria-controls="caracteris">
                         {{esp ? 'Caracter&iacute;sticas del Producto' : 'Product Caracteristics'}}
                     </a>
                     <div id="accordion2">
@@ -359,7 +367,7 @@
 
                 <div class="form-group row">
                     <label for="cantidad" class="col-sm-3 col-form-label">{{esp ? 'Cantidad' : 'Quantity'}}</label>
-                    <div class="col-sm-9">
+                    <div class="col-sm-4">
                         <input type="number" class="form-control" formControlName="cantidad" id="cantidad"
                             [readOnly]="this.strTipo == 'B'">
                         <!-- Error -->
@@ -370,6 +378,14 @@
                                 required'}}</div>
                         </div>
                     </div>
+                    <ng-container *ngIf="cuenta">
+                        <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2">
+                            <label for="sugerida" class="col-sm-2 col-form-label pl-0 pr-0">{{esp ? 'Sugerida' : 'Suggested'}}</label>
+                            <div class="col-sm-3">
+                                <input type="number" class="form-control" formControlName="sugerida" id="sugerida" readOnly>
+                            </div>
+                        </ng-container>
+                    </ng-container>
                 </div>
 
                 <div class="form-group row">
@@ -450,30 +466,25 @@
 
                 <div class="form-group row">
                     <label for="entrega" class="col-sm-3 col-form-label">{{esp ? 'Entrega' : 'Delivery'}}</label>
-                    <div class="col-sm-9">
+                    <div class="col-sm-4">
                         <select class="custom-select" formControlName="entrega" id="entrega" required="required">
                             <option [ngValue]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
                             <option [ngValue]="item.value" *ngFor="let item of diasEntrega">{{item.value}}</option>
                         </select>
-                        <!-- <input type="date" class="form-control" formControlName="entrega" id="entrega"
-                            [readOnly]="this.strTipo == 'B'"> -->
-                        <!-- Error -->
-                        <!-- <div *ngIf="f.controls.entrega.errors && f.controls.entrega.dirty" class="alert alert-danger mt-0">
-                        <div *ngIf="f.controls.entrega.errors.required">Required</div>
-                        </div> -->
                     </div>
+                    <label for="dias" class="col-sm-5 col-form-label pl-0 pr-0">{{esp ? 'D&iacute;as' : 'Days'}}</label>
                 </div>
 
                 <!-- docOffer -->
-                <div class="d-flex flex-nowrap upfiles">
+                <div class="d-flex flex-nowrap">
                     <div class="p-0 m-0 col-3">
-                        <label for="docOffer" class="mb-0">{{esp ? 'Documentos Adjuntos' : 'Attached Documents'}}</label>
+                        <label for="docOffer" class="btn btn-primary mb-0">{{esp ? 'Adjuntar Documento' : 'Attach Documents'}}</label>
                         <input id="docOffer" style="visibility:hidden;" type="file"
                             accept="application/pdf,application/vnd.ms-excel" (change)="onFileSelected($event, 'docOffer')"
-                            [readOnly]="this.strTipo == 'B'">
+                            [disabled]="this.strTipo=='B' || cuenta.perfil==2">
                     </div>
 
-                    <div class="mt-0 pt-0 col-9">
+                    <div class="mt-0 mb-0 pt-0 col-9">
                         <table class="table table-responsive">
                             <tr *ngFor="let file of getFile('docOffer');index as i">
                             <td class="upfiles" (click)="onPreviewFile(file)">{{file.originalName}}</td>
@@ -536,11 +547,11 @@
                 </div>
 
                 <!-- <hr>
-          <pre>{{f.controls.pass.errors | json}}</pre>
-          <hr> -->
-                <!-- <hr>
-          <pre>{{f.errors | json}}</pre>
-          <hr> -->
+                    <pre>{{f.controls.pass.errors | json}}</pre>
+                    <hr>
+                <hr>
+                    <pre>{{f.control.errors | json}}</pre>
+                <hr> -->
 
             </form>
         </div>

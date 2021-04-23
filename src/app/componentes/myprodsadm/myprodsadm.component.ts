@@ -111,8 +111,8 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
 
       this.filterSelectObj = [
         {
-          name: 'USUARIO',
-          nameeng: 'USER',
+          name: 'EMPRESA',
+          nameeng: 'BRAND',
           columnProp: 'usuario',
           options: []
         },
@@ -131,9 +131,9 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit() {
   // console.log(this.dataSource)
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    this.table.dataSource = this.dataSource;
+    // this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
+    // this.table.dataSource = this.dataSource;
 
     // Overrride default filter behaviour of Material Datatable
     this.dataSource.filterPredicate = this.createFilter()
@@ -162,7 +162,7 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
     await this.pedirProducts(user)
     await this.pedirMyProducts(user)
 
-    // this.notDone = false
+    this.notDone = false
   
   }
 
@@ -213,8 +213,6 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
         this.filterSelectObj.filter((o) => {
           o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
         })
-
-        this.notDone = false
       })
     }
   }

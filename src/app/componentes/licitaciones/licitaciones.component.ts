@@ -36,7 +36,7 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<Tenders> = new MatTableDataSource<Tenders>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['licitacion', 'descrip', 'detalle', 'oferta', 'cantidad', 'fecha', 'finaliza', 'historico', 'estado', 'actions']
+  displayedColumns: string[]
 
   strTipo: string
   idIdx: string
@@ -125,7 +125,8 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
           Validators.required
         ])],
         detalle: [''],
-        historico: 0
+        historico: 0,
+        sugerida: 0
       })
 
       this.languageService.esp$.subscribe((lang: Language) => {
@@ -134,6 +135,13 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
 
       this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
         this.cuenta = cuenta
+        if (this.cuenta) {
+          if (this.cuenta.perfil <= 2) {
+            this.displayedColumns = ['licitacion', 'descrip', 'detalle', 'oferta', 'cantidad', 'sugerida', 'fecha', 'finaliza', 'historico', 'estado', 'actions']
+          } else {
+            this.displayedColumns = ['licitacion', 'descrip', 'detalle', 'oferta', 'cantidad', 'fecha', 'finaliza', 'historico', 'estado', 'actions']
+          }
+        }
       })
 
       // console.log('Tenders Constructor')
@@ -152,9 +160,9 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit() {
     // console.log(this.dataSource)
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    this.table.dataSource = this.dataSource;
+    // this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
+    // this.table.dataSource = this.dataSource;
   }
 
   async getUserData() {
@@ -278,7 +286,8 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
         proveedor: 0,
         provenom: '',
         estado: 0,
-        historico: 0
+        historico: 0,
+        sugerida: 0
       })
     } else {
       this.f.patchValue({
@@ -295,14 +304,15 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
         proveedor: tender.proveedor,
         provenom: tender.provenom,
         estado: tender.estado,
-        historico: tender.historico
+        historico: tender.historico,
+        sugerida: tender.sugerida
       })
     }
 
     let esteProd: any
     esteProd = this.products.filter( x => x.codigo == tender.producto)
     this.producto = esteProd[0]
-    console.log(this.producto)
+    // console.log(this.producto)
 
     if (strTipoParam === 'B') {
       this.f.disable()
@@ -361,7 +371,6 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
         }
         this.pedirDatos()
       })
-
    }
 
   borrarTender() {
@@ -373,23 +382,19 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
       }
       this.pedirDatos()
     })
-
   }
 
-  modificarTender() {
+  async modificarTender() {
     // console.log(this.updtTender)
 
-    this.tenderService.putTender(this.idIdx, this.updtTender)
-      .subscribe((tender: Tenders) => {
-        // console.log('Modif:', tender)
-        if (tender) {
-          // console.log(this.idIdx)
-           this.tenderService.updateScoring(this.idIdx)
-           this.alertMsg()
-        }
-        this.pedirDatos()
-      })
-
+    let resp: any = await this.tenderService.putTender(this.idIdx, this.updtTender).toPromise()
+    // console.log('Modif:', tender)
+    if (resp) {
+      // console.log(this.idIdx)
+      this.tenderService.updateScoring(this.idIdx)
+      this.alertMsg()
+    }
+    this.pedirDatos()
   }
 
   changeProduct(ev) {

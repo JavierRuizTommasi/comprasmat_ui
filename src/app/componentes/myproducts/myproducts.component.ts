@@ -33,7 +33,7 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<MyProducts> = new MatTableDataSource<MyProducts>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['checked', 'codigo', 'descrip', 'detalle', 'rubro', 'subrubro']
+  displayedColumns: string[] = ['codigo', 'descrip', 'detalle', 'rubro', 'subrubro', 'actions']
 
   strTipo: string
   idIdx: number
@@ -83,9 +83,9 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit() {
     // console.log(this.dataSource)
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    this.table.dataSource = this.dataSource;
+    // this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
+    // this.table.dataSource = this.dataSource;
   }
 
   async getUserData() {
@@ -118,8 +118,8 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
       this.cuenta = user
       this.esp = (this.cuenta.language === 'es')
 
-      if (user.perfil == 5) {
-        // User Pending
+      if (user.perfil == 3) {
+        // User Laboratorio
         this.router.navigateByUrl('/inicio')
       }
     }
@@ -156,32 +156,17 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
     }
   }
 
-  borrarMyProd() {
+  borrarMyProd(myprodId) {
 
-    // this.msgGrabo = 'Borrando...'
-
-    for(const myprod of this.dataSource.data){
-        // console.log(myprod.descrip.includes(this.dataSource.filter))
-      
-        if (myprod.checked 
-          && (myprod.descrip.trim().toLowerCase().includes(this.dataSource.filter)
-          || myprod.rubro.trim().toLowerCase().includes(this.dataSource.filter)
-          || myprod.subrubro.trim().toLowerCase().includes(this.dataSource.filter))) {
-          // console.log(myprod._id)
-          this.myproductsService.deleteMyProducts(myprod._id)
-          .subscribe(resp => {
-            // console.log('Baja:', resp)
-            // this.siGrabo = true
-            // this.msgGrabo = 'Producto Borrado!'
-          })
-        }
+    if (myprodId) {
+      this.myproductsService.deleteMyProducts(myprodId)
+      .subscribe(resp => {
+      })
     }
-
     // console.log(this.dataSource.data)
     this.pedirDatos() 
     this.alertMsg()
 
-    // setTimeout(() => this.removeAlert(), 3000)
   }
 
   checkAllCheckBox(ev) {
@@ -213,7 +198,7 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
 
     console.log('Aviso')
 
-    let strConfMsg = this.esp ? 'Selección Borrada!' : 'Selection Deleted!' 
+    let strConfMsg = this.esp ? 'Insumo Borrado!' : 'Supplie Deleted!' 
     const dialogRef = this.dialog.open(AlertMessagesComponent, {
       width: '300px',
       data: {tipo: 'Aviso', mensaje: strConfMsg}

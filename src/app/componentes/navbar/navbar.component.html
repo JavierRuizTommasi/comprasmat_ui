@@ -14,7 +14,7 @@
           <mat-menu #menuLicita="matMenu" yPosition="below">
             <a mat-menu-item routerLink="/licitaciones/:activas" (click)="drawer.close()">{{esp ? 'Solicitudes de Cotizaci&oacute;n Activas' : 'Active Requests for quotation'}}</a>
             <ng-container *ngIf="cuenta.perfil<3">
-              <a mat-menu-item routerLink="/licitaciones" (click)="drawer.close()">{{esp ? 'Solicitudes de Cotizaci&oacute;n' : 'Requests for quotation'}}</a>
+              <a mat-menu-item *ngIf="cuenta.perfil==0" routerLink="/licitaciones" (click)="drawer.close()">{{esp ? 'Solicitudes de Cotizaci&oacute;n' : 'Requests for quotation'}}</a>
               <a mat-menu-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Solicitudes Cotizadas' : 'Quotated Requests'}}</a>
             </ng-container>
             <ng-container *ngIf="cuenta.perfil>=4">
@@ -33,16 +33,16 @@
             </ng-container>
           </mat-menu> -->
   
-          <a mat-list-item [matMenuTriggerFor]="menuProductos">{{esp ? 'Insumos que puedo proveer' : 'Supplies than I can provide'}}</a>
+          <a *ngIf="cuenta.perfil!=2" mat-list-item [matMenuTriggerFor]="menuProductos">{{esp ? 'Insumos que puedo proveer' : 'Supplies than I can provide'}}</a>
           <mat-menu #menuProductos="matMenu" yPosition="below"> 
-            <ng-container *ngIf="cuenta.perfil<4"> <!--Incluido Laboratorio-->
+            <ng-container *ngIf="cuenta.perfil<2 || cuenta.perfil==3"> <!--Solo Administrador, Auditoria y Laboratorio-->
               <a mat-menu-item routerLink="/productos" (click)="drawer.close()">{{esp ? 'Insumos' : 'Supplies'}}</a>
             </ng-container>
-            <ng-container *ngIf="cuenta.perfil!=3">
+            <ng-container *ngIf="cuenta.perfil!=2 && cuenta.perfil!=3"> <!--Sin Compras y Laboratorio-->
               <a mat-menu-item routerLink="/seleccion" (click)="drawer.close()">{{esp ? 'Seleccionar Insumos que puedo proveer' : 'Select Supplies than I can provide'}}</a>
               <a mat-menu-item routerLink="/myproducts" (click)="drawer.close()">{{esp ? 'Insumos que puedo proveer' : 'Supplies than I can provide'}}</a>
             </ng-container>
-            <ng-container *ngIf="cuenta.perfil<3"> <!--Sin incluir Laboratorio-->
+            <ng-container *ngIf="cuenta.perfil<2 || cuenta.perfil==3"> <!--Solo Administrador, Auditoria y Laboratorio-->
               <a mat-menu-item routerLink="/myProdsAdm" (click)="drawer.close()">{{esp ? 'Seleccionar Insumos Administración' : 'Select Supplies Administration'}}</a>
             </ng-container>
           </mat-menu>
@@ -58,7 +58,7 @@
           <ng-container *ngIf="cuenta.perfil<=2">
             <a mat-list-item [matMenuTriggerFor]="menuAnexo">{{esp ? 'Anexo' : 'Other'}}</a>
             <mat-menu #menuAnexo="matMenu" yPosition="below"> 
-              <a mat-menu-item routerLink="/usuarios" (click)="drawer.close()">{{esp ? 'Usuarios' : 'Users'}}</a>
+              <a *ngIf="cuenta.perfil!=2" mat-menu-item routerLink="/usuarios" (click)="drawer.close()">{{esp ? 'Usuarios' : 'Users'}}</a>
               <a mat-menu-item routerLink="/proveedores" (click)="drawer.close()">{{esp ? 'Proveedores' : 'Suppliers'}}</a>
               <a mat-menu-item routerLink="/scorings" (click)="drawer.close()">{{esp ? 'Scoring' : 'Scoring'}}</a>
             </mat-menu>
@@ -129,7 +129,7 @@
               <mat-menu #menuLicita="matMenu" yPosition="below">
                 <button mat-menu-item routerLink="/licitaciones/:activas">{{esp ? 'Solicitudes de Cotizaci&oacute;n Activas' : 'Active Requests for quotation'}}</button>
                 <ng-container *ngIf="cuenta.perfil<3">
-                  <button mat-menu-item routerLink="/licitaciones">{{esp ? 'Solicitudes de Cotizaci&oacute;n' : 'Requests for quotation'}}</button>
+                  <button mat-menu-item *ngIf="cuenta.perfil==0" routerLink="/licitaciones">{{esp ? 'Solicitudes de Cotizaci&oacute;n' : 'Requests for quotation'}}</button>
                   <button mat-menu-item routerLink="/ofertas">{{esp ? 'Solicitudes Cotizadas' : 'Quoted Requests'}}</button>
                 </ng-container>
                 <ng-container *ngIf="cuenta.perfil>=4">
@@ -150,16 +150,16 @@
                 </ng-container>
               </mat-menu> -->
   
-              <button mat-button [matMenuTriggerFor]="menuProductos">{{esp ? 'Insumos que puedo proveer' : 'Supplies than I can provide'}}</button>
+              <button *ngIf="cuenta.perfil!=2" mat-button [matMenuTriggerFor]="menuProductos">{{esp ? 'Insumos que puedo proveer' : 'Supplies than I can provide'}}</button>
               <mat-menu #menuProductos="matMenu" yPosition="below"> 
-                <ng-container *ngIf="cuenta.perfil<4"> <!-- Incluido Laboratorio-->
+                <ng-container *ngIf="cuenta.perfil<2 || cuenta.perfil==3"> <!--Solo Administrador, Auditoria y Laboratorio-->
                   <button mat-menu-item routerLink="/productos">{{esp ? 'Insumos' : 'Supplies'}}</button>
                 </ng-container>
-                <ng-container *ngIf="cuenta.perfil!=3">
+                <ng-container *ngIf="cuenta.perfil!=2 && cuenta.perfil!=3"> <!--Sin Compras y Laboratorio-->
                   <button mat-menu-item routerLink="/seleccion">{{esp ? 'Seleccionar Insumos que puedo proveer' : 'Select Supplies than I can provide'}}</button>
                   <button mat-menu-item routerLink="/myproducts">{{esp ? 'Insumos que puedo proveer' : 'Supplies than I can provide'}}</button>
                 </ng-container>
-                <ng-container *ngIf="cuenta.perfil<3"> <!-- Sin incluir Laboratorio-->
+                <ng-container *ngIf="cuenta.perfil<2 || cuenta.perfil==3"> <!--Solo Administrador, Auditoria y Laboratorio-->
                   <button mat-menu-item routerLink="/myProdsAdm">{{esp ? 'Seleccionar Insumos Administración' : 'Select Supplies Administration'}}</button>
                 </ng-container>
               </mat-menu>
@@ -175,7 +175,7 @@
               <ng-container *ngIf="cuenta.perfil<=2">
                 <button mat-button [matMenuTriggerFor]="menuAnexo">{{esp ? 'Anexo' : 'Other'}}</button>
                 <mat-menu #menuAnexo="matMenu" yPosition="below"> 
-                    <button mat-menu-item routerLink="/usuarios">{{esp ? 'Usuarios' : 'Users'}}</button>
+                    <button *ngIf="cuenta.perfil!=2" mat-menu-item routerLink="/usuarios">{{esp ? 'Usuarios' : 'Users'}}</button>
                     <button mat-menu-item routerLink="/proveedores">{{esp ? 'Proveedores' : 'Suppliers'}}</button>
                     <button mat-menu-item routerLink="/scorings">{{esp ? 'Scoring' : 'Scoring'}}</button>
                 </mat-menu>

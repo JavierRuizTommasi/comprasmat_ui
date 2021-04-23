@@ -37,6 +37,7 @@ class Rutas {
     { path: 'changepass', component: ChangepassComponent},
     { path: 'ofertas', component: OfertasComponent},
     { path: 'ofertas/:tender/:product', component: OfertasComponent},
+    { path: 'ofertas/:tender/:product/:token', component: OfertasComponent},
     { path: 'muestras', component: SamplesComponent},
     { path: 'activas', component: ActivasComponent},
     { path: 'proveedores', component: SuppliersComponent},

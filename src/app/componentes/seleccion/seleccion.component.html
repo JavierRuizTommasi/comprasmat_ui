@@ -10,9 +10,10 @@
         <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
           <div class="card-body descrip mb-2">
             {{esp ? 'Seleccione los insumos que desee proveer y sobre los cuales recibir&aacute; notificaciones
-            ante nuevas Solicitudes de Cotizaci&oacute;n. Una vez seleccionados presione en el bot&oacute;n Guardar en Mis
-            Insumos para agregarlos a su lista.' : 'Select the supplies that you wish to provide and you will receive notifications 
-            on new Request for quotations. Once you make the selection press on the Save to My Supplies button to add on your list.'}}          </div>
+            ante nuevas Solicitudes de Cotizaci&oacute;n. Una vez seleccionados presione en el bot&oacute;n Guardar en el bot&oacute;n Insumos 
+            que puedo Proveer para agregarlos a su lista. Caso contrario se perder&aacute; la selecci&oacute;n.' : 'Select the supplies that you 
+            wish to provide and you will receive notifications on new Request for quotations. Once you make the selection press on the Save into 
+            Supplies than I can Provide button in order to add then on your list. Otherwise you will lose the selection.'}}          </div>
         </div>
       </div>
     </div>
@@ -27,7 +28,7 @@
         <!-- <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6 container-btn-new"> -->
         <div class="container-btn-new">
             <button id="newbutton" mat-raised-button color="primary" (click)="agregarSeleccion()">
-                <mat-icon>note_add</mat-icon>&nbsp; {{esp ? 'Guardar en Mis Insumos' : 'Save to My Supplies'}}
+                <mat-icon>note_add</mat-icon>&nbsp; {{esp ? 'Guardar en Insumos que puedo proveer' : 'Save into Supplies than I can provide'}}
             </button>
         </div>
     </div>

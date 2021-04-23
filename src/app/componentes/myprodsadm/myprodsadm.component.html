@@ -33,7 +33,7 @@
     <div class="mat-elevation-z8 table-responsive">
         <table mat-table [dataSource]='dataSource' matSort aria-label="Elements">
             <ng-container matColumnDef="usuario">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Usuario' : 'User'}}</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Empresa' : 'Brand'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.usuario}}</td>
             </ng-container>
 
@@ -111,7 +111,7 @@
             <form [formGroup]="f" (ngSubmit)="onSubmit()">
                 <ng-container *ngIf="cuenta.perfil==0">
                     <div class="form-group row">
-                        <label for="usuario" class="col-sm-3 col-form-label">{{esp ? 'Usuario' : 'User'}}</label>
+                        <label for="usuario" class="col-sm-3 col-form-label">{{esp ? 'Empresa' : 'Brand'}}</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" formControlName="usuario" id="usuario"
                                 [readOnly]="this.strTipo == 'B'">
