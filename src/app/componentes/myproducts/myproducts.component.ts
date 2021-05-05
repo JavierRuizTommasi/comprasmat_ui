@@ -52,6 +52,9 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
     
   notDone: boolean = true
 
+  filterValues = {}
+  filterSelectObj = []
+
   constructor(
     private comunicacionService: ComunicacionService,
     private languageService: LanguageService,
@@ -69,15 +72,49 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
   
       this.languageService.esp$.subscribe((lang: Language) => {
         this.esp = lang.esp
+
+        // Actualiza el filtro según el idioma
+        if (this.dataSource.data) {
+          this.filterSelectObj.filter((o) => {
+            o.options = this.getFilterObject(this.dataSource.data, this.esp ? o.columnProp :  o.columnPropEng);
+          })
+        }
       })
 
       this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
         this.cuenta = cuenta
       })
 
+      this.filterSelectObj = [
+        {
+          name: 'INSUMO',
+          nameeng: 'SUPPLY',
+          columnProp: 'descrip',
+          columnPropEng: 'detaeng',
+          options: []
+        },
+        {
+          name: 'RUBRO',
+          nameeng: 'CATEGORY',
+          columnProp: 'rubro',
+          columnPropEng: 'rubroeng',
+          options: []
+        },
+        {
+          name: 'SUBRUBRO',
+          nameeng: 'SUBCATEGORY',
+          columnProp: 'subrubro',
+          columnPropEng: 'subrubro',
+          options: []
+        }
+      ]
     }
 
   ngOnInit(): void {
+    this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
+      this.cuenta = cuenta
+     })
+
     this.pedirDatos()
   }
 
@@ -86,6 +123,8 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
     // this.dataSource.sort = this.sort;
     // this.dataSource.paginator = this.paginator;
     // this.table.dataSource = this.dataSource;
+
+    this.dataSource.filterPredicate = this.createFilter()
   }
 
   async getUserData() {
@@ -105,6 +144,8 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
     this.checkCuenta(user)
 
     await this.pedirMyProducts(user)
+
+    this.notDone = false
   }
     
   checkCuenta(user) {
@@ -151,13 +192,15 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
         this.table.dataSource = this.dataSource
 
         // this.myproducts = resp.myProducts
-        this.notDone = false
+
+        this.filterSelectObj.filter((o) => {
+          o.options = this.getFilterObject(this.dataSource.data, this.esp ? o.columnProp :  o.columnPropEng);
+        })
       })
     }
   }
 
   borrarMyProd(myprodId) {
-
     if (myprodId) {
       this.myproductsService.deleteMyProducts(myprodId)
       .subscribe(resp => {
@@ -165,7 +208,7 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
     }
     // console.log(this.dataSource.data)
     this.pedirDatos() 
-    this.alertMsg()
+    // this.alertMsg()
 
   }
 
@@ -195,7 +238,6 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
   }
 
   alertMsg(): void {
-
     console.log('Aviso')
 
     let strConfMsg = this.esp ? 'Insumo Borrado!' : 'Supplie Deleted!' 
@@ -219,6 +261,77 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
     console.log(esteProd)
     this.producto = esteProd[0]
 
+  }
+
+  getFilterObject(fullObj, key) {
+    const uniqChk = []
+    fullObj.filter((obj) => {
+      if (!uniqChk.includes(obj[key])) {
+        uniqChk.push(obj[key])
+      }
+      return obj
+    })
+    return uniqChk.sort((a, b) => {
+      if (a > b) {
+          return 1;
+      }
+      if (a < b) {
+          return -1;
+      }
+      return 0;
+    }) 
+  }
+
+  // Called on Filter change
+  filterChange(filter, event) {
+    // console.log(filter)
+    this.filterValues[this.esp ? filter.columnProp : filter.columnPropEng] = event.target.value.trim().toLowerCase()
+    this.dataSource.filter = JSON.stringify(this.filterValues)
+  }
+
+  // Custom filter method fot Angular Material Datatable
+  createFilter() {
+    let filterFunction = function (data: any, filter: string): boolean {
+      let searchTerms = JSON.parse(filter);
+      let isFilterSet = false;
+      for (const col in searchTerms) {
+        if (searchTerms[col].toString() !== '') {
+          isFilterSet = true;
+        } else {
+          delete searchTerms[col];
+        }
+      }
+
+      let nameSearch = () => {
+        let found = false;
+        if (isFilterSet) {
+          for (const col in searchTerms) {
+            // searchTerms[col].trim().toLowerCase().split(' ').forEach(word => {
+            //   if (data[col].toString().toLowerCase().indexOf(word) != -1 && isFilterSet) {
+            //     found = true
+            //   }
+            // });
+            if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
+                  found = true
+            }
+          }
+          return found
+        } else {
+          return true;
+        }
+      }
+      return nameSearch()
+    }
+    return filterFunction
+  }
+
+  // Reset table filters
+  resetFilters() {
+    this.filterValues = {}
+    this.filterSelectObj.forEach((value, key) => {
+      value.modelValue = undefined;
+    })
+    this.dataSource.filter = "";
   }
 
 }

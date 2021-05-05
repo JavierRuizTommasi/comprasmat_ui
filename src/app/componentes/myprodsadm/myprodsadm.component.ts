@@ -89,16 +89,24 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
           Validators.pattern(this.unumPattern)
         ])],
         descrip: ['', Validators.compose([
-          Validators.required,
           Validators.pattern(this.udescPattern)
         ])],
         rubro: ['', Validators.compose([
-          Validators.required,
           Validators.pattern(this.urubrPattern)
         ])],
         subrubro: ['', Validators.compose([
           Validators.pattern(this.urubrPattern)
+        ])],
+        detaeng: ['', Validators.compose([
+          Validators.pattern(this.udescPattern)
+        ])],
+        rubroeng: ['', Validators.compose([
+          Validators.pattern(this.urubrPattern)
+        ])],
+        subrubeng: ['', Validators.compose([
+          Validators.pattern(this.urubrPattern)
         ])]
+
       })
   
       this.languageService.esp$.subscribe((lang: Language) => {
@@ -114,18 +122,38 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
           name: 'EMPRESA',
           nameeng: 'BRAND',
           columnProp: 'usuario',
+          columnPropEng: 'usuario',
           options: []
         },
         {
           name: 'PRODUCTO',
           nameeng: 'PRODUCT',
           columnProp: 'descrip',
+          columnPropEng: 'detaeng',
+          options: []
+        },
+        {
+          name: 'RUBRO',
+          nameeng: 'CATEGORY',
+          columnProp: 'rubro',
+          columnPropEng: 'rubroeng',
+          options: []
+        },
+        {
+          name: 'SUBRUBRO',
+          nameeng: 'SUBCATEGORY',
+          columnProp: 'subrubro',
+          columnPropEng: 'subrubeng',
           options: []
         }
       ]
     }
 
   ngOnInit(): void {
+    this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
+      this.cuenta = cuenta
+     })
+
     this.pedirDatos()
   }
 
@@ -211,7 +239,7 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
 
         // this.myproducts = resp.myProducts
         this.filterSelectObj.filter((o) => {
-          o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
+          o.options = this.getFilterObject(this.dataSource.data, this.esp ? o.columnProp :  o.columnPropEng);
         })
       })
     }
@@ -241,7 +269,11 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
         codigo: 0,
         descrip: '',
         rubro: '',
-        subrubro: ''
+        subrubro: '',
+        detaeng: '',
+        rubroeng: '',
+        subrubeng: ''
+
       })
     } else {
       this.f.patchValue({
@@ -251,7 +283,10 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
         codigo: myprod.codigo,
         descrip: myprod.descrip,
         rubro: myprod.rubro,
-        subrubro: myprod.subrubro
+        subrubro: myprod.subrubro,
+        detaeng: myprod.detaeng,
+        rubroeng: myprod.rubroeng,
+        subrubeng: myprod.subrubeng
       })
     }
 
@@ -276,7 +311,10 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
       codigo: this.f.controls.codigo.value,
       descrip: this.f.controls.descrip.value,
       rubro: this.f.controls.rubro.value,
-      subrubro: this.f.controls.subrubro.value
+      subrubro: this.f.controls.subrubro.value,
+      detaeng: this.f.controls.detaeng.value,
+      rubroeng: this.f.controls.rubroeng.value,
+      subrubeng: this.f.controls.subrubeng.value
     }
 
     switch (this.strTipo) {
@@ -300,7 +338,7 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
       .subscribe(myprod => {
         console.log('Alta:', myprod)
         if (myprod) {
-          this.alertMsg()
+          // this.alertMsg()
         }
         this.pedirDatos()
       })
@@ -311,7 +349,7 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
      .subscribe(myprod => {
        console.log('Baja:', myprod)
        if (myprod) {
-        this.alertMsg()
+        // this.alertMsg()
       }
       this.pedirDatos()
     })
@@ -357,6 +395,18 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
           onlySelf: true
         })
     
+        this.f.get('detaeng').setValue((product.detaeng), {
+          onlySelf: true
+        })
+    
+        this.f.get('rubroeng').setValue((product.rubroeng), {
+          onlySelf: true
+        })
+    
+        this.f.get('subrubeng').setValue((product.subrubeng), {
+          onlySelf: true
+        })
+    
         // this.f.get('unidad').setValue((product.unidad), {
         //   onlySelf: true
         // })
@@ -395,29 +445,28 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
   }
 
   getFilterObject(fullObj, key) {
-      const uniqChk = []
-      fullObj.filter((obj) => {
-        if (!uniqChk.includes(obj[key])) {
-          uniqChk.push(obj[key])
-        }
-        return obj
-      })
-      // console.log(uniqChk.sort((a, b) => a - b))
-      return uniqChk.sort((a, b) => {
-        if (a > b) {
-            return 1;
-        }
-        if (a < b) {
-            return -1;
-        }
-        return 0;
-      }) 
+    const uniqChk = []
+    fullObj.filter((obj) => {
+      if (!uniqChk.includes(obj[key])) {
+        uniqChk.push(obj[key])
+      }
+      return obj
+    })
+    return uniqChk.sort((a, b) => {
+      if (a > b) {
+          return 1;
+      }
+      if (a < b) {
+          return -1;
+      }
+      return 0;
+    }) 
   }
 
   // Called on Filter change
   filterChange(filter, event) {
     //let filterValues = {}
-    this.filterValues[filter.columnProp] = event.target.value.trim().toLowerCase()
+    this.filterValues[this.esp ? filter.columnProp : filter.columnPropEng] = event.target.value.trim().toLowerCase()
     this.dataSource.filter = JSON.stringify(this.filterValues)
   }
 
@@ -462,7 +511,6 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
     }
     return filterFunction
   }
-
 
   // Reset table filters
   resetFilters() {

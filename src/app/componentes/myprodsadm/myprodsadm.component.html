@@ -44,17 +44,17 @@
 
             <ng-container matColumnDef="descrip">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Producto' : 'Product'}}</th>
-                <td mat-cell *matCellDef="let row">{{row.descrip}}</td>
+                <td mat-cell *matCellDef="let row">{{esp ? row.descrip : row.detaeng}}</td>
             </ng-container>
 
             <ng-container matColumnDef="rubro">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Rubro' : 'Category'}}</th>
-                <td mat-cell *matCellDef="let row">{{row.rubro}}</td>
+                <td mat-cell *matCellDef="let row">{{esp ? row.rubro : row.rubroeng}}</td>
             </ng-container>
     
             <ng-container matColumnDef="subrubro">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'SubRubro' : 'SubCategory'}}</th>
-                <td mat-cell *matCellDef="let row">{{row.subrubro}}</td>
+                <td mat-cell *matCellDef="let row">{{esp ? row.subrubro : row.subrubeng}}</td>
             </ng-container>
       
             <!-- Actions Column -->

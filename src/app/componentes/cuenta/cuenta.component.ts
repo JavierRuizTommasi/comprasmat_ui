@@ -168,7 +168,7 @@ export class CuentaComponent implements OnInit {
 
   alertMsg(): void {
 
-    let strConfMsg = this.esp ? 'Usuario Actualizada!' : 'User Updated!'
+    let strConfMsg = this.esp ? 'Cuenta Actualizada!' : 'Account Updated!'
     
     const dialogRef = this.dialog.open(AlertMessagesComponent, {
       width: '300px',

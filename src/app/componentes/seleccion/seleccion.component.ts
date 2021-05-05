@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
@@ -25,7 +25,7 @@ import { Observable } from 'rxjs'
   styleUrls: ['./seleccion.component.css']
 })
 
-export class SeleccionComponent implements AfterViewInit, OnInit {
+export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator
   @ViewChild(MatSort) sort: MatSort
   @ViewChild(MatTable) table: MatTable<MyProducts>
@@ -58,6 +58,9 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
     
   notDone: boolean = true
 
+  filterValues = {}
+  filterSelectObj = []
+
   constructor(
     private comunicacionService: ComunicacionService,
     private languageService: LanguageService,
@@ -75,7 +78,39 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
   
       this.languageService.esp$.subscribe((lang: Language) => {
         this.esp = lang.esp
+        // console.log(this.esp)
+        
+        // Actualiza el filtro según el idioma
+        if (this.dataSource.data) {
+          this.filterSelectObj.filter((o) => {
+            o.options = this.getFilterObject(this.dataSource.data, this.esp ? o.columnProp :  o.columnPropEng);
+          })
+        }
       })
+
+      this.filterSelectObj = [
+        {
+          name: 'INSUMO',
+          nameeng: 'SUPPLY',
+          columnProp: 'descrip',
+          columnPropEng: 'detaeng',
+          options: []
+        },
+        {
+          name: 'RUBRO',
+          nameeng: 'CATEGORY',
+          columnProp: 'rubro',
+          columnPropEng: 'rubroeng',
+          options: []
+        },
+        {
+          name: 'SUBRUBRO',
+          nameeng: 'SUBCATEGORY',
+          columnProp: 'subrubro',
+          columnPropEng: 'subrubeng',
+          options: []
+        }
+      ]
     }
 
   ngOnInit(): void {
@@ -84,7 +119,9 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
      })
     
     this.pedirDatos()
+  }
 
+  ngOnDestroy() {
   }
 
   ngAfterViewInit() {
@@ -92,6 +129,9 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
     // this.dataSource.sort = this.sort;
     // this.dataSource.paginator = this.paginator;
     // this.table.dataSource = this.dataSource;
+
+    // Overrride default filter behaviour of Material Datatable
+    this.dataSource.filterPredicate = this.createFilter()
   }
 
   async getUserData() {
@@ -150,31 +190,32 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
   async pedirMyProducts(user) {
     if (user) {
       // console.log(user)
-      this.myproductsService.findMyProducts(user.usuario)
-      .subscribe((resp: any) => {
+      const resp: any = await this.myproductsService.findMyProducts(user.usuario).toPromise()
+      // .subscribe((resp: any) => {
         // console.log(resp)
         this.myproducts = resp.myProducts
-      })
+      // })
     }
   }
 
   async pedirProducts(user) {
     if (user) {
-      this.productosService.getProductos()  
-      .subscribe((resp: any) => {
-        // console.log(resp)
-        this.dataSource.data = resp.Products
-        this.dataSource.sort = this.sort
-        this.dataSource.paginator = this.paginator
-        this.table.dataSource = this.dataSource
-        // this.products = resp.Products
-        this.notDone = false
+      const resp: any = await this.productosService.getProductos().toPromise()  
+      // console.log(resp)
+      this.dataSource.data = resp.Products
+      this.dataSource.sort = this.sort
+      this.dataSource.paginator = this.paginator
+      this.table.dataSource = this.dataSource
+      // this.products = resp.Products
+      this.notDone = false
   
+      this.filterSelectObj.filter((o) => {
+        o.options = this.getFilterObject(this.dataSource.data, this.esp ? o.columnProp :  o.columnPropEng);
       })
     }
   }
 
-  agregarSeleccion() {
+  async agregarSeleccion() {
     // console.log('Agregar:', this.products)
 
     this.siGrabo = true
@@ -193,15 +234,18 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
       //   || product.rubro.trim().toLowerCase().includes(this.dataSource.filter)
       //   || product.subrubro.trim().toLowerCase().includes(this.dataSource.filter))) {
       if (product.checked) {
-        // console.log(product.codigo)
+        console.log(product)
         if (!this.myproducts.some(p => p.codigo === product.codigo)) {
-          result.push({
+          await result.push({
             usuario: this.cuenta.usuario,
             proveedor: this.cuenta.proveedor,
             codigo: product.codigo,
             descrip: product.descrip,
             rubro: product.rubro,
-            subrubro: product.subrubro
+            subrubro: product.subrubro,
+            detaeng: product.detaeng,
+            rubroeng: product.rubroeng,
+            subrubeng: product.subrubeng
           })
 
         }
@@ -209,16 +253,22 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
     }
 
     // console.log('Result', result)
-    for(const prod of result){
-        // console.log(result.codigo)
-        this.myproductsService.addMyProducts(prod)
-        .subscribe(prod => {
-          // console.log('Alta:', prod)
-        })
-    }
+    
+    // for(const prod of result){
+    //     // console.log(result.codigo)
+    //     this.myproductsService.addMyProducts(prod)
+    //     .subscribe(prod => {
+    //       // console.log('Alta:', prod)
+    //     })
+    // }
 
-    this.pedirDatos()
-    this.alertMsg()
+    let res2: any = await this.myproductsService.insertMyProducts(result).toPromise()
+    // console.log(res2)
+    await this.pedirDatos()
+    console.log('Pedir')
+    if (res2) {
+      await this.alertMsg()
+    }
 
     // setTimeout(() => this.removeAlert(), 3000)
   }
@@ -250,7 +300,7 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
 
   alertMsg(): void {
 
-    console.log('Aviso')
+    // console.log('Aviso')
 
     let strConfMsg = this.esp ? 'Selección Guardada!' : 'Selection Saved!' 
     const dialogRef = this.dialog.open(AlertMessagesComponent, {
@@ -270,9 +320,82 @@ export class SeleccionComponent implements AfterViewInit, OnInit {
 
     let esteProd: any
     esteProd = this.dataSource.data.filter( x => x.codigo == prod.codigo)
-    console.log(esteProd)
+    // console.log(esteProd)
     this.producto = esteProd[0]
 
+  }
+
+  getFilterObject(fullObj, key) {
+    const uniqChk = []
+    fullObj.filter((obj) => {
+      if (!uniqChk.includes(obj[key])) {
+        uniqChk.push(obj[key])
+      }
+      return obj
+    })
+    return uniqChk.sort((a, b) => {
+        if (a > b) {
+            return 1;
+        }
+        if (a < b) {
+            return -1;
+        }
+        return 0;
+      }) 
+  }
+
+  // Called on Filter change
+  filterChange(filter, event) {
+    // console.log(filter)
+    this.filterValues[this.esp ? filter.columnProp : filter.columnPropEng] = event.target.value.trim().toLowerCase()
+    this.dataSource.filter = JSON.stringify(this.filterValues)
+  }
+
+  // Custom filter method fot Angular Material Datatable
+  createFilter() {
+    let filterFunction = function (data: any, filter: string): boolean {
+      let searchTerms = JSON.parse(filter);
+      let isFilterSet = false;
+      for (const col in searchTerms) {
+        if (searchTerms[col].toString() !== '') {
+          isFilterSet = true;
+        } else {
+          delete searchTerms[col];
+        }
+      }
+
+      // console.log(searchTerms);
+
+      let nameSearch = () => {
+        let found = false;
+        if (isFilterSet) {
+          for (const col in searchTerms) {
+            // searchTerms[col].trim().toLowerCase().split(' ').forEach(word => {
+            //   if (data[col].toString().toLowerCase().indexOf(word) != -1 && isFilterSet) {
+            //     found = true
+            //   }
+            // });
+            if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
+                  found = true
+            }
+          }
+          return found
+        } else {
+          return true;
+        }
+      }
+      return nameSearch()
+    }
+    return filterFunction
+  }
+
+  // Reset table filters
+  resetFilters() {
+    this.filterValues = {}
+    this.filterSelectObj.forEach((value, key) => {
+      value.modelValue = undefined;
+    })
+    this.dataSource.filter = "";
   }
 
 }

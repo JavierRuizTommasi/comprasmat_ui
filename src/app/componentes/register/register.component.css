@@ -20,3 +20,14 @@ mat-form-field {
     width:5vw;
     height:5vh;
 } */
+
+.register.mat-button, .mat-raised-button{
+    background-color:orange;
+    color: white;
+    width: inherit;
+} 
+
+.login {
+    /* color: #007bff; */
+    text-align: center;
+}

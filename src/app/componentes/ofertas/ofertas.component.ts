@@ -102,6 +102,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   params: {}
 
+  incotermFlag: boolean = true
+
   constructor(
     private fb: FormBuilder,
     private comunicacionService: ComunicacionService,
@@ -198,11 +200,21 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       cotizacion: [0],
       desempeno: [0],
       upload: [],
-      sugerida: 0
-    }, { validators: this.validaCantidad('licitacion', 'cantidad')})
+      sugerida: 0,
+      observacion: ['']
+    })
+
+    // }, { validators: this.validaCantidad('licitacion', 'cantidad')})
 
     this.languageService.esp$.subscribe((lang: Language) => {
       this.esp = lang.esp
+
+      // Actualiza el filtro según el idioma
+      if (this.dataSource.data) {
+        this.filterSelectObj.filter((o) => {
+          o.options = this.getFilterObject(this.dataSource.data, this.esp ? o.columnProp :  o.columnPropEng);
+        })
+      }
     })
 
     this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
@@ -216,18 +228,21 @@ export class OfertasComponent implements AfterViewInit, OnInit {
               name: 'EMPRESA',
               nameeng: 'BRAND',
               columnProp: 'usuario',
+              columnPropEng: 'usuario',
               options: []
             },
             {
               name: 'SOLICITUD',
               nameeng: 'REQUEST',
               columnProp: 'licitacion',
+              columnPropEng: 'licitacion',
               options: []
             },
             {
-              name: 'PRODUCTO',
-              nameeng: 'PRODUCT',
+              name: 'INSUMO',
+              nameeng: 'SUPPLY',
               columnProp: 'descrip',
+              columnPropEng: 'detaeng',
               options: []
             }
           ]
@@ -240,12 +255,14 @@ export class OfertasComponent implements AfterViewInit, OnInit {
               name: 'SOLICITUD',
               nameeng: 'REQUEST',
               columnProp: 'licitacion',
+              columnPropEng: 'licitacion',
               options: []
             },
             {
-              name: 'PRODUCTO',
-              nameeng: 'PRODUCT',
+              name: 'INSUMO',
+              nameeng: 'SUPPLY',
               columnProp: 'descrip',
+              columnPropEng: 'detaeng',
               options: []
             }
           ]
@@ -314,7 +331,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     await this.pedirTenders(user)
     console.log('Tenders')
     await this.pedirOffers(user)
-    console.log('Offers')
+    // console.log('Offers')
     await this.pedirUploads()
     console.log('Uploads')
 
@@ -343,7 +360,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     if (offExist.length > 0) {
       let strConfMsg = this.esp ? 'Oferta ya Existente!' : 'Offer already Exist!' 
       let strConfMsg2 = this.esp ? 'Modifiquela para mejorar su Ranking!' : 'Update it in order to inprove your Ranking!' 
-      // console.log(strConfMsg)
+      console.log(strConfMsg)
       const dialogRef = await this.dialog.open(AlertMessagesComponent, {
         width: '300px',
         data: {tipo: 'Alerta', mensaje: strConfMsg, mensaje2: strConfMsg2}
@@ -405,9 +422,15 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       if (user.perfil >= 4) {
         // console.log('Proveedor', user.perfil)
         resp = await this.offersService.findMyOffers(user.usuario).toPromise()
+        console.log('MyOffers')
+        let resp2: any = await this.offersService.getOffers().toPromise()
+        console.log('Offers')
+        this.offers = resp2.Offers
       } else {
-        // console.log('Actives')
+        // console.log('Offers')
         resp = await this.offersService.getOffers().toPromise()
+        console.log('Offers')
+        this.offers = resp.Offers
         // console.log(resp)
       }
 
@@ -430,7 +453,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       // console.log(this.dataSource)
 
       this.filterSelectObj.filter((o) => {
-        o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
+        o.options = this.getFilterObject(this.dataSource.data, this.esp ? o.columnProp :  o.columnPropEng);
       })
     }
   }
@@ -469,7 +492,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
      backdrop: 'static'
     })
 
-    console.log(this.exTender)
+    // console.log(offer)
 
     if (strTipoParam === 'A') {
       this.f.patchValue({
@@ -487,9 +510,9 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         descrip: this.exTender ? this.exTender.descrip: '',
         cantidad: this.exTender ? this.exTender.cantidad : 0,
         unidad: this.exTender ? this.exTender.unidad : '',
-        costo: this.exTender ? this.exTender.costo : 0,
+        costo: this.exTender ? this.exTender.historico : 0,
         precio: 0,
-        incoterm: 'FOB',
+        incoterm: 'CIF ROSARIO',
         entrega: 7,
         estado: 0,
         detalle: '',
@@ -505,7 +528,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         cotizacion: this.cotiza,
         desempeno: 0,
         upload: [],
-        sugerida: this.traerSugerida(this.exTender ? this.exTender.licitacion : '')
+        sugerida: this.traerSugerida(this.exTender ? this.exTender.licitacion : ''),
+        observacion: ''
       })
     } else {
       this.f.patchValue({
@@ -541,17 +565,31 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         cotizacion: this.cotiza, 
         desempeno: offer.desempeno,
         upload: offer.upload,
-        sugerida: this.traerSugerida(offer.licitacion)
+        sugerida: this.traerSugerida(offer.licitacion),
+        observacion: offer.observacion
         // total: this.calcTotal(offer.precio,offer.precioPesos,offer.cantidad)
       })
     }
 
+    // Busco el Precio Historico del Insumo
     let esteProd: any
     esteProd = this.products.filter( x => x.codigo == this.f.controls.producto.value)
     this.producto = esteProd[0]
     // console.log(this.producto)
 
     this.f.get('costo').setValue(esteProd[0].historico, {onlySelf: true})
+
+    // Busco el Pais del Proveedor
+    let esteProv: any
+    esteProv = this.suppliers.filter( x => x.usuario == this.cuenta.usuario)
+    if (esteProv.length > 0) {
+      this.incotermFlag = esteProv[0].pais == 'ARGENTINA' ? false : true
+      // console.log(esteProv)
+      // console.log(esteProv[0].pais)
+    } else {
+      this.incotermFlag = true
+    }
+    // console.log(this.incotermFlag)
 
     // console.log(this.f)
     
@@ -571,7 +609,6 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         this.f.get('estado').disable({ onlySelf: true })
         this.f.get('producto').disable({ onlySelf: true })
         this.f.get('unidad').disable({ onlySelf: true })
-        this.f.get('incoterm').disable({ onlySelf: true })
       }
     }
   }
@@ -614,7 +651,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       precioPesos: this.f.controls.precioPesos.value,
       cotizacion: this.f.controls.cotizacion.value,
       desempeno: this.f.controls.desempeno.value,
-      upload: this.f.controls.upload.value
+      upload: this.f.controls.upload.value,
+      observacion: this.f.controls.observacion.value
     }
 
     switch (this.strTipo) {
@@ -631,16 +669,18 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         // Modificar
         this.modificarOferta()
         break
+      default:
+        console.log('Default')
+        break
     }
 
   }
 
-  // onDismiss() {
-  //   // this.modal.close()
-  //   console.log('Dismiss')
-  //   this.router.navigateByUrl('/ofertas')
-
-  // }
+  onDismiss() {
+    this.modalService.dismissAll()
+    console.log('Dismiss')
+    this.router.navigateByUrl('/ofertas')
+  }
 
   async agregarOferta() {
     let resp: any = await this.offersService.addOffer(this.offUpt).toPromise()
@@ -652,13 +692,15 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       await this.alertMsg()
     }
 
-    console.log('Agregó')
+    // console.log('Agregó')
 
     if(this.tenderToOffer !== '') {
       this.tenderToOffer = ''
+      await this.onDismiss()
       this.router.navigateByUrl('/ofertas')
+    } else {
+      await this.pedirDatos()
     }
-    await this.pedirDatos()
    }
 
   async borrarOferta() {
@@ -672,21 +714,22 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       }
     }
 
-    this.offersService.deleteOffer(this.idIdx)
-    .subscribe((resp: any) => {
+    let resp: any = await this.offersService.deleteOffer(this.idIdx).toPromise()
+    // .subscribe((resp: any) => {
       if (resp) {
-          this.tenderService.updateScoring(this.offUpt.licitacion_id)
-          .subscribe((respUpdt: any) => {
+          let respUpdt: any = await this.tenderService.updateScoring(this.offUpt.licitacion_id).toPromise()
+          // .subscribe((respUpdt: any) => {
               if (respUpdt) {
                 // console.log(respUpdt)
                 this.alertMsg()
                 this.tenderToOffer == ''
               }
               this.pedirDatos()
-          })
+          // })
       }
       console.log('Borro')
-    })
+    // })
+
   }
 
   async modificarOferta() {
@@ -815,7 +858,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   // Called on Filter change
   filterChange(filter, event) {
     //let filterValues = {}
-    this.filterValues[filter.columnProp] = event.target.value.trim().toLowerCase()
+    this.filterValues[this.esp ? filter.columnProp : filter.columnPropEng] = event.target.value.trim().toLowerCase()
     this.dataSource.filter = JSON.stringify(this.filterValues)
   }
 
@@ -1172,5 +1215,31 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       }
     } 
   }
- 
+
+  getFilterByTender(tender: string) {
+    // console.log(tender)
+
+    let newOff: Offers[] = []
+    newOff = this.offers.filter( x => x.licitacion_id == tender)
+
+    newOff.sort((a, b) => {
+      if(a.scoring < b.scoring) {
+        return 1
+      } 
+      if (a.scoring > b.scoring) {
+        return -1
+      }
+      return 0
+    })
+    
+    // console.log(newOff)
+
+    // return this.offers.filter( x => x.licitacion_id == tender)
+    return newOff
+  }
+
+  total(pre, can) {
+    return this.round(pre * can, 2)
+  }
+
 }

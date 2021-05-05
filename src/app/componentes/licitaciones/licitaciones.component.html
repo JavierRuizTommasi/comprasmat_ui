@@ -1,9 +1,7 @@
 <div class="jumbotron">
   <div class="flex-container">
-    <h3 class="mt-2" *ngIf="cuenta && isActivas">{{esp ? 'Solicitudes de Cotizaci&oacute;n Activas' : 'Active Requests
-      for quotation'}}</h3>
-    <h3 class="mt-2" *ngIf="cuenta && !isActivas">{{esp ? 'Solicitudes de Cotizaci&oacute;n' : 'Requests for
-      quotation'}}</h3>
+    <h3 class="mt-2" *ngIf="cuenta && isActivas">{{esp ? 'Solicitudes Activas' : 'Active Requests'}}</h3>
+    <h3 class="mt-2" *ngIf="cuenta && !isActivas">{{esp ? 'Solicitudes' : 'Requests'}}</h3>
     <!-- <p class="mt-2"></p>   -->
     <a class="btn btn-link mt-2" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false"
       aria-controls="collapseOne">
@@ -15,10 +13,8 @@
       <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
         <div class="card-body descrip mb-2">
           {{esp ? 'Elija el insumo solicitado y realice una Cotizaci&oacute;n. Este es un proceso de cotizaciones y no
-          de adjudicaciones autom&aacute;ticas. Procederemos a analizar las ofertas y luego el Departamento de Compras
-          se encargar&aacute; de la adjudicaci&oacute;n' : 'Choose the supplie requested and make a Requests for quotation. 
-          This is a quotation process, not an automatic adjudication process. We will analyze the offers and then Pruchase 
-          department will comunicate the result.'}}
+          de adjudicaciones autom&aacute;ticas.' : 'Choose the supplie requested and make a Requests for quotation. 
+          This is a quotation process, not an automatic adjudication process.'}}
         </div>
       </div>
     </div>
@@ -357,7 +353,7 @@
       <form [formGroup]="f" (ngSubmit)="onSubmit()">
         <div class="descrip">{{esp ? 'Producto: ' + producto.descrip : 'Product: ' + producto.detaeng}}</div>
         <div class="descrip">{{esp ? 'Rubro: ' + producto.rubro : 'Category: ' + producto.rubroeng}}</div>
-        <div class="descrip">{{esp ? 'SubRubro: ' + producto.subrubro : 'SubCategory: ' + producto.subrueng}}</div>
+        <div class="descrip">{{esp ? 'SubRubro: ' + producto.subrubro : 'SubCategory: ' + producto.subrubeng}}</div>
         <p class="descrip p-2" [innerHTML]="esp ? producto.caracteris : producto.caracteriseng"></p>
       </form>
     </div>
@@ -383,11 +379,26 @@
                     <th>{{esp ? 'Rank.' : 'Rank.'}}</th>
                     <th *ngIf="cuenta.perfil==0">{{esp ? 'Oferta' : 'Offer'}}</th>
                     <th>{{esp ? 'Empresa' : 'Brand'}}</th>
-                    <th>{{esp ? 'Cantidad' : 'Quantity'}}</th>
-                    <th>{{esp ? 'Precio' : 'Price'}}</th>
-                    <th>{{esp ? 'Total' : 'Total'}}</th>
-                    <th>{{esp ? 'Entrega' : 'Delivery'}}</th>
-                    <th>{{esp ? 'Financ.' : 'Financ.'}}</th>
+                    <th>
+                      <div>{{esp ? 'Cantidad' : 'Quantity'}}</div>
+                      <div>{{f.controls.unidad.value}}</div>
+                    </th>
+                    <th>
+                      <div>{{esp ? 'Precio' : 'Price'}}</div>
+                      <div>U$S</div>
+                    </th>
+                    <th>
+                      <div>{{esp ? 'Total' : 'Total'}}</div>
+                      <div>U$S</div>
+                    </th>
+                    <th>
+                      <div>{{esp ? 'Entrega' : 'Delivery'}}</div>
+                      <div>{{esp ? 'D&iacute;as' : 'Days'}}</div>
+                    </th>
+                    <th>
+                      <div>{{esp ? 'Financ.' : 'Financ.'}}</div>
+                      <div>{{esp ? 'D&iacute;as' : 'Days'}}</div>
+                    </th>
                     <th *ngIf="cuenta.perfil<=2">{{esp ? 'Desemp.' : 'Perform.'}}</th>
                     <th>{{esp ? 'Scoring' : 'Scoring'}}</th>
                   </tr>
@@ -404,9 +415,9 @@
                     <td *ngIf="cuenta.perfil==0">{{offer.oferta}}</td>
                     <td *ngIf="cuenta.perfil<=2">{{offer.usuario}}</td>
                     <td *ngIf="cuenta.perfil>=3">{{offer.usuario === cuenta.usuario ? offer.usuario : ''}}</td>
-                    <td>{{offer.cantidad}} {{offer.unidad}}</td>
-                    <td>U$S {{offer.precio}}</td>
-                    <td>U$S {{total(offer.precio,offer.cantidad)}}</td>
+                    <td>{{offer.cantidad}}</td>
+                    <td>{{offer.precio}}</td>
+                    <td>{{total(offer.precio,offer.cantidad)}}</td>
                     <td>{{offer.entrega}}</td>
                     <td>{{offer.financiacion}}</td>
                     <td *ngIf="cuenta.perfil<=2">{{offer.desempeno}}</td>

@@ -43,4 +43,9 @@ export class MyProductsService {
   deleteMyProducts(id: string): Observable<MyProducts> {
     return this.http.delete<MyProducts>(this.url.baseApiUrl + 'myproducts/' + id, this.getHttpOptions())
   }
+
+  insertMyProducts(myprod: MyProducts[]): Observable<MyProducts[]> {
+    return this.http.post<any>(this.url.baseApiUrl + 'insertmyproducts', myprod, this.getHttpOptions())
+  }
+
 }

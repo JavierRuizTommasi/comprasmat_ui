@@ -10,13 +10,13 @@
                     <form [formGroup]="f">
                         <div class="form-group mb-0">
                             <div class="form-group row">
-                                <label for="usuario" class="col-sm-2 col-form-label">{{esp ? 'Usuario' : 'User'}}</label>
+                                <label for="usuario" class="col-sm-2 col-form-label">{{esp ? 'Empresa' : 'Brand'}}</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" formControlName="usuario" id="usuario" placeholder="" required="required"/>
                                     <!-- Error -->
                                     <div *ngIf="f.controls.usuario.errors && f.controls.usuario.dirty" class="alert alert-danger mt-0">
                                         <div *ngIf="f.controls.usuario.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
-                                        <div *ngIf="f.controls.usuario.errors.pattern">{{esp ? 'Solo Mayúsculas sin espacios (Max=10)' : 'Only Uppercase Characters whitout spaces (Max=10)'}}</div>
+                                        <div *ngIf="f.controls.usuario.errors.pattern">{{esp ? 'Solo May&uacute;sculas sin espacios (Max=10)' : 'Only Uppercase Characters whitout spaces (Max=10)'}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -27,7 +27,7 @@
                                     <!-- Error -->
                                     <div *ngIf="f.controls.nombre.errors && f.controls.nombre.dirty" class="alert alert-danger mt-0">
                                         <div *ngIf="f.controls.nombre.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
-                                        <div *ngIf="f.controls.nombre.errors.pattern">{{esp ? 'Solo Mayúsculas (Max 50)' : 'Only Uppercase Characters (Max 50)'}}</div>
+                                        <div *ngIf="f.controls.nombre.errors.pattern">{{esp ? 'Solo May&uacute;sculas (Max 50)' : 'Only Uppercase Characters (Max 50)'}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -44,7 +44,7 @@
                                     <!-- Error -->
                                     <div *ngIf="f.controls.email.errors && f.controls.email.dirty" class="alert alert-danger mt-0">
                                         <div *ngIf="f.controls.email.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
-                                        <div *ngIf="f.controls.email.errors.pattern">{{esp ? 'Ingrese una direccion de mail valida' : 'Enter a valid email address'}}</div>
+                                        <div *ngIf="f.controls.email.errors.pattern">{{esp ? 'Ingrese una direcci&oacute;n de mail v&aacute;lida' : 'Enter a valid email address'}}</div>
                                     </div>
                                 </div>
                             </div>

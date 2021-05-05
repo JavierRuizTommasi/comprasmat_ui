@@ -495,7 +495,7 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
   }
 
   total(pre, can) {
-    return pre * can
+    return this.round(pre * can, 2)
   }
 
   showFecha(parFecha){
@@ -506,6 +506,16 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
       retFecha = moment(parFecha).format("MM/DD/YYYY")
     }
     return retFecha
+  }
+
+  round(value, digits) {
+    if(!digits){
+        digits = 2;
+    }
+    value = value * Math.pow(10, digits);
+    value = Math.round(value);
+    value = value / Math.pow(10, digits);
+    return value;
   }
 
 }

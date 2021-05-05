@@ -1,10 +1,10 @@
 import { Component, OnInit, Output, EventEmitter  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
-import { UsuariosService, IUsuario } from 'src/app/servicios/usuarios.service'
+import { UsuariosService } from 'src/app/servicios/usuarios.service'
+import { Usuarios } from 'src/app/models/Usuarios';
 import { ComunicacionService } from 'src/app/servicios/comunicacion.service'
 import { Cuenta } from 'src/app/models/Cuenta'
-import { Usuarios } from 'src/app/models/Usuarios';
 import { Language } from 'src/app/models/Language'
 import { LanguageService } from 'src/app/servicios/language.service'
 import { Observable } from 'rxjs';
@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit {
 
   public cuenta: Cuenta
   @Output() actualizaCuenta = new EventEmitter()
+  lcuenta: Cuenta
 
   public esp: boolean
   public lang: Language = {esp: true}
@@ -31,92 +32,22 @@ export class LoginComponent implements OnInit {
   udescPattern = '^[a-zA-Z0-9]{1,30}$'
 
   usuarios: Usuarios[]
-
-  user: IUsuario = {
-    id: '',
-    usuario: '',
-    proveedor: 0,
-    nombre: '',
-    contacto: '',
-    direccion: '',
-    ciudad: '',
-    pais: '',
-    telefono: '',
-    email: '',
-    perfil: 0,
-    pass: '',
-    activo: false,
-    createdAt: '',
-    updatedAt: '',
-    language: '',
-    contacto2: '',
-    email2: '',
-    contacto3: '',
-    email3: '',
-    contacto4: '',
-    email4: ''
-  }
-
-  usuario: IUsuario = {
-    id: '',
-    usuario: '',
-    proveedor: 0,
-    nombre: '',
-    contacto: '',
-    direccion: '',
-    ciudad: '',
-    pais: '',
-    telefono: '',
-    email: '',
-    perfil: 0,
-    pass: '',
-    activo: false,
-    createdAt: '',
-    updatedAt: '',
-    language: '',
-    contacto2: '',
-    email2: '',
-    contacto3: '',
-    email3: '',
-    contacto4: '',
-    email4: ''
-  }
-
-  luser: IUsuario = {
-    id: '',
-    usuario: '',
-    proveedor: 0,
-    nombre: '',
-    contacto: '',
-    direccion: '',
-    ciudad: '',
-    pais: '',
-    telefono: '',
-    email: '',
-    perfil: 0,
-    pass: '',
-    activo: false,
-    createdAt: '',
-    updatedAt: '',
-    language: '',
-    contacto2: '',
-    email2: '',
-    contacto3: '',
-    email3: '',
-    contacto4: '',
-    email4: ''
-  }
+  user: Usuarios 
 
   siAlert: boolean
   msgAlert: string
   alertType: string
   
-  siInactivo: boolean
+  inactivo: boolean
+  olvido: boolean
+  nuevaclave: boolean
 
   email: string
   password: string
 
-  notificacion: Observable<string>
+  notificacion: string = ''
+  token : string = ''
+  offer: string = ''
 
   constructor(
     private comunicacionService: ComunicacionService,
@@ -136,7 +67,21 @@ export class LoginComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       // console.log(params);
       this.notificacion = params['notification'];
-      // console.log(this.notificacion);
+      this.token = params['token'];
+      this.offer = params['tender']+'/'+params['product'];
+      // console.log(params);
+
+      switch (this.notificacion) {
+        case 'offer':
+          if (this.token) {
+            this.usuariosService.setToken(this.token)
+          }
+          break;
+      
+        default:
+          break;
+      }
+
     })
     
     this.freset()
@@ -160,7 +105,7 @@ export class LoginComponent implements OnInit {
       
   async getUserData() {
     const resp: any = await this.usuariosService.checkUsuario().toPromise()
-    console.log(resp.user)
+    // console.log(resp.user)
     return resp.user
   }
 
@@ -173,13 +118,19 @@ export class LoginComponent implements OnInit {
     console.log('pedirDatos')
     const user = await this.getUserData()
     if (user) {
-      console.log(user)
-      this.router.navigateByUrl('/inicio')
+      // console.log(user)
+      if (this.offer) {
+      console.log(this.offer)
+        this.router.navigateByUrl('/ofertas/'+this.offer)
+      } else {
+        this.router.navigateByUrl('/inicio')
+      }
+
     }
     else {
       this.usuariosService.removeToken()
     }
-}
+  }
 
   login() {
     // console.log(this.f.value)
@@ -230,8 +181,10 @@ export class LoginComponent implements OnInit {
           this.msgAlert = this.esp ? 'Usuario pendiente de Activación' : 'User activation pending'
           this.siAlert = true
           this.alertType = "warning"
-          this.siInactivo = true
-  
+          this.inactivo = true
+          this.olvido = false
+          this.nuevaclave = false
+
           setTimeout(() => this.removeAlert(), 6000)
           setTimeout(() => this.removeMsage(),30000)
 
@@ -246,15 +199,17 @@ export class LoginComponent implements OnInit {
         }
         this.siAlert = true
         this.alertType = "warning"
-        this.siInactivo = false
+        this.inactivo = false
+        this.olvido = true
+        this.nuevaclave = false
 
         setTimeout(() => this.removeAlert(), 6000)
         setTimeout(() => this.removeMsage(),30000)
 
-        this.comunicacionService.cuenta$.next(this.luser)
-        this.actualizaCuenta.emit(this.luser)
+        this.comunicacionService.cuenta$.next(this.lcuenta)
+        this.actualizaCuenta.emit(this.lcuenta)
 
-        this.freset()
+        // this.freset()
       }
 
     })
@@ -273,7 +228,8 @@ export class LoginComponent implements OnInit {
             this.msgAlert = this.esp ? 'Email enviado' : 'Email sent'
                       
             this.siAlert = true
-            this.siInactivo = true
+            this.inactivo = true
+            this.olvido = false
             this.alertType = "success"
 
             console.log('Envio correcto de Email')
@@ -285,7 +241,8 @@ export class LoginComponent implements OnInit {
             }
             
             this.siAlert = true
-            this.siInactivo = true
+            this.inactivo = true
+            this.olvido = true
             this.alertType = "warning"
 
             console.log('Error de envío de Welcome Email', respuesta)
@@ -294,19 +251,8 @@ export class LoginComponent implements OnInit {
     }
     setTimeout(() => this.removeAlert(), 6000)
     setTimeout(() => this.removeMsage(),30000)
-    this.freset()
+    // this.freset()
 
-  }
-
-  buscaCuenta() {
-    for (const usuario of this.usuarios) {
-      if (usuario.email === this.email)
-      {
-          return usuario
-          break
-      }
-    }
-    return undefined
   }
 
   removeAlert(): void {
@@ -314,7 +260,7 @@ export class LoginComponent implements OnInit {
   }
 
   removeMsage(): void {
-    this.siInactivo = false
+    this.inactivo = false
   }
 
   pedirUsuarios() {
@@ -323,6 +269,16 @@ export class LoginComponent implements OnInit {
         console.log(users)
         this.usuarios = users
       })
+  }
+
+  forgot(email: string) {
+    console.log(email)
+    if (email !== '') {
+      this.olvido = false
+      this.nuevaclave = true
+    }
+    setTimeout(() => this.removeAlert(), 6000)
+    setTimeout(() => this.removeMsage(),30000)
   }
 
 }

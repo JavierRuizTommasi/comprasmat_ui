@@ -15,7 +15,7 @@ export class Productos {
     public historico: number
     public detaeng: string
     public rubroeng: string
-    public subrueng: string
+    public subrubeng: string
     public caracteris: string
     public caracteriseng: string
 }

@@ -103,7 +103,7 @@ export class ProductosComponent implements AfterViewInit, OnInit {
         rubroeng: ['', Validators.compose([
           Validators.pattern(this.urubrPattern)
         ])],
-        subrueng: ['', Validators.compose([
+        subrubeng: ['', Validators.compose([
           Validators.pattern(this.urubrPattern)
         ])],
         caracteris: [''],
@@ -221,7 +221,7 @@ export class ProductosComponent implements AfterViewInit, OnInit {
         historico: 0,
         detaeng: '',
         rubroeng: '',
-        subrueng: '',
+        subrubeng: '',
         caracteris: '',
         caracteriseng: ''
       })
@@ -242,7 +242,7 @@ export class ProductosComponent implements AfterViewInit, OnInit {
         historico: producto.historico,
         detaeng: producto.detaeng,
         rubroeng: producto.rubroeng,
-        subrueng: producto.subrueng,
+        subrubeng: producto.subrubeng,
         caracteris: producto.caracteris,
         caracteriseng: producto.caracteriseng
       })
@@ -279,7 +279,7 @@ export class ProductosComponent implements AfterViewInit, OnInit {
       historico: this.f.controls.historico.value,
       detaeng: this.f.controls.detaeng.value,
       rubroeng: this.f.controls.rubroeng.value,
-      subrueng: this.f.controls.subrueng.value,
+      subrubeng: this.f.controls.subrubeng.value,
       caracteris: this.f.controls.caracteris.value,
       caracteriseng: this.f.controls.caracteriseng.value
   }

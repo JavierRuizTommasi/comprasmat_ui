@@ -7,3 +7,19 @@ mat-card {
     width: 20rem;
 }
 
+.forgot {
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+.login.mat-button, .mat-raised-button{
+    background-color:orange;
+    color: white;
+    width: inherit;
+} 
+
+.register {
+    /* color: #007bff; */
+    text-align: right;
+}

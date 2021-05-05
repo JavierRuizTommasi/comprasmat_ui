@@ -1,8 +1,8 @@
 <div class="jumbotron">
     <ng-container *ngIf="cuenta">
         <div class="flex-container">
-            <h3 class="mt-2" *ngIf="cuenta.perfil < 4">{{esp ? 'Solicitudes Cotizadas' : 'Quoted Requests'}}</h3>
-            <h3 class="mt-2" *ngIf="cuenta.perfil >= 4">{{esp ? 'Mis Solicitudes Cotizadas' : 'My Quoted Requests'}}</h3>
+            <h3 class="mt-2" *ngIf="cuenta.perfil < 4">{{esp ? 'Cotizaciones' : 'Quoted'}}</h3>
+            <h3 class="mt-2" *ngIf="cuenta.perfil >= 4">{{esp ? 'Mis Cotizaciones' : 'My Quoted'}}</h3>
             <a class="btn btn-link mt-2" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                 {{esp ? 'Ver m&aacute;s' : 'See more'}}
             </a>
@@ -94,13 +94,14 @@
             </ng-container>
         
             <ng-container matColumnDef="precio">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Precio' : 'Price'}}</th>
-                <td mat-cell *matCellDef="let row">U$S {{row.precio}}</td>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Precio U$S' : 'Price U$S'}}
+                </th>
+                <td mat-cell *matCellDef="let row">{{row.precio}}</td>
             </ng-container>
 
             <ng-container matColumnDef="total">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Total' : 'Total'}}</th>
-                <td mat-cell *matCellDef="let row">U$S {{calcTotal(row.precio,row.precioPesos,row.cantidad)}}</td>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Total U$S' : 'Total U$S'}}</th>
+                <td mat-cell *matCellDef="let row">{{calcTotal(row.precio,row.precioPesos,row.cantidad)}}</td>
             </ng-container>
 
             <!-- <ng-container matColumnDef="incoterm">
@@ -109,42 +110,47 @@
             </ng-container> -->
 
             <ng-container matColumnDef="entrega">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Entrega' : 'Delivery'}}</th>
-                <td mat-cell *matCellDef="let row">{{row.entrega}} {{esp ? 'D&iacute;as' : 'Days'}}</td>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Entrega D&iacute;as' : 'Delivery Days'}}</th>
+                <td mat-cell *matCellDef="let row">{{row.entrega}}</td>
             </ng-container>
 
             <ng-container matColumnDef="financiacion">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Financiacion' : 'Financial'}}</th>
-                <td mat-cell *matCellDef="let row">{{row.financiacion}} {{esp ? 'D&iacute;as' : 'Days'}}</td>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Financ. D&iacute;as' : 'Financ. Days'}}</th>
+                <td mat-cell *matCellDef="let row">{{row.financiacion}}</td>
             </ng-container>
 
             <ng-container *ngIf="cuenta">
                 <ng-container *ngIf="cuenta.perfil < 4" matColumnDef="desempeno">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Desempe&ntilde;o' : 'Performance'}}</th>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Desemp.' : 'Perfor.'}}</th>
                     <td mat-cell *matCellDef="let row">{{row.desempeno}}</td>
                 </ng-container>
             </ng-container>
 
             <ng-container matColumnDef="scoring">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Score' : 'Score'}}</th>
-                <td mat-cell *matCellDef="let row">{{row.scoring}}</td>
+                <td mat-cell *matCellDef="let row">{{row.scoring}}
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="scoreRanking">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Rank' : 'Rank'}}</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Ranking' : 'Ranking'}}</th>
                 <td mat-cell *matCellDef="let row">
-                    <span class="badge badge-primary badge-pill" 
+                    <!-- <span class="badge badge-primary badge-pill" 
                         [style.background-color]="row.scoreRanking === 1 ? 'yellow' : 'white'"
                         [style.font-weight]="row.scoreRanking === 1 ? 700 : 400"
                         style="color:'black'">
                         {{row.scoreRanking}}
-                    </span>
+                    </span> -->
+                    <button class="m-0 ml-0.5" mat-raised-button color="primary" data-toggle="tooltip" title="Ranking"
+                        (click)="openModal(editTenderCotizaciones, row, 'D')">
+                        <span class="badge badge-pill" [ngStyle]="{'background-color': (row.scoreRanking === 1) ? 'yellow' : 'white'}">{{row.scoreRanking}}</span> &nbsp; {{esp ? 'Ver' : 'See'}}
+                    </button>
                 </td>
             </ng-container>
 
             <ng-container matColumnDef="dueDays">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Finaliza' : 'Due Days'}}</th>
-                <td mat-cell *matCellDef="let row">{{calcDueDays(row.licitacion)}} {{esp ? 'D&iacute;as' : 'Days'}}</td>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Finaliza D&iacute;as' : 'Due Days'}}</th>
+                <td mat-cell *matCellDef="let row">{{calcDueDays(row.licitacion)}}</td>
             </ng-container>
 
             <ng-container matColumnDef="estado">
@@ -201,7 +207,7 @@
             <h5 class="modal-title" *ngIf="this.strTipo == 'A'">{{esp ? 'Cotizar' : 'Quote'}}</h5>
             <h5 class="modal-title" *ngIf="this.strTipo == 'B'">{{esp ? 'Borrar' : 'Delete'}}</h5>
             <h5 class="modal-title" *ngIf="this.strTipo == 'M'">{{esp ? 'Modificar' : 'Update'}}</h5>
-            <button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
+            <button type="button" class="close" (click)="onDismiss()" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
@@ -343,7 +349,7 @@
                             <div id="caracteris" class="collapse" aria-labelledby="headingOne" data-parent="#accordion2">
                                 <div class="caracteris pt-1">{{esp ? 'Producto: ' + producto.descrip : 'Product: ' + producto.detaeng}}</div>
                                 <div class="caracteris">{{esp ? 'Rubro: ' + producto.rubro : 'Category: ' + producto.rubroeng}}</div>
-                                <div class="caracteris">{{esp ? 'SubRubro: ' + producto.subrubro : 'SubCategory: ' + producto.subrueng}}</div>
+                                <div class="caracteris">{{esp ? 'SubRubro: ' + producto.subrubro : 'SubCategory: ' + producto.subrubeng}}</div>
                                 <p class="card-body caracteris" 
                                     [innerHTML]="esp ? producto.caracteris : producto.caracteriseng">
                                 </p>
@@ -374,8 +380,7 @@
                         <div *ngIf="f.controls.cantidad.errors && f.controls.cantidad.dirty"
                             class="alert alert-danger mt-0">
                             <div *ngIf="f.controls.cantidad.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
-                            <div *ngIf="f.controls.cantidad.errors.Menor">{{esp ? 'Menor a lo requerido' : 'Less than
-                                required'}}</div>
+                            <!-- <div *ngIf="f.controls.cantidad.errors.Menor">{{esp ? 'Menor a lo requerido' : 'Less than required'}}</div> -->
                         </div>
                     </div>
                     <ng-container *ngIf="cuenta">
@@ -454,7 +459,7 @@
                     <label for="dias" class="col-sm-5 col-form-label pl-0 pr-0">{{esp ? 'D&iacute;as' : 'Days'}}</label>
                 </div>
 
-                <div class="form-group row">
+                <div *ngIf="incotermFlag" class="form-group row">
                     <label for="incoterm" class="col-sm-3 col-form-label">{{esp ? 'INCOTERM' : 'INCOTERM'}}</label>
                     <div class="col-sm-9">
                         <select class="custom-select" formControlName="incoterm" id="incoterm" required="required">
@@ -472,13 +477,13 @@
                             <option [ngValue]="item.value" *ngFor="let item of diasEntrega">{{item.value}}</option>
                         </select>
                     </div>
-                    <label for="dias" class="col-sm-5 col-form-label pl-0 pr-0">{{esp ? 'D&iacute;as' : 'Days'}}</label>
+                    <label for="dias" class="col-sm-5 col-form-label pl-0 pr-0">{{esp ? 'D&iacute;as listo para Trasporte' : 'Days ready to Ship'}}</label>
                 </div>
 
                 <!-- docOffer -->
                 <div class="d-flex flex-nowrap">
                     <div class="p-0 m-0 col-3">
-                        <label for="docOffer" class="btn btn-primary mb-0">{{esp ? 'Adjuntar Documento' : 'Attach Documents'}}</label>
+                        <label for="docOffer" class="btn btn-warning btn-xs mb-0">{{esp ? 'Adjuntar Documento' : 'Attach Documents'}}</label>
                         <input id="docOffer" style="visibility:hidden;" type="file"
                             accept="application/pdf,application/vnd.ms-excel" (change)="onFileSelected($event, 'docOffer')"
                             [disabled]="this.strTipo=='B' || cuenta.perfil==2">
@@ -506,6 +511,13 @@
                 </ng-container>
                 <!-- docOffer -->
 
+                <div class="form-group row">
+                    <label for="detalle" class="col-sm-3 col-form-label">{{esp ? 'Comentario' : 'Comment'}}</label>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" formControlName="detalle" id="detalle" [readOnly]="this.strTipo == 'B'" rows="5"></textarea>
+                    </div>
+                </div>
+
                 <!-- Solo para el Administrador y Compras -->
                 <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2">
                     <div *ngIf="this.strTipo !== 'B' && this.strTipo !== 'P'" class="form-group row">
@@ -523,9 +535,9 @@
                 <!-- Solo para el Estado = 1 Aprobada -->
                 <ng-container *ngIf="f.controls.estado.value==1">
                     <div *ngIf="this.strTipo !== 'B' && this.strTipo !== 'P'" class="form-group row">
-                        <label for="detalle" class="col-sm-3 col-form-label">{{esp ? 'Comentario' : 'Comment'}}</label>
+                        <label for="observacion" class="col-sm-3 col-form-label">{{esp ? 'Observaci&oacute;n' : 'Notes'}}</label>
                         <div class="col-sm-9">
-                            <textarea class="form-control" formControlName="detalle" id="detalle" [readOnly]="this.strTipo == 'B'" rows="5"></textarea>
+                            <textarea class="form-control" formControlName="observacion" id="observacion" [readOnly]="this.strTipo == 'B'" rows="5"></textarea>
                         </div>
                     </div>
                 </ng-container>
@@ -542,7 +554,7 @@
                         <button type="submit" class="btn btn-primary" [disabled]="!f.valid">{{esp ? 'Guardar' :
                             'Save'}}</button>
                     </div>
-                    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">{{esp ? 'Cancelar' :
+                    <button type="button" class="btn btn-secondary" (click)="onDismiss()">{{esp ? 'Cancelar' :
                         'Cancel'}}</button>
                 </div>
 
@@ -570,11 +582,83 @@
           <form [formGroup]="f" (ngSubmit)="onSubmit()">
             <div class="descrip">{{esp ? 'Producto: ' + producto.descrip : 'Product: ' + producto.detaeng}}</div>
             <div class="descrip">{{esp ? 'Rubro: ' + producto.rubro : 'Category: ' + producto.rubroeng}}</div>
-            <div class="descrip">{{esp ? 'SubRubro: ' + producto.subrubro : 'SubCategory: ' + producto.subrueng}}</div>
+            <div class="descrip">{{esp ? 'SubRubro: ' + producto.subrubro : 'SubCategory: ' + producto.subrubeng}}</div>
             <p class="descrip p-2" [innerHTML]="esp ? producto.caracteris : producto.caracteriseng"></p>
           </form>
         </div>
-      </ng-template>
-    
-    
+    </ng-template>
+
+    <ng-template #editTenderCotizaciones let-modal>
+        <div class="modal">
+            <div class="modal-dialog modal-800">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{esp ? 'RANKING ' + f.controls.licitacion.value + ' ' + producto.descrip : 'RANKING
+                        ' + f.controls.licitacion.value + ' ' + producto.detaeng}}</h5>
+                        <button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body p-0"> 
+                        <div class="container pl-0 ml-0 m-0 pb-0 pr-2 overflow-auto">
+                            <table class="table table-responsive">
+                                <thead class="offer-th">
+                                    <tr>
+                                        <th>{{esp ? 'Rank.' : 'Rank.'}}</th>
+                                        <th *ngIf="cuenta.perfil==0">{{esp ? 'Oferta' : 'Offer'}}</th>
+                                        <th>{{esp ? 'Empresa' : 'Brand'}}</th>
+                                        <th>
+                                            <div>{{esp ? 'Cantidad' : 'Quantity'}}</div>
+                                            <div>{{f.controls.unidad.value}}</div>
+                                        </th>
+                                        <th>
+                                            <div>{{esp ? 'Precio' : 'Price'}}</div>
+                                            <div>U$S</div>
+                                        </th>
+                                        <th>
+                                            <div>{{esp ? 'Total' : 'Total'}}</div>
+                                            <div>U$S</div>
+                                        </th>
+                                        <th>
+                                            <div>{{esp ? 'Entrega' : 'Delivery'}}</div>
+                                            <div>{{esp ? 'D&iacute;as' : 'Days'}}</div>
+                                        </th>
+                                        <th>
+                                            <div>{{esp ? 'Financ.' : 'Financ.'}}</div>
+                                            <div>{{esp ? 'D&iacute;as' : 'Days'}}</div>
+                                        </th>
+                                        <th *ngIf="cuenta.perfil<=2">{{esp ? 'Desemp.' : 'Perform.'}}</th>
+                                        <th>{{esp ? 'Scoring' : 'Scoring'}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngFor="let item of getFilterByTender(f.controls.licitacion_id.value)">
+                                    <tr [style.background-color]="item.usuario === cuenta.usuario ? 'lightyellow' : 'white'">
+                                        <td>
+                                            <span class="badge badge-primary badge-pill"
+                                            [style.background-color]="item.scoreRanking === 1 ? 'yellow' : 'white'"
+                                            [style.font-weight]="item.scoreRanking === 1 ? 700 : 400" [style.color]="'black'">
+                                            {{item.scoreRanking}}
+                                            </span>
+                                        </td>
+                                        <td *ngIf="cuenta.perfil==0">{{item.oferta}}</td>
+                                        <td *ngIf="cuenta.perfil<=2">{{item.usuario}}</td>
+                                        <td *ngIf="cuenta.perfil>=3">{{item.usuario === cuenta.usuario ? item.usuario : ''}}</td>
+                                        <td>{{item.cantidad}}</td>
+                                        <td>{{item.precio}}</td>
+                                        <td>{{total(item.precio,item.cantidad)}}</td>
+                                        <td>{{item.entrega}}</td>
+                                        <td>{{item.financiacion}}</td>
+                                        <td *ngIf="cuenta.perfil<=2">{{item.desempeno}}</td>
+                                        <td class="d-flex flex-nowrap">{{item.scoring}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>    
+
 </div>

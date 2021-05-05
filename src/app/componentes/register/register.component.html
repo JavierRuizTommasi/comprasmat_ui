@@ -78,11 +78,21 @@
                             </div>
                         </mat-form-field>
 
-                        <div class="d-flex justify-content-between">
-                            <!-- <button type="button" class="btn btn-link" routerLink="/login">{{esp ? 'Ingreso' : 'Log in'}}</button> -->
-                            <a mat-button color="primary" routerLink="/login">{{esp ? 'Ingreso' : 'Log in'}}</a>
-                            <button mat-raised-button color="primary" [disabled]="!f.valid" (click)="register()">{{esp ? 'Registro' : 'Register'}}</button>
+                        <div class="form-group row mt-1 mb-0">
+                            <div class="col-sm-12">
+                                <button mat-raised-button class="register" [disabled]="!f.valid" (click)="register()">{{esp ? 'Registrese' : 'Sing up'}}</button>
+                            </div>
                         </div>
+
+                        <div class="form-group row mt-2 mb-0">
+                            <div class="col-sm-12 login">
+                                {{esp ? 'Ya tiene una cuenta?' : 'Already have an account?'}}
+                                <a mat-button color="primary" routerLink="/login">
+                                    <strong>{{esp ? 'Iniciar sesi&oacute;n' : 'Sing in'}}</strong>
+                                </a>
+                            </div>
+                        </div>
+
                         <ngb-alert class="mt-2" [type]="alertType" *ngIf="siAlert" (close)="!siAlert">{{msgAlert}}
                         </ngb-alert>
                             <!-- <ngb-alert *ngIf="siError" type="danger" (close)="siError=false">{{msgError}}</ngb-alert> -->

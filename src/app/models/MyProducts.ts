@@ -6,5 +6,8 @@ export class MyProducts {
     public descrip: string
     public rubro: string
     public subrubro: string
+    public detaeng: string
+    public rubroeng: string
+    public subrubeng: string
     public checked?: boolean
 }

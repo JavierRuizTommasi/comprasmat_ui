@@ -31,4 +31,5 @@ export class Offers {
     public cotizacion: number
     public desempeno: number
     public upload: object
+    public observacion: string
 }

@@ -78,7 +78,7 @@ export class UsuariosService {
     return this.http.post<any>(this.url.baseApiUrl + 'login', data, this.getHttpOptions())
   }
 
-  register(user: IUsuUtp) {
+  register(user: Usuarios) {
     return this.http.post<any>(this.url.baseApiUrl + 'register', user, this.getHttpOptions())
   }
 
@@ -86,12 +86,12 @@ export class UsuariosService {
     return this.http.get<Usuarios[]>(this.url.baseApiUrl + 'users', this.getHttpOptions())
   }
 
-  postUsuarios(user: IUsuUtp) {
-    return this.http.post<IUsuUtp>(this.url.baseApiUrl + 'users', user, this.getHttpOptions())
+  postUsuarios(user: Usuarios) {
+    return this.http.post<Usuarios>(this.url.baseApiUrl + 'users', user, this.getHttpOptions())
   }
 
-  putUsuarios(id: string, user: IUsuUtp) {
-    return this.http.put<IUsuUtp>(this.url.baseApiUrl + 'users/' + id, user, this.getHttpOptions())
+  putUsuarios(id: string, user: Usuarios) {
+    return this.http.put<Usuarios>(this.url.baseApiUrl + 'users/' + id, user, this.getHttpOptions())
   }
 
   putPass(pass) {
@@ -99,7 +99,7 @@ export class UsuariosService {
   }
 
   deleteUsuarios(id: string) {
-    return this.http.delete<IUsuUtp>(this.url.baseApiUrl + 'users/' + id, this.getHttpOptions())
+    return this.http.delete<Usuarios>(this.url.baseApiUrl + 'users/' + id, this.getHttpOptions())
   }
 
   getUsuario(id: string) {

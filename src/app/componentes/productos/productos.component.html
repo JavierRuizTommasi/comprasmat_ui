@@ -37,12 +37,12 @@
   
           <ng-container matColumnDef="rubro">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Rubro' : 'Category'}}</th>
-            <td mat-cell *matCellDef="let row">{{row.rubro}}</td>
+            <td mat-cell *matCellDef="let row">{{esp ? row.rubro : row.rubroeng}}</td>
           </ng-container>
   
           <ng-container matColumnDef="subrubro">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'SubRubro' : 'SubCategory'}}</th>
-            <td mat-cell *matCellDef="let row">{{row.subrubro}}</td>
+            <td mat-cell *matCellDef="let row">{{esp ? row.subrubro : row.subrubeng}}</td>
           </ng-container>
   
           <ng-container matColumnDef="historico">
@@ -217,13 +217,13 @@
           </div>
 
           <div class="form-group row">
-            <label for="subrueng" class="col-sm-3 col-form-label">{{esp ? 'Subrubro (ENG)' : 'SubCategory (ENG)'}}</label>
+            <label for="subrubeng" class="col-sm-3 col-form-label">{{esp ? 'Subrubro (ENG)' : 'SubCategory (ENG)'}}</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" formControlName="subrueng" id="subrueng" [readOnly]="this.strTipo == 'B'">
+              <input type="text" class="form-control" formControlName="subrubeng" id="subrubeng" [readOnly]="this.strTipo == 'B'">
               <!-- Error -->
-              <div *ngIf="f.controls.subrueng.errors && f.controls.subrueng.dirty" class="alert alert-danger mt-0">
-                <div *ngIf="f.controls.subrueng.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
-                <div *ngIf="f.controls.subrueng.errors.pattern">{{esp ? 'Solo Mayusculas (Max 30)' : 'Only Uppercase Characters (Max 30)'}}</div>
+              <div *ngIf="f.controls.subrubeng.errors && f.controls.subrubeng.dirty" class="alert alert-danger mt-0">
+                <div *ngIf="f.controls.subrubeng.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+                <div *ngIf="f.controls.subrubeng.errors.pattern">{{esp ? 'Solo Mayusculas (Max 30)' : 'Only Uppercase Characters (Max 30)'}}</div>
               </div>
             </div>  
           </div>
