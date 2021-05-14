@@ -31,6 +31,7 @@ import { SuppliersService } from 'src/app/servicios/suppliers.service'
 import { Suppliers } from 'src/app/models/Suppliers'
 import { UploadsService } from 'src/app/servicios/uploads.service'
 import { Uploads } from 'src/app/models/Uploads'
+import { arLugaresEntrega } from 'src/app/models/LugaresEntrega'
 
 interface HtmlInputEvent extends Event {
   target: HTMLInputElement & EventTarget
@@ -84,6 +85,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   unidades = arUnidades
   financiaciones = arFinanciacion
   diasEntrega = arDiasEntrega
+  lugaresEntrega = arLugaresEntrega
   
   filterValues = {}
   filterSelectObj = []
@@ -102,7 +104,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   params: {}
 
-  incotermFlag: boolean = true
+  nacional: boolean = true
 
   constructor(
     private fb: FormBuilder,
@@ -201,7 +203,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       desempeno: [0],
       upload: [],
       sugerida: 0,
-      observacion: ['']
+      observacion: [''],
+      lugarEntrega: ['']
     })
 
     // }, { validators: this.validaCantidad('licitacion', 'cantidad')})
@@ -212,7 +215,13 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       // Actualiza el filtro según el idioma
       if (this.dataSource.data) {
         this.filterSelectObj.filter((o) => {
-          o.options = this.getFilterObject(this.dataSource.data, this.esp ? o.columnProp :  o.columnPropEng);
+          this.resetFilters()
+
+          if (this.esp) {
+            o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
+          } else {
+            o.options = this.getFilterObject(this.dataSource.data, o.columnPropEng);
+          }
         })
       }
     })
@@ -325,15 +334,15 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     this.checkCuenta(user)
 
     await this.pedirSuppliers()
-    console.log('Suppliers')
+    // console.log('Suppliers')
     await this.pedirProducts()
-    console.log('Products')
+    // console.log('Products')
     await this.pedirTenders(user)
-    console.log('Tenders')
+    // console.log('Tenders')
     await this.pedirOffers(user)
     // console.log('Offers')
     await this.pedirUploads()
-    console.log('Uploads')
+    // console.log('Uploads')
 
     await this.pedirCotizDolar()
 
@@ -360,7 +369,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     if (offExist.length > 0) {
       let strConfMsg = this.esp ? 'Oferta ya Existente!' : 'Offer already Exist!' 
       let strConfMsg2 = this.esp ? 'Modifiquela para mejorar su Ranking!' : 'Update it in order to inprove your Ranking!' 
-      console.log(strConfMsg)
+      // console.log(strConfMsg)
       const dialogRef = await this.dialog.open(AlertMessagesComponent, {
         width: '300px',
         data: {tipo: 'Alerta', mensaje: strConfMsg, mensaje2: strConfMsg2}
@@ -422,14 +431,14 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       if (user.perfil >= 4) {
         // console.log('Proveedor', user.perfil)
         resp = await this.offersService.findMyOffers(user.usuario).toPromise()
-        console.log('MyOffers')
+        // console.log('MyOffers')
         let resp2: any = await this.offersService.getOffers().toPromise()
-        console.log('Offers')
+        // console.log('Offers')
         this.offers = resp2.Offers
       } else {
         // console.log('Offers')
         resp = await this.offersService.getOffers().toPromise()
-        console.log('Offers')
+        // console.log('Offers')
         this.offers = resp.Offers
         // console.log(resp)
       }
@@ -453,7 +462,11 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       // console.log(this.dataSource)
 
       this.filterSelectObj.filter((o) => {
-        o.options = this.getFilterObject(this.dataSource.data, this.esp ? o.columnProp :  o.columnPropEng);
+        if (this.esp) {
+          o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
+        } else {
+          o.options = this.getFilterObject(this.dataSource.data, o.columnPropEng);
+        }
       })
     }
   }
@@ -529,7 +542,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         desempeno: 0,
         upload: [],
         sugerida: this.traerSugerida(this.exTender ? this.exTender.licitacion : ''),
-        observacion: ''
+        observacion: '',
+        lugarEntrega: 'DEPOSITO PROAGRO'
       })
     } else {
       this.f.patchValue({
@@ -566,7 +580,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         desempeno: offer.desempeno,
         upload: offer.upload,
         sugerida: this.traerSugerida(offer.licitacion),
-        observacion: offer.observacion
+        observacion: offer.observacion,
+        lugarEntrega: offer.lugraEntrega
         // total: this.calcTotal(offer.precio,offer.precioPesos,offer.cantidad)
       })
     }
@@ -582,14 +597,15 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     // Busco el Pais del Proveedor
     let esteProv: any
     esteProv = this.suppliers.filter( x => x.usuario == this.cuenta.usuario)
+    // console.log(esteProv)
     if (esteProv.length > 0) {
-      this.incotermFlag = esteProv[0].pais == 'ARGENTINA' ? false : true
+      this.nacional = esteProv[0].pais == 'ARGENTINA' ? true : false
       // console.log(esteProv)
       // console.log(esteProv[0].pais)
     } else {
-      this.incotermFlag = true
+      this.nacional = false
     }
-    // console.log(this.incotermFlag)
+    console.log(this.nacional)
 
     // console.log(this.f)
     
@@ -652,7 +668,8 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       cotizacion: this.f.controls.cotizacion.value,
       desempeno: this.f.controls.desempeno.value,
       upload: this.f.controls.upload.value,
-      observacion: this.f.controls.observacion.value
+      observacion: this.f.controls.observacion.value,
+      lugarEntrega: this.f.controls.lugarEntrega.value
     }
 
     switch (this.strTipo) {
@@ -729,7 +746,6 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       }
       console.log('Borro')
     // })
-
   }
 
   async modificarOferta() {
@@ -799,9 +815,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     
       // }
     }
-
     // console.log(result)
-
   }
 
   alertMsg(): void {
@@ -858,7 +872,11 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   // Called on Filter change
   filterChange(filter, event) {
     //let filterValues = {}
-    this.filterValues[this.esp ? filter.columnProp : filter.columnPropEng] = event.target.value.trim().toLowerCase()
+    if (this.esp) {
+      this.filterValues[filter.columnProp] = event.target.value.trim().toLowerCase()
+    } else {
+      this.filterValues[filter.columnPropEng] = event.target.value.trim().toLowerCase()
+    }
     this.dataSource.filter = JSON.stringify(this.filterValues)
   }
 
@@ -886,8 +904,12 @@ export class OfertasComponent implements AfterViewInit, OnInit {
             //     found = true
             //   }
             // });
-            if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
-                  found = true
+            if(data[col]) {
+              if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
+                    found = true
+              }
+            } else {
+              found = false
             }
           }
           return found

@@ -112,3 +112,7 @@ a + input {
 .table thead th {
     vertical-align: top; 
 }
+
+.acciones {
+    display: flex
+}

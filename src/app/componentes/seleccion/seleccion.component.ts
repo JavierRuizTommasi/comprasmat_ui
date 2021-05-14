@@ -82,8 +82,13 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
         
         // Actualiza el filtro según el idioma
         if (this.dataSource.data) {
+          this.resetFilters()
           this.filterSelectObj.filter((o) => {
-            o.options = this.getFilterObject(this.dataSource.data, this.esp ? o.columnProp :  o.columnPropEng);
+            if (this.esp) {
+              o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
+            } else {
+              o.options = this.getFilterObject(this.dataSource.data, o.columnPropEng);
+            }
           })
         }
       })
@@ -119,6 +124,7 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
      })
     
     this.pedirDatos()
+
   }
 
   ngOnDestroy() {
@@ -210,8 +216,13 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
       this.notDone = false
   
       this.filterSelectObj.filter((o) => {
-        o.options = this.getFilterObject(this.dataSource.data, this.esp ? o.columnProp :  o.columnPropEng);
+        if (this.esp) {
+          o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
+        } else {
+          o.options = this.getFilterObject(this.dataSource.data, o.columnPropEng);
+        }
       })
+
     }
   }
 
@@ -234,7 +245,7 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
       //   || product.rubro.trim().toLowerCase().includes(this.dataSource.filter)
       //   || product.subrubro.trim().toLowerCase().includes(this.dataSource.filter))) {
       if (product.checked) {
-        console.log(product)
+        // console.log(product)
         if (!this.myproducts.some(p => p.codigo === product.codigo)) {
           await result.push({
             usuario: this.cuenta.usuario,
@@ -265,7 +276,7 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
     let res2: any = await this.myproductsService.insertMyProducts(result).toPromise()
     // console.log(res2)
     await this.pedirDatos()
-    console.log('Pedir')
+    // console.log('Pedir')
     if (res2) {
       await this.alertMsg()
     }
@@ -299,9 +310,7 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   alertMsg(): void {
-
     // console.log('Aviso')
-
     let strConfMsg = this.esp ? 'Selección Guardada!' : 'Selection Saved!' 
     const dialogRef = this.dialog.open(AlertMessagesComponent, {
       width: '300px',
@@ -327,6 +336,7 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
 
   getFilterObject(fullObj, key) {
     const uniqChk = []
+    // console.log(key)
     fullObj.filter((obj) => {
       if (!uniqChk.includes(obj[key])) {
         uniqChk.push(obj[key])
@@ -334,20 +344,24 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
       return obj
     })
     return uniqChk.sort((a, b) => {
-        if (a > b) {
-            return 1;
-        }
-        if (a < b) {
-            return -1;
-        }
-        return 0;
-      }) 
+      if (a > b) {
+          return 1;
+      }
+      if (a < b) {
+          return -1;
+      }
+      return 0;
+    }) 
   }
 
   // Called on Filter change
   filterChange(filter, event) {
     // console.log(filter)
-    this.filterValues[this.esp ? filter.columnProp : filter.columnPropEng] = event.target.value.trim().toLowerCase()
+    if (this.esp) {
+      this.filterValues[filter.columnProp] = event.target.value.trim().toLowerCase()
+    } else {
+      this.filterValues[filter.columnPropEng] = event.target.value.trim().toLowerCase()
+    }
     this.dataSource.filter = JSON.stringify(this.filterValues)
   }
 
@@ -375,8 +389,13 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
             //     found = true
             //   }
             // });
-            if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
-                  found = true
+            // console.log(data[col])
+            if(data[col]) {
+              if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
+                    found = true
+              }
+            } else {
+              found = false
             }
           }
           return found

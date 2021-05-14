@@ -111,6 +111,19 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
   
       this.languageService.esp$.subscribe((lang: Language) => {
         this.esp = lang.esp
+
+        // Actualiza el filtro según el idioma
+        if (this.dataSource.data) {
+          this.filterSelectObj.filter((o) => {
+            this.resetFilters()
+
+            if (this.esp) {
+              o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
+            } else {
+              o.options = this.getFilterObject(this.dataSource.data, o.columnPropEng);
+            }
+          })
+        }
       })
   
       this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
@@ -239,7 +252,11 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
 
         // this.myproducts = resp.myProducts
         this.filterSelectObj.filter((o) => {
-          o.options = this.getFilterObject(this.dataSource.data, this.esp ? o.columnProp :  o.columnPropEng);
+          if (this.esp) {
+            o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
+          } else {
+            o.options = this.getFilterObject(this.dataSource.data, o.columnPropEng);
+          }
         })
       })
     }
@@ -466,7 +483,11 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
   // Called on Filter change
   filterChange(filter, event) {
     //let filterValues = {}
-    this.filterValues[this.esp ? filter.columnProp : filter.columnPropEng] = event.target.value.trim().toLowerCase()
+    if (this.esp) {
+      this.filterValues[filter.columnProp] = event.target.value.trim().toLowerCase()
+    } else {
+      this.filterValues[filter.columnPropEng] = event.target.value.trim().toLowerCase()
+    }
     this.dataSource.filter = JSON.stringify(this.filterValues)
   }
 
@@ -496,8 +517,12 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
 
             // console.log(searchTerms[col]);
             // console.log(data[col].toString().toLowerCase())
-            if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
-                  found = true
+            if(data[col]) {
+              if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
+                    found = true
+              }
+            } else {
+              found = false
             }
           }
 

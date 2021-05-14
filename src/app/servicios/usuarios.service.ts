@@ -150,4 +150,9 @@ export class UsuariosService {
   sendWelcome(email: string) {
     return this.http.get<any>(this.url.baseApiUrl + 'welcome/' + email, this.getHttpOptions())
   }
+
+  language(id: string, user: any) {
+    return this.http.put<any>(this.url.baseApiUrl + 'language/' + id, user, this.getHttpOptions())
+  }
+
 }

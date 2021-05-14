@@ -18,3 +18,18 @@
 .welcome {
     text-align: center;
 }
+
+.mat-cell, mat-header-cell {
+    padding: 5px 5px;
+    text-align: center;
+}
+
+.mat-header-cell, td.mat-cell, td.mat-footer-cell {
+    padding: 5px;
+}
+
+.table thead th {
+    vertical-align: top; 
+    text-align: center;
+}
+  

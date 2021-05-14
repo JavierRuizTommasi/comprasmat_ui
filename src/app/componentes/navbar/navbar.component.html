@@ -113,6 +113,10 @@
           <a mat-list-item routerLink="/login" (click)="drawer.close()">{{esp ? 'Ingreso' : 'Login'}}</a>
         </ng-container>
   
+        <a mat-list-item routerLink="/help" (click)="drawer.close()">
+          <mat-icon>help_outline</mat-icon>
+        </a>
+
         <a mat-list-item (click)="changeLang(); drawer.close()">
           <img *ngIf="esp" src="../../assets/uk.png" width="20" height="20">
           <img *ngIf="!esp" src="../../assets/spain.png" width="20" height="20">
@@ -128,7 +132,7 @@
             <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
           </button>
           <div>
-            <button mat-button routerLink="/inicio"      >
+            <button mat-button class="inicio" routerLink="/inicio">
               <mat-icon>home</mat-icon>
               <span class="logo" href="index.html">
                 {{esp ? 'Portal de Proveedores' : 'Suppliers Web Site'}}
@@ -247,11 +251,18 @@
               <button mat-button routerLink="/register" routerLinkActive="active">{{esp ? 'Registrase' : 'Register'}}</button>
               <button mat-button routerLink="/login" routerLinkActive="active">{{esp ? 'Ingreso' : 'Login'}}</button>
             </ng-container>
-  
-            <button mat-button routerLinkActive="active" (click)="changeLang()">
+
+            <ng-container *ngIf="!deviceXs">
+              <button mat-button class="iconright" routerLink="/help" routerLinkActive="active">
+                <mat-icon>help_outline</mat-icon>
+              </button>
+            </ng-container>
+
+            <button mat-button class="iconright" routerLinkActive="active" (click)="changeLang()">
               <img *ngIf="esp" src="../../assets/uk.png" width="20" height="20">
               <img *ngIf="!esp" src="../../assets/spain.png" width="20" height="20">
             </button>
+
           </div>
         </mat-toolbar-row>
       </mat-toolbar>

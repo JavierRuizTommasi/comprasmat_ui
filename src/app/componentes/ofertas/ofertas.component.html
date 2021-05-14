@@ -21,11 +21,19 @@
         </div>
         <div class="d-flex flex-row flex-wrap">
             <div class="mr-auto pr-2 flex-grow-1" *ngFor="let filter of filterSelectObj">
-                <mat-form-field>
-                    <mat-label>Filter {{esp ? filter.name : filter.nameeng}}</mat-label>
+                <mat-form-field *ngIf="esp">
+                    <mat-label>Filtro {{filter.name}}</mat-label>
                     <select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
                         (change)="filterChange(filter,$event)">
-                        <option value="">-- Select {{esp ? filter.name : filter.nameeng}} --</option>
+                        <option value="">-- Seleccione {{filter.name}} --</option>
+                        <option [value]="item" *ngFor="let item of filter.options">{{item}}</option>
+                    </select>
+                </mat-form-field>
+                <mat-form-field *ngIf="!esp">
+                    <mat-label>Filter {{filter.nameeng}}</mat-label>
+                    <select matNativeControl name="{{filter.columnPropEng}}" [(ngModel)]="filter.modelValue"
+                        (change)="filterChange(filter,$event)">
+                        <option value="">-- Select {{filter.nameeng}} --</option>
                         <option [value]="item" *ngFor="let item of filter.options">{{item}}</option>
                     </select>
                 </mat-form-field>
@@ -115,7 +123,7 @@
             </ng-container>
 
             <ng-container matColumnDef="financiacion">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Financ. D&iacute;as' : 'Financ. Days'}}</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Pago D&iacute;as' : 'Payment Days'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.financiacion}}</td>
             </ng-container>
 
@@ -163,15 +171,15 @@
             <ng-container matColumnDef="actions">
                 <!-- <th mat-header-cell *matHeaderCellDef>{{esp ? 'Acciones' : 'Actions'}}</th> -->
                 <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let row">
+                <td mat-cell *matCellDef="let row" class="acciones">
                     <ng-container *ngIf="cuenta">
-                        <ng-container *ngIf="cuenta.perfil!=1 && cuenta.perfil!=3">
+                        <ng-container *ngIf="cuenta.perfil==0 || ((cuenta.perfil==2 || cuenta.perfil>=4) && row.estado==0)">
                             <button mat-icon-button color="primary" data-toggle="tooltip" title="Update"
                                 (click)="openModal(editOfferModal, row, 'M')">
                                 <mat-icon>edit</mat-icon>
                             </button>
                         </ng-container>
-                        <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil>=4">
+                        <ng-container *ngIf="cuenta.perfil==0 || (cuenta.perfil>=4 && row.estado==0)">
                             <button mat-icon-button color="primary" data-toggle="tooltip" title="Delete"
                                 (click)="openModal(editOfferModal, row, 'B')">
                                 <mat-icon>delete</mat-icon>
@@ -448,7 +456,7 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="financiacion" class="col-sm-3 col-form-label"> {{esp ? 'Financiaci&oacute;n' : 'Financial'}}</label>
+                    <label for="financiacion" class="col-sm-3 col-form-label"> {{esp ? 'Condici&iacute;n de Pago' : 'Pay Terms'}}</label>
                     <div class="col-sm-4">
                         <select class="custom-select" formControlName="financiacion" id="financiacion"
                             required="required">
@@ -459,7 +467,7 @@
                     <label for="dias" class="col-sm-5 col-form-label pl-0 pr-0">{{esp ? 'D&iacute;as' : 'Days'}}</label>
                 </div>
 
-                <div *ngIf="incotermFlag" class="form-group row">
+                <div *ngIf="!nacional" class="form-group row">
                     <label for="incoterm" class="col-sm-3 col-form-label">{{esp ? 'INCOTERM' : 'INCOTERM'}}</label>
                     <div class="col-sm-9">
                         <select class="custom-select" formControlName="incoterm" id="incoterm" required="required">
@@ -478,6 +486,16 @@
                         </select>
                     </div>
                     <label for="dias" class="col-sm-5 col-form-label pl-0 pr-0">{{esp ? 'D&iacute;as listo para Trasporte' : 'Days ready to Ship'}}</label>
+                </div>
+
+                <div *ngIf="nacional" class="form-group row">
+                    <label for="lugarEntrega" class="col-sm-3 col-form-label">{{esp ? 'Lugar Entrega' : 'Delivery Place'}}</label>
+                    <div class="col-sm-9">
+                        <select class="custom-select" formControlName="lugarEntrega" id="lugarEntrega" required="required">
+                            <option [ngValue]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
+                            <option [ngValue]="item.value" *ngFor="let item of lugaresEntrega">{{item.value}}</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- docOffer -->
@@ -625,7 +643,7 @@
                                             <div>{{esp ? 'D&iacute;as' : 'Days'}}</div>
                                         </th>
                                         <th>
-                                            <div>{{esp ? 'Financ.' : 'Financ.'}}</div>
+                                            <div>{{esp ? 'Pago' : 'Payment'}}</div>
                                             <div>{{esp ? 'D&iacute;as' : 'Days'}}</div>
                                         </th>
                                         <th *ngIf="cuenta.perfil<=2">{{esp ? 'Desemp.' : 'Perform.'}}</th>

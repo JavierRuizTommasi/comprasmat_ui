@@ -32,4 +32,5 @@ export class Offers {
     public desempeno: number
     public upload: object
     public observacion: string
+    public lugarEntrega: string
 }

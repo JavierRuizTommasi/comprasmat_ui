@@ -75,9 +75,18 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
 
         // Actualiza el filtro según el idioma
         if (this.dataSource.data) {
+          this.resetFilters()
+          console.log(this.filterSelectObj)
+
           this.filterSelectObj.filter((o) => {
-            o.options = this.getFilterObject(this.dataSource.data, this.esp ? o.columnProp :  o.columnPropEng);
+            if (this.esp) {
+              o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
+            } else {
+              o.options = this.getFilterObject(this.dataSource.data, o.columnPropEng);
+            }
           })
+
+          console.log(this.filterSelectObj)
         }
       })
 
@@ -104,7 +113,7 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
           name: 'SUBRUBRO',
           nameeng: 'SUBCATEGORY',
           columnProp: 'subrubro',
-          columnPropEng: 'subrubro',
+          columnPropEng: 'subrubeng',
           options: []
         }
       ]
@@ -192,9 +201,12 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
         this.table.dataSource = this.dataSource
 
         // this.myproducts = resp.myProducts
-
         this.filterSelectObj.filter((o) => {
-          o.options = this.getFilterObject(this.dataSource.data, this.esp ? o.columnProp :  o.columnPropEng);
+          if (this.esp) {
+            o.options = this.getFilterObject(this.dataSource.data, o.columnProp);
+          } else {
+            o.options = this.getFilterObject(this.dataSource.data, o.columnPropEng);
+          }
         })
       })
     }
@@ -285,7 +297,11 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
   // Called on Filter change
   filterChange(filter, event) {
     // console.log(filter)
-    this.filterValues[this.esp ? filter.columnProp : filter.columnPropEng] = event.target.value.trim().toLowerCase()
+    if (this.esp) {
+      this.filterValues[filter.columnProp] = event.target.value.trim().toLowerCase()
+    } else {
+      this.filterValues[filter.columnPropEng] = event.target.value.trim().toLowerCase()
+    }
     this.dataSource.filter = JSON.stringify(this.filterValues)
   }
 
@@ -311,8 +327,12 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
             //     found = true
             //   }
             // });
-            if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
-                  found = true
+            if(data[col]) {
+              if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
+                    found = true
+              }
+            } else {
+              found = false
             }
           }
           return found

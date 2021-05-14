@@ -3,11 +3,19 @@
         <h3 class="mt-2">{{esp ? 'Mis Productos Administraci&oacute;n' : 'My Products Administration'}}</h3>
         <div class="d-flex flex-row flex-wrap">
             <div class="mr-auto pr-2 flex-grow-1" *ngFor="let filter of filterSelectObj">
-                <mat-form-field>
-                    <mat-label>Filter {{esp ? filter.name : filter.nameeng}}</mat-label>
+                <mat-form-field *ngIf="esp">
+                    <mat-label>Filtro {{filter.name}}</mat-label>
                     <select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
                         (change)="filterChange(filter,$event)">
-                        <option value="">-- Select {{esp ? filter.name : filter.nameeng}} --</option>
+                        <option value="">-- Seleccione {{filter.name}} --</option>
+                        <option [value]="item" *ngFor="let item of filter.options">{{item}}</option>
+                    </select>
+                </mat-form-field>
+                <mat-form-field *ngIf="!esp">
+                    <mat-label>Filter {{filter.nameeng}}</mat-label>
+                    <select matNativeControl name="{{filter.columnPropEng}}" [(ngModel)]="filter.modelValue"
+                        (change)="filterChange(filter,$event)">
+                        <option value="">-- Select {{filter.nameeng}} --</option>
                         <option [value]="item" *ngFor="let item of filter.options">{{item}}</option>
                     </select>
                 </mat-form-field>
