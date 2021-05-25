@@ -62,8 +62,8 @@
             <!-- <ng-container matColumnDef="oferta">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Oferta' : 'Offer'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.oferta}}</td>
-            </ng-container>
- -->
+            </ng-container>-->
+
             <ng-container matColumnDef="licitacion">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Solicitud' : 'Order'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.licitacion}}</td>
@@ -82,34 +82,34 @@
             <ng-container matColumnDef="detalle">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Detalle' : 'Detail'}}</th>
                 <td mat-cell *matCellDef="let row">
-                  <button class="m-0 mr-1" mat-raised-button color="primary" data-toggle="tooltip" title="Details" 
+                <button class="m-0 mr-1" mat-raised-button color="primary" data-toggle="tooltip" title="Details" 
                     (click)="openModal(editTenderDetalle, row, 'D')">
                     <mat-icon>description</mat-icon>&nbsp; {{esp ? 'Ver' : 'See'}}
-                  </button>
+                </button>
                 </td>
             </ng-container>
         
             <ng-container matColumnDef="cantidad">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Cantidad' : 'Quantity'}}</th>
-                <td mat-cell *matCellDef="let row">{{row.cantidad}} {{row.unidad}}</td>
+            <td mat-cell class="cellRight" *matCellDef="let row">{{row.cantidad}} {{row.unidad}}</td>
             </ng-container>
 
             <ng-container *ngIf="cuenta">
                 <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2" matColumnDef="sugerida">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Sugerida' : 'Suggested'}}</th>
-                    <td mat-cell *matCellDef="let row">{{traerSugerida(row.licitacion)}} {{row.unidad}}</td>
+                    <td mat-cell class="cellRight" *matCellDef="let row">{{traerSugerida(row.licitacion)}} {{row.unidad}}</td>
                 </ng-container>
             </ng-container>
         
             <ng-container matColumnDef="precio">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Precio U$S' : 'Price U$S'}}
                 </th>
-                <td mat-cell *matCellDef="let row">{{row.precio}}</td>
+                <td mat-cell class="cellRight" *matCellDef="let row">{{traerPrecio(row.precioPesos, row.precio).toFixed(2)}}</td>
             </ng-container>
 
             <ng-container matColumnDef="total">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Total U$S' : 'Total U$S'}}</th>
-                <td mat-cell *matCellDef="let row">{{calcTotal(row.precio,row.precioPesos,row.cantidad)}}</td>
+                <td mat-cell class="cellRight" *matCellDef="let row">{{calcTotal(row.precio,row.precioPesos,row.cantidad).toFixed(2)}}</td>
             </ng-container>
 
             <!-- <ng-container matColumnDef="incoterm">
@@ -125,6 +125,16 @@
             <ng-container matColumnDef="financiacion">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Pago D&iacute;as' : 'Payment Days'}}</th>
                 <td mat-cell *matCellDef="let row">{{row.financiacion}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="incoterm">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>INCOTERM</th>
+                <td mat-cell *matCellDef="let row">{{row.incoterm}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="lugarEntrega">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Lugar Entrega' : 'Delivery Place'}}</th>
+                <td mat-cell *matCellDef="let row">{{row.lugarEntrega}}</td>
             </ng-container>
 
             <ng-container *ngIf="cuenta">
@@ -168,7 +178,7 @@
             </ng-container>
 
             <!-- Actions Column -->
-            <ng-container matColumnDef="actions">
+            <ng-container matColumnDef="actions" stickyEnd>
                 <!-- <th mat-header-cell *matHeaderCellDef>{{esp ? 'Acciones' : 'Actions'}}</th> -->
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let row" class="acciones">
@@ -332,7 +342,7 @@
                 </div> -->
 
                 <div class="form-group row">
-                    <label for="producto" class="col-sm-3 col-form-label">{{esp ? 'Producto' : 'Product'}}</label>
+                    <label for="producto" class="col-sm-3 col-form-label">{{esp ? 'Insumo' : 'Supplie'}}</label>
                     <div class="col-sm-9">
                         <!-- <input type="number" class="form-control" formControlName="producto" id="producto"
                             [readOnly]="true"> -->
@@ -350,12 +360,12 @@
 
                 <div class="form-group row">
                     <a class="btn btn-link upfiles" data-toggle="collapse" data-target="#caracteris" aria-expanded="false" aria-controls="caracteris">
-                        {{esp ? 'Caracter&iacute;sticas del Producto' : 'Product Caracteristics'}}
+                        {{esp ? 'Caracter&iacute;sticas del Insumo' : 'Supplie Caracteristics'}}
                     </a>
                     <div id="accordion2">
                         <div class="card border mb-0 pb-0 border-white">
                             <div id="caracteris" class="collapse" aria-labelledby="headingOne" data-parent="#accordion2">
-                                <div class="caracteris pt-1">{{esp ? 'Producto: ' + producto.descrip : 'Product: ' + producto.detaeng}}</div>
+                                <div class="caracteris pt-1">{{esp ? 'Insumo: ' + producto.descrip : 'Supplie: ' + producto.detaeng}}</div>
                                 <div class="caracteris">{{esp ? 'Rubro: ' + producto.rubro : 'Category: ' + producto.rubroeng}}</div>
                                 <div class="caracteris">{{esp ? 'SubRubro: ' + producto.subrubro : 'SubCategory: ' + producto.subrubeng}}</div>
                                 <p class="card-body caracteris" 
@@ -425,7 +435,7 @@
                         <input type="number" class="form-control" formControlName="precioPesos" id="precioPesos"
                             [readOnly]="this.strTipo == 'B'">
                     </div>
-                    <label for="cotizacion" class="col-sm-2 col-form-label pl-0 pr-0">{{esp ? 'Cotiz. U$S' : 'Cotiz. U$S'}}</label>
+                    <label for="cotizacion" class="col-sm-2 col-form-label pl-0 pr-0">{{esp ? 'Cotiz. U$S' : 'U$S Quot.'}}</label>
                     <div class="col-sm-3">
                         <input type="number" class="form-control" formControlName="cotizacion" id="cotizacion" readOnly>
                     </div>
@@ -445,9 +455,9 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="total" class="col-sm-3 col-form-label">{{esp ? 'Total' : 'Total'}}</label>
+                    <label for="total" class="col-sm-3 col-form-label">{{esp ? 'Total' : 'Total'}} U$S</label>
                     <div class="col-sm-4">
-                        <label class="pt-2">U$S {{calcTotal(f.controls.precio.value,f.controls.precioPesos.value,f.controls.cantidad.value)}}</label>
+                        <label class="pt-2">{{calcTotal(f.controls.precio.value,f.controls.precioPesos.value,f.controls.cantidad.value)}}</label>
                         <!-- <input type="number" class="form-control" formControlName="total" id="total" readOnly>
                         <div class="col-sm-6">
                         </div> -->
@@ -456,7 +466,7 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="financiacion" class="col-sm-3 col-form-label"> {{esp ? 'Condici&iacute;n de Pago' : 'Pay Terms'}}</label>
+                    <label for="financiacion" class="col-sm-3 col-form-label"> {{esp ? 'Condici&oacute;n de Pago' : 'Pay Terms'}}</label>
                     <div class="col-sm-4">
                         <select class="custom-select" formControlName="financiacion" id="financiacion"
                             required="required">
@@ -467,7 +477,7 @@
                     <label for="dias" class="col-sm-5 col-form-label pl-0 pr-0">{{esp ? 'D&iacute;as' : 'Days'}}</label>
                 </div>
 
-                <div *ngIf="!nacional" class="form-group row">
+                <div *ngIf="!nacional || this.cuenta.perfil==0 || this.cuenta.perfil==2" class="form-group row">
                     <label for="incoterm" class="col-sm-3 col-form-label">{{esp ? 'INCOTERM' : 'INCOTERM'}}</label>
                     <div class="col-sm-9">
                         <select class="custom-select" formControlName="incoterm" id="incoterm" required="required">
@@ -488,7 +498,7 @@
                     <label for="dias" class="col-sm-5 col-form-label pl-0 pr-0">{{esp ? 'D&iacute;as listo para Trasporte' : 'Days ready to Ship'}}</label>
                 </div>
 
-                <div *ngIf="nacional" class="form-group row">
+                <div *ngIf="nacional || this.cuenta.perfil==0 || this.cuenta.perfil==2" class="form-group row">
                     <label for="lugarEntrega" class="col-sm-3 col-form-label">{{esp ? 'Lugar Entrega' : 'Delivery Place'}}</label>
                     <div class="col-sm-9">
                         <select class="custom-select" formControlName="lugarEntrega" id="lugarEntrega" required="required">
@@ -598,7 +608,7 @@
     
         <div class="modal-body p-0">
           <form [formGroup]="f" (ngSubmit)="onSubmit()">
-            <div class="descrip">{{esp ? 'Producto: ' + producto.descrip : 'Product: ' + producto.detaeng}}</div>
+            <div class="descrip">{{esp ? 'Insumo: ' + producto.descrip : 'Supplie: ' + producto.detaeng}}</div>
             <div class="descrip">{{esp ? 'Rubro: ' + producto.rubro : 'Category: ' + producto.rubroeng}}</div>
             <div class="descrip">{{esp ? 'SubRubro: ' + producto.subrubro : 'SubCategory: ' + producto.subrubeng}}</div>
             <p class="descrip p-2" [innerHTML]="esp ? producto.caracteris : producto.caracteriseng"></p>

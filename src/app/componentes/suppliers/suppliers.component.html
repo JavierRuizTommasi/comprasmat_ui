@@ -43,6 +43,11 @@
           <td mat-cell *matCellDef="let row">{{row.usuario}}</td>
         </ng-container>
 
+        <ng-container matColumnDef="CUIT">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'CUIT/RUC' : 'CUIT/RUC'}}</th>
+          <td mat-cell *matCellDef="let row">{{row.CUIT}}</td>
+        </ng-container>
+
         <ng-container matColumnDef="nombre">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Nombre' : 'Name'}}</th>
           <td mat-cell *matCellDef="let row">{{row.nombre}}</td>
@@ -272,6 +277,23 @@
           </div>
         </div>
 
+        <div class="form-group row">
+          <label for="CUIT" class="col-sm-3 col-form-label">{{esp ? 'CUIT/RUC' : 'CUIT/RUC'}}</label>
+          <div class="col-sm-9">
+            <input type="string" class="form-control" formControlName="CUIT" id="CUIT"
+              [readOnly]="this.strTipo == 'B'">
+              <!-- Error -->
+              <div *ngIf="f.controls.CUIT.errors && f.controls.CUIT.dirty">
+                <mat-error *ngIf="f.controls.CUIT.errors.required">
+                    {{esp ? 'Requerido' : 'Required'}}
+                </mat-error>
+                <mat-error *ngIf="f.controls.CUIT.errors.pattern">
+                    {{esp ? 'Solo d&iacute;gitos (Min=11 Max=15)' : 'Only digits (Min=11 Max=15)'}}
+                </mat-error>
+            </div>
+          </div>
+        </div>
+
         <ng-container *ngIf="f.controls.pais.value==='ARGENTINA'">
           <label class="arglabel">Documentación para Proveedores de Argentina</label>
 
@@ -304,14 +326,6 @@
             <div class="col-sm-9">
               <textarea class="form-control" formControlName="cuentacbu" id="cuentacbu" [readOnly]="this.strTipo == 'B'"
                 rows="5" [readOnly]="this.strTipo == 'B'"></textarea>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="CUIT" class="col-sm-3 col-form-label">Nro. CUIT</label>
-            <div class="col-sm-9">
-              <input type="number" class="form-control" formControlName="CUIT" id="CUIT"
-                [readOnly]="this.strTipo == 'B'">
             </div>
           </div>
 

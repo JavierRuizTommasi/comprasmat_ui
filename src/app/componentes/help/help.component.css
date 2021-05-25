@@ -30,7 +30,6 @@ tr.example-element-row:not(.example-expanded-row):active {
 .example-element-detail {
     overflow: hidden;
     display: flex;
-    padding-bottom: 12px;
 }
 
 .example-element-diagram {
@@ -61,7 +60,14 @@ tr.example-element-row:not(.example-expanded-row):active {
 } */
 
 .descrip {
-    background-color: lemonchiffon;
+    background-color: lightyellow;
+    font-size: 18px;
+    padding-top: 1rem;
+    margin: 0;
+}
+
+.helprow {
+    background-color: lightyellow;
 }
 
 .linea {

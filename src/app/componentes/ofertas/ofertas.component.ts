@@ -256,7 +256,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
             }
           ]
 
-          this.displayedColumns = ['usuario', 'licitacion', 'descrip', 'detalle', 'cantidad', 'sugerida', 'precio', 'total', 'entrega', 'financiacion', 'desempeno', 'scoring', 'scoreRanking', 'dueDays', 'estado', 'actions']
+          this.displayedColumns = ['usuario', 'licitacion', 'descrip', 'detalle', 'cantidad', 'sugerida', 'precio', 'total', 'entrega', 'financiacion', 'incoterm', 'lugarEntrega', 'desempeno', 'scoring', 'scoreRanking', 'dueDays', 'estado', 'actions']
         
         } else {
           this.filterSelectObj = [
@@ -276,7 +276,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
             }
           ]
         
-          this.displayedColumns = ['usuario', 'licitacion', 'descrip', 'detalle', 'cantidad', 'precio', 'total', 'entrega', 'financiacion', 'scoring', 'scoreRanking', 'dueDays', 'estado', 'actions']
+          this.displayedColumns = ['usuario', 'licitacion', 'descrip', 'detalle', 'cantidad', 'precio', 'total', 'entrega', 'financiacion', 'incoterm', 'lugarEntrega', 'scoring', 'scoreRanking', 'dueDays', 'estado', 'actions']
 
         }
       }
@@ -446,6 +446,10 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       this.dataSource.data = resp.Offers
       this.dataSource.sortingDataAccessor = (item, property) => {
         switch (property) {
+            case 'sugerida':
+                return this.traerSugerida(item.licitacion)
+            case 'precio':
+                return this.traerPrecio(item.precioPesos,item.precio)
             case 'total':
                 return this.calcTotal(item.precio, item.precioPesos, item.cantidad)
             case 'dueDays':
@@ -454,6 +458,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
                 return item[property]
         }
       }
+
       this.dataSource.sort = this.sort
       this.dataSource.paginator = this.paginator
       this.table.dataSource = this.dataSource
@@ -989,6 +994,28 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   //   }
   // }
 
+  traerPrecio(pes, dol) {
+    let ret = 0
+    let pre = 0
+
+    if (!pes) pes = 0
+    if (!dol) dol = 0
+
+    if (pes !== 0) {
+      if (this.cotiza != 0) {
+        // console.log(pre)
+        pre = this.round(pes / this.cotiza, 2)
+      }
+    } else {
+      pre = dol
+    } 
+
+    ret = this.round(pre, 2)
+    // console.log(ret)
+
+    return ret
+  }
+
   calcTotal(pre, pes, can) {
     let ret = 0
     // console.log(pes)
@@ -1065,15 +1092,21 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   }
 
   traerSugerida(tender: string) {
+    let ret = 0
+
     if (!tender) return 0
 
     let resp: any = this.tenders.filter( x => x.licitacion == tender )
 
+    // console.log('Resp', resp[0].sugerida)
     if (resp.length > 0) {
-      return resp[0].sugerida
-    } else {
-      return 0
+      if (resp[0].sugerida) {
+        ret = resp[0].sugerida
+      }
     }
+
+    // console.log('ret', ret)
+    return ret
   }
 
   async pedirCotizDolar() {

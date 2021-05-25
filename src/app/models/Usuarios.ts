@@ -21,4 +21,5 @@ export class Usuarios {
     public email3: string
     public contacto4: string
     public email4: string
+    public CUIT: string
 }

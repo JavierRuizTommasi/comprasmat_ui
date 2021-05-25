@@ -29,7 +29,7 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<Usuarios> = new MatTableDataSource<Usuarios>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['usuario', 'nombre', 'email', 'perfil', 'language', 'activo', 'actions']
+  displayedColumns: string[] = ['usuario', 'CUIT', 'nombre', 'email', 'perfil', 'language', 'activo', 'actions']
 
   strTipo: string
   idIdx: string
@@ -49,6 +49,7 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
   nombPattern = '^[A-Za-z0-9 .+&]{1,30}$'
   emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   passPattern = '((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,20})'
+  cuitPattern = '^[0-9]{11,15}$'
 
   user: IUsuario
   updtUser: IUsuUtp
@@ -117,7 +118,12 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
         email3: [''],
         contacto4: [''],
         email4: [''],
-        conpass: [false]
+        conpass: [false],
+        CUIT: ['',
+          Validators.compose([
+          Validators.required,
+          Validators.pattern(this.cuitPattern)
+        ])]
       }, { validators: this.passMustMatch('pass', 'confpass') })
 
       this.languageService.esp$.subscribe((lang: Language) => {
@@ -269,7 +275,8 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
      contacto3: usuario.contacto3,
      email3: usuario.email3,
      contacto4: usuario.contacto4,
-     email4: usuario.email4
+     email4: usuario.email4,
+     CUIT: usuario.CUIT
     })
 
     if (strTipoParam === 'B') {
@@ -316,7 +323,8 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
       contacto3: this.f.controls.contacto3.value,
       email3: this.f.controls.email3.value,
       contacto4: this.f.controls.contacto4.value,
-      email4: this.f.controls.email4.value
+      email4: this.f.controls.email4.value,
+      CUIT: this.f.controls.CUIT.value
     }
 
     switch (this.strTipo) {
@@ -428,7 +436,6 @@ export class UsuariosComponent implements AfterViewInit, OnInit {
       width: '300px',
       data: {tipo: 'Aviso', mensaje: strConfMsg}
     })
-  
   }
 
 }

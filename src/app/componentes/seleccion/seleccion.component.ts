@@ -95,13 +95,6 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
 
       this.filterSelectObj = [
         {
-          name: 'INSUMO',
-          nameeng: 'SUPPLY',
-          columnProp: 'descrip',
-          columnPropEng: 'detaeng',
-          options: []
-        },
-        {
           name: 'RUBRO',
           nameeng: 'CATEGORY',
           columnProp: 'rubro',
@@ -113,6 +106,13 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
           nameeng: 'SUBCATEGORY',
           columnProp: 'subrubro',
           columnPropEng: 'subrubeng',
+          options: []
+        },
+        {
+          name: 'INSUMO',
+          nameeng: 'SUPPLY',
+          columnProp: 'descrip',
+          columnPropEng: 'detaeng',
           options: []
         }
       ]
@@ -229,6 +229,18 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
   async agregarSeleccion() {
     // console.log('Agregar:', this.products)
 
+    // console.log(this.dataSource.filter)
+    if (!this.dataSource.filter) {
+      await this.alertMsg('Filtro')
+      return
+    }
+
+    let checkeados = this.dataSource.data.filter(x => x.checked).length
+    if (checkeados == 0) {
+      await this.alertMsg('SinCheck')
+      return
+    }
+
     this.siGrabo = true
     this.msgGrabo = 'Grabando...'
     // setTimeout(() => this.removeAlert(), 3000)
@@ -247,6 +259,7 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
       if (product.checked) {
         // console.log(product)
         if (!this.myproducts.some(p => p.codigo === product.codigo)) {
+          // console.log(product.codigo)
           await result.push({
             usuario: this.cuenta.usuario,
             proveedor: this.cuenta.proveedor,
@@ -278,14 +291,15 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
     await this.pedirDatos()
     // console.log('Pedir')
     if (res2) {
-      await this.alertMsg()
+      await this.alertMsg('Grabo')
     }
 
     // setTimeout(() => this.removeAlert(), 3000)
   }
 
   checkAllCheckBox(ev) {
-    this.dataSource.data.forEach(x=> {
+    // console.log(ev.checked)
+    this.dataSource.filteredData.forEach(x=> {
       if (x.checked) {
         x.checked = false
       } else {
@@ -297,7 +311,7 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   isAllCheckBoxChecked() {
-		return this.dataSource.data.every(row => row.checked)
+		return this.dataSource.filteredData.every(row => row.checked)
   }
 
   isSomeCheckBoxChecked() {
@@ -309,13 +323,27 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
     this.dataSource.filter = filterValue.trim().toLowerCase()
   }
 
-  alertMsg(): void {
+  alertMsg(msg: string): void {
     // console.log('Aviso')
-    let strConfMsg = this.esp ? 'Selección Guardada!' : 'Selection Saved!' 
-    const dialogRef = this.dialog.open(AlertMessagesComponent, {
-      width: '300px',
-      data: {tipo: 'Aviso', mensaje: strConfMsg}
-    })
+    if (msg=='Grabo') {
+      let strConfMsg = this.esp ? 'Selección Guardada!' : 'Selection Saved!' 
+      const dialogRef = this.dialog.open(AlertMessagesComponent, {
+        width: '300px',
+        data: {tipo: 'Aviso', mensaje: strConfMsg}
+      })
+    } else if (msg=='Filtro') {
+      let strConfMsg = this.esp ? 'Debe filtrar un Rubro!' : 'Must to filter by Category!' 
+      const dialogRef = this.dialog.open(AlertMessagesComponent, {
+        width: '300px',
+        data: {tipo: 'Aviso', mensaje: strConfMsg}
+      })
+    } else {
+      let strConfMsg = this.esp ? 'Nada sellecionado!' : 'None Selected!' 
+      const dialogRef = this.dialog.open(AlertMessagesComponent, {
+        width: '300px',
+        data: {tipo: 'Aviso', mensaje: strConfMsg}
+      })
+    }
   
   }
 

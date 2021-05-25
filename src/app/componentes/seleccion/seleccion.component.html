@@ -127,7 +127,7 @@
     
         <div class="modal-body p-0">
           <!-- <form [formGroup]="f" (ngSubmit)="onSubmit()"> -->
-            <div class="descrip">{{esp ? 'Producto: ' + producto.descrip : 'Product: ' + producto.detaeng}}</div>
+            <div class="descrip">{{esp ? 'Insumo: ' + producto.descrip : 'Supplie: ' + producto.detaeng}}</div>
             <div class="descrip">{{esp ? 'Rubro: ' + producto.rubro : 'Category: ' + producto.rubroeng}}</div>
             <div class="descrip">{{esp ? 'SubRubro: ' + producto.subrubro : 'SubCategory: ' + producto.subrubeng}}</div>
             <p class="descrip p-2" [innerHTML]="esp ? producto.caracteris : producto.caracteriseng"></p>

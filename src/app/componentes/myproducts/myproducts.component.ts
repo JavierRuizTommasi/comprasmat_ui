@@ -76,7 +76,7 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
         // Actualiza el filtro según el idioma
         if (this.dataSource.data) {
           this.resetFilters()
-          console.log(this.filterSelectObj)
+          // console.log(this.filterSelectObj)
 
           this.filterSelectObj.filter((o) => {
             if (this.esp) {
@@ -86,7 +86,7 @@ export class MyProductsComponent implements AfterViewInit, OnInit {
             }
           })
 
-          console.log(this.filterSelectObj)
+          // console.log(this.filterSelectObj)
         }
       })
 

@@ -28,6 +28,7 @@ userPattern = '^[A-Z0-9]{1,10}$'
 nombPattern = '^[a-zA-Z0-9 ]{1,30}$'
 emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 passPattern = '((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,20})'
+cuitPattern = '^[0-9]{11,15}$'
 
 usuarios: Usuarios[]
 
@@ -53,7 +54,8 @@ user: IUsuario = {
   contacto3: '',
   email3: '',
   contacto4: '',
-  email4: ''
+  email4: '',
+  CUIT: ''
 }
 
 siAlert: boolean
@@ -131,7 +133,12 @@ constructor(
       contacto3: [''],
       email3: [''],
       contacto4: [''],
-      email4: ['']
+      email4: [''],
+      CUIT: ['',
+        Validators.compose([
+        Validators.required,
+        Validators.pattern(this.cuitPattern)
+      ])]
     }, { validators: this.passMustMatch('pass', 'confpass') })
 
   }
@@ -160,14 +167,16 @@ constructor(
           // const accessToken = respuesta.dataUser.accessToken
           // this.usuariosService.setToken(accessToken)
 
-          this.msgAlert = this.esp ? 'Usuario registrado' : 'User registered'
+          this.msgAlert = this.esp ? 'Nuevo usuario de la firma ' + respuesta.dataUser.usuario + ' registrado' : 'New user of Brand ' + respuesta.dataUser.usuario + ' registered'
           this.alertMsg(this.msgAlert, false)
 
           // console.log('registro correcto', respuesta)
 
           this.envioEmail(respuesta.dataUser.email)
 
-        }
+          this.router.navigateByUrl('/inicio')
+      
+      }
         else {
           switch (respuesta.message) {
             case 'Email already exists': { this.msgAlert = this.esp ? 'Email ya existente' : 'Email already exists'; break }
@@ -178,9 +187,8 @@ constructor(
 
           // console.log('registro incorrecto', respuesta)
         }
+    
     })
-
-    this.router.navigateByUrl('/inicio')
 
   }
 

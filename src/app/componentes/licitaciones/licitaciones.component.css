@@ -68,3 +68,7 @@
 .table thead th {
   vertical-align: top; 
 }
+
+.acciones {
+  white-space: nowrap;
+}

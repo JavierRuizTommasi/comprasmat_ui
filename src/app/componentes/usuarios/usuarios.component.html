@@ -25,6 +25,11 @@
           <td mat-cell *matCellDef="let row">{{row.usuario}}</td>
         </ng-container>
 
+        <ng-container matColumnDef="CUIT">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'CUIT/RUC' : 'CUIT/RUC'}}</th>
+          <td mat-cell *matCellDef="let row">{{row.CUIT}}</td>
+        </ng-container>
+
         <!-- Nombre Column -->
         <ng-container matColumnDef="nombre">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Nombre' : 'Name'}}</th>

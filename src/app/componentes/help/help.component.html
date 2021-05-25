@@ -72,11 +72,13 @@
             </ng-container>
 
             <ng-container matColumnDef="expandedDetail">
-                <td mat-cell *matCellDef="let row" [attr.colspan]="displayedColumns.length">
-                  <div class="example-element-detail" [@detailExpand]="row.isExpanded ? 'expanded' : 'collapsed'">
-                    <div class="container pl-0 m-0 pr-2 overflow-auto">
-                        <div class="respuesta">{{esp ? row.respuesta : row.respuestaeng}}</div>
-                    </div>
+                <td mat-cell *matCellDef="let row" [attr.colspan]="displayedColumns.length" class="helprow">
+                  <div class="example-element-detail descrip" [@detailExpand]="row.isExpanded ? 'expanded' : 'collapsed'">
+                    <!-- <div class="container pl-0 m-0 pr-2 overflow-auto descrip"> -->
+                        <!-- <div class="respuesta">{{esp ? row.respuesta : row.respuestaeng}}</div> -->
+                        <p *ngIf="esp" [innerHTML]="row.respuesta"></p>
+                        <p *ngIf="!esp" [innerHTML]="row.respuestaeng"></p>
+                    <!-- </div> -->
                   </div>
                 </td>
             </ng-container>

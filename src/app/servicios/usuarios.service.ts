@@ -27,7 +27,8 @@ export interface IUsuario {
   contacto3: string,
   email3: string,
   contacto4: string,
-  email4: string
+  email4: string,
+  CUIT: string
 }
 
 export interface IUsuUtp {
@@ -51,7 +52,8 @@ export interface IUsuUtp {
   contacto3: string,
   email3: string,
   contacto4: string,
-  email4: string
+  email4: string,
+  CUIT: string
 }
 
 @Injectable({

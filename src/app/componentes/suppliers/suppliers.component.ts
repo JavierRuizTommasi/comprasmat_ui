@@ -38,7 +38,7 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<Suppliers> = new MatTableDataSource<Suppliers>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['codigo', 'usuario', 'nombre', 'localidad', 'provincia', 'pais', 'desempeno', 'activo', 'actions']
+  displayedColumns: string[] = ['codigo', 'usuario', 'CUIT', 'nombre', 'localidad', 'provincia', 'pais', 'desempeno', 'activo', 'actions']
 
   strTipo: string
   idIdx: string
@@ -59,6 +59,7 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
   unumPattern = '^[0-9]{1,10}$'
   userPattern = '^[A-Z0-9]{1,10}$'
   nombPattern = '^[A-Z0-9 .+&]{1,50}$'
+  cuitPattern = '^[0-9]{11,15}$'
 
   file: File
   myFiles: Uploads[] = []
@@ -119,7 +120,11 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         fantasia: [''],
         actividad: [''],
         correspondencia: [''],
-        CUIT: [''],
+        CUIT: ['',
+          Validators.compose([
+          Validators.required,
+          Validators.pattern(this.cuitPattern)
+        ])],
         constCUIT: [''],
         cuentacbu: [''],
         F1276: [''],
@@ -330,7 +335,7 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         constexenGAN: '',
         motiexenGAN: '',
         upload: [],
-        activo: false
+        activo: true
       })
     } else {
       this.f.patchValue({

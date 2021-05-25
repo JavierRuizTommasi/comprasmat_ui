@@ -221,30 +221,45 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
     if (this.isActivas) {
       console.log('Actives')
       let resp: any = await this.tenderService.getActives().toPromise()
-      // .subscribe((resp: any) => {
-        // console.log(resp)
-        this.dataSource.data = resp.Tenders
-        this.dataSource.sort = this.sort
-        this.dataSource.paginator = this.paginator
-        this.table.dataSource = this.dataSource
+      this.dataSource.data = resp.Tenders
 
-        // this.tenders = resp.Tenders
-        this.notDone = false
-      // })
+      this.dataSource.sortingDataAccessor = (item, property) => {
+        switch (property) {
+            case 'oferta':
+                return this.offersLength(item)
+            default:
+                return item[property]
+        }
+      }
+      this.dataSource.sort = this.sort
+      this.dataSource.paginator = this.paginator
+      this.table.dataSource = this.dataSource
+
+      this.notDone = false
     } else {
       console.log('Tenders')
       let resp: any = await this.tenderService.getTenders().toPromise()
-      // .subscribe((resp: any) => {
-        // console.log(resp)
-        this.dataSource.data = resp.Tenders
-        this.dataSource.sort = this.sort
-        this.dataSource.paginator = this.paginator
-        this.table.dataSource = this.dataSource
+      this.dataSource.data = resp.Tenders
+      
+      this.dataSource.sortingDataAccessor = (item, property) => {
+        switch (property) {
+            case 'oferta':
+                return this.offersLength(item)
+            default:
+                return item[property]
+        }
+      }
+      this.dataSource.sort = this.sort
+      this.dataSource.paginator = this.paginator
+      this.table.dataSource = this.dataSource
 
-        // this.tenders = resp.Tenders        
-        this.notDone = false
-      // })
+      this.notDone = false
     }
+  }
+
+  offersLength(item: any) {
+    // console.log(item.offer)
+    return item.offer.length
   }
 
   async pedirOffers() {

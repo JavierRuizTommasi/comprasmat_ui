@@ -10,7 +10,20 @@
                     <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
                     <form [formGroup]="f">
                         <mat-form-field>
-                        <mat-label>{{esp ? 'Empresa (Identificaci&oacute;n &uacute;nica para Proagro)' : 'Brand (Unique Id for Proagro)'}}</mat-label>
+                            <mat-label>{{esp ? 'CUIT/RUC' : 'CUIT/RUC'}}</mat-label>
+                            <input matInput type="string" formControlName="CUIT" id="CUIT">
+                            <!-- Error -->
+                            <div *ngIf="f.controls.CUIT.errors && f.controls.CUIT.dirty">
+                                <mat-error *ngIf="f.controls.CUIT.errors.required">
+                                    {{esp ? 'Requerido' : 'Required'}}
+                                </mat-error>
+                                <mat-error *ngIf="f.controls.CUIT.errors.pattern">
+                                    {{esp ? 'Solo d&iacute;gitos (Min=11 Max=15)' : 'Only digits (Min=11 Max=15)'}}
+                                </mat-error>
+                            </div>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>{{esp ? 'Empresa (Identificaci&oacute;n &uacute;nica para Proagro)' : 'Brand (Unique Id for Proagro)'}}</mat-label>
                             <input matInput type="text" formControlName="usuario" id="usuario">
                             <!-- Error -->
                             <div *ngIf="f.controls.usuario.errors && f.controls.usuario.dirty">
