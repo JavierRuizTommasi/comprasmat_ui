@@ -100,6 +100,10 @@
                   <i class="mdi mdi-lock-open"></i>
                   {{esp ? 'Password' : 'Password'}}
                 </a>
+                <a mat-menu-item routerLink="/contacto" (click)="drawer.close()">
+                  <i class="mdi mdi-email"></i>
+                  {{esp ? 'Contacto' : 'Contact'}}
+                </a>
                 <div class="dropdown-divider"></div>
                 <a mat-menu-item routerLink="/logout" (click)="drawer.close()">
                   <i class="mdi mdi-exit-to-app"></i>
@@ -238,6 +242,10 @@
                     <button mat-menu-item routerLink="/changepass">
                       <i class="mdi mdi-lock-open"></i>
                       {{esp ? 'Password' : 'Password'}}
+                    </button>
+                    <button mat-menu-item routerLink="/contacto">
+                      <i class="mdi mdi-email"></i>
+                      {{esp ? 'Contacto' : 'Contact'}}
                     </button>
                     <div class="dropdown-divider"></div>
                     <button mat-menu-item routerLink="/logout">

@@ -185,6 +185,23 @@
             </div>  
           </div>
 
+          <div class="form-group row">
+            <label for="CUIT" class="col-sm-3 col-form-label">{{esp ? 'CUIT/RUC' : 'CUIT/RUC'}}</label>
+            <div class="col-sm-9">
+              <input type="string" class="form-control" formControlName="CUIT" id="CUIT"
+                [readOnly]="this.strTipo == 'B'">
+                <!-- Error -->
+                <div *ngIf="f.controls.CUIT.errors && f.controls.CUIT.dirty">
+                  <mat-error *ngIf="f.controls.CUIT.errors.required">
+                      {{esp ? 'Requerido' : 'Required'}}
+                  </mat-error>
+                  <mat-error *ngIf="f.controls.CUIT.errors.pattern">
+                      {{esp ? 'Solo d&iacute;gitos (Min=11 Max=15)' : 'Only digits (Min=11 Max=15)'}}
+                  </mat-error>
+              </div>
+            </div>
+          </div>
+  
           <div *ngIf="this.strTipo !== 'P'" class="form-group row">
             <label for="proveedor" class="col-sm-3 col-form-label">{{esp ? 'Proveedor' : 'Supplier'}}</label>
             <div class="col-sm-9">

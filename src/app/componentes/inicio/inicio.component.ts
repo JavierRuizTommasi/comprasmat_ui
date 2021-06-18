@@ -28,7 +28,7 @@ export class InicioComponent implements AfterViewInit, OnInit {
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns: string[] = ['licitacion', 'descrip', 'cantidad', 'unidad', 'fecha', 'finaliza', 'historico']
 
-  esp: boolean
+  public esp: boolean
   public lang: Language = {esp: true}
   @Output() actualizaLang = new EventEmitter()
 

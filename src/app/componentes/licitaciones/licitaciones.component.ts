@@ -125,8 +125,9 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
           Validators.required
         ])],
         detalle: [''],
-        historico: 0,
-        sugerida: 0
+        historico: [0],
+        sugerida: [0],
+        rankcontrib: [0]
       })
 
       this.languageService.esp$.subscribe((lang: Language) => {
@@ -137,7 +138,7 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
         this.cuenta = cuenta
         if (this.cuenta) {
           if (this.cuenta.perfil <= 2) {
-            this.displayedColumns = ['licitacion', 'descrip', 'detalle', 'oferta', 'cantidad', 'sugerida', 'fecha', 'finaliza', 'historico', 'estado', 'actions']
+            this.displayedColumns = ['licitacion', 'descrip', 'detalle', 'oferta', 'cantidad', 'sugerida', 'fecha', 'finaliza', 'historico', 'rankcontrib', 'estado', 'actions']
           } else {
             this.displayedColumns = ['licitacion', 'descrip', 'detalle', 'oferta', 'cantidad', 'fecha', 'finaliza', 'historico', 'estado', 'actions']
           }
@@ -302,7 +303,8 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
         provenom: '',
         estado: 0,
         historico: 0,
-        sugerida: 0
+        sugerida: 0,
+        rankcontrib: 0,
       })
     } else {
       this.f.patchValue({
@@ -319,8 +321,9 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
         proveedor: tender.proveedor,
         provenom: tender.provenom,
         estado: tender.estado,
-        historico: tender.historico,
-        sugerida: tender.sugerida
+        historico: this.traerProduct(tender.producto,'historico'),
+        sugerida: tender.sugerida,
+        rankcontrib: this.traerProduct(tender.producto,'rankcontrib')
       })
     }
 
@@ -358,7 +361,8 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
       proveedor: this.f.controls.proveedor.value,
       provenom: this.f.controls.provenom.value,
       estado: this.f.controls.estado.value,
-      historico: this.f.controls.historico.value
+      historico: this.f.controls.historico.value,
+      sugerida: this.f.controls.sugerida.value
     }
     
     switch (this.strTipo) {
@@ -436,6 +440,10 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
         })
     
         this.f.get('historico').setValue((resp[0].historico), {
+          onlySelf: true
+        })
+    
+        this.f.get('rankcontrib').setValue((resp[0].rankcontrib), {
           onlySelf: true
         })
     
@@ -531,6 +539,24 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
     value = Math.round(value);
     value = value / Math.pow(10, digits);
     return value;
+  }
+
+  traerProduct(prod: number, dato: string) {
+    if (!prod) return 0
+
+    let resp: any = this.products.filter( x => x.codigo == prod )
+
+    if (resp.length > 0) {
+      if (dato=='historico') {
+        return resp[0].historico ? resp[0].historico : 0
+      } else if (dato=='rankcontrib') {
+        return resp[0].rankcontrib ? resp[0].rankcontrib : 0
+      } else {
+        return 0
+      }
+    } else {
+      return 0
+    }
   }
 
 }

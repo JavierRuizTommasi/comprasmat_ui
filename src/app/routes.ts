@@ -19,6 +19,7 @@ import { ScoringsComponent } from './componentes/scorings/scorings.component'
 import { MailsToSuppliersComponent } from './componentes/mailsToSuppliers/mailsToSuppliers.component'
 import { MyProdsAdmComponent } from './componentes/myprodsadm/myprodsadm.component'
 import { HelpComponent } from './componentes/help/help.component'
+import { ContactoComponent } from './componentes/contacto/contacto.component'
 
 class Rutas {
   private routes: Routes = [
@@ -46,6 +47,7 @@ class Rutas {
     { path: 'mailsToSuppliers', component: MailsToSuppliersComponent},
     { path: 'myProdsAdm', component: MyProdsAdmComponent},
     { path: 'help', component: HelpComponent},
+    { path: 'contacto', component: ContactoComponent},
     { path: '**', component: InicioComponent}
   ]
 

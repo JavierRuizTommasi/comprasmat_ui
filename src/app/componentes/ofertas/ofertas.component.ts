@@ -71,7 +71,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
   exTender: Tenders
   
   products: Productos[] = [] 
-  producto: Productos[] = []
+  producto: Productos
 
   f: FormGroup
 
@@ -256,7 +256,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
             }
           ]
 
-          this.displayedColumns = ['usuario', 'licitacion', 'descrip', 'detalle', 'cantidad', 'sugerida', 'precio', 'total', 'entrega', 'financiacion', 'incoterm', 'lugarEntrega', 'desempeno', 'scoring', 'scoreRanking', 'dueDays', 'estado', 'actions']
+          this.displayedColumns = ['usuario', 'licitacion', 'descrip', 'detalle', 'cantidad', 'sugerida', 'historico', 'rankcontrib', 'precio', 'total', 'entrega', 'financiacion', 'incoterm', 'lugarEntrega', 'desempeno', 'scoring', 'scoreRanking', 'dueDays', 'estado', 'actions']
         
         } else {
           this.filterSelectObj = [
@@ -276,7 +276,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
             }
           ]
         
-          this.displayedColumns = ['usuario', 'licitacion', 'descrip', 'detalle', 'cantidad', 'precio', 'total', 'entrega', 'financiacion', 'incoterm', 'lugarEntrega', 'scoring', 'scoreRanking', 'dueDays', 'estado', 'actions']
+          this.displayedColumns = ['usuario', 'licitacion', 'descrip', 'detalle', 'cantidad', 'historico', 'precio', 'total', 'entrega', 'financiacion', 'incoterm', 'lugarEntrega', 'scoring', 'scoreRanking', 'dueDays', 'estado', 'actions']
 
         }
       }
@@ -446,6 +446,10 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       this.dataSource.data = resp.Offers
       this.dataSource.sortingDataAccessor = (item, property) => {
         switch (property) {
+            case 'historico':
+                return this.traerProduct(item.producto, 'historico')
+            case 'rankcontrib':
+                return this.traerProduct(item.producto, 'rankcontrib')
             case 'sugerida':
                 return this.traerSugerida(item.licitacion)
             case 'precio':
@@ -524,11 +528,11 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         provenom: this.cuenta.nombre,
         fecha: 0,
         finaliza: 0,
-        producto: this.exTender ? this.exTender.producto : 0,
+        producto: this.exTender ? this.exTender.producto : 1,
         descrip: this.exTender ? this.exTender.descrip: '',
         cantidad: this.exTender ? this.exTender.cantidad : 0,
         unidad: this.exTender ? this.exTender.unidad : '',
-        costo: this.exTender ? this.exTender.historico : 0,
+        costo: 0,
         precio: 0,
         incoterm: 'CIF ROSARIO',
         entrega: 7,
@@ -597,8 +601,10 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     this.producto = esteProd[0]
     // console.log(this.producto)
 
-    this.f.get('costo').setValue(esteProd[0].historico, {onlySelf: true})
-
+    if (this.producto.historico) {
+      this.f.get('costo').setValue(this.producto.historico, {onlySelf: true})
+    }
+ 
     // Busco el Pais del Proveedor
     let esteProv: any
     esteProv = this.suppliers.filter( x => x.usuario == this.cuenta.usuario)
@@ -799,10 +805,6 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         })
     
         this.f.get('descrip').setValue((resp[0].descrip), {
-          onlySelf: true
-        })
-    
-        this.f.get('costo').setValue((resp[0].costo), {
           onlySelf: true
         })
     
@@ -1295,6 +1297,24 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   total(pre, can) {
     return this.round(pre * can, 2)
+  }
+
+  traerProduct(prod: number, dato: string) {
+    if (!prod) return 0
+
+    let resp: any = this.products.filter( x => x.codigo == prod )
+
+    if (resp.length > 0) {
+      if (dato=='historico') {
+        return resp[0].historico ? resp[0].historico : 0
+      } else if (dato=='rankcontrib') {
+        return resp[0].rankcontrib ? resp[0].rankcontrib : 0
+      } else {
+        return 0
+      }
+    } else {
+      return 0
+    }
   }
 
 }

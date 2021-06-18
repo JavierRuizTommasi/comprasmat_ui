@@ -18,4 +18,5 @@ export class Productos {
     public subrubeng: string
     public caracteris: string
     public caracteriseng: string
+    public rankcontrib: number
 }

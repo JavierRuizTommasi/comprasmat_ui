@@ -1,6 +1,6 @@
 <div class="jumbotron">
     <ng-container *ngIf="cuenta">
-        <h3 class="mt-2">{{esp ? 'Mis Insumos Administraci&oacute;n' : 'My Supplies Administration'}}</h3>
+        <h3 class="mt-2">{{esp ? 'Seleccionar Insumos Administraci&oacute;n' : 'Select Supplies Administration'}}</h3>
         <div class="d-flex flex-row flex-wrap">
             <div class="mr-auto pr-2 flex-grow-1" *ngFor="let filter of filterSelectObj">
                 <mat-form-field *ngIf="esp">
@@ -34,6 +34,21 @@
                     <mat-icon>note_add</mat-icon>&nbsp; {{esp ? 'Nuevo Insumo' : 'New Supplie'}}
                 </button>
             </div>
+            &nbsp;
+
+            <div class="container-btn-new">
+                <button id="addgroupbutton" mat-raised-button color="primary" (click)="openModalGrupo(addBrandModal,'AG')">
+                    <mat-icon>grid_on</mat-icon>&nbsp; {{esp ? 'Agregar Rubro' : 'Add Category'}}
+                </button>
+            </div>
+            &nbsp;
+
+            <div class="container-btn-new">
+                <button id="deletegroupbutton" mat-raised-button color="warn" (click)="openModalGrupo(addBrandModal,'BG')">
+                    <mat-icon>grid_off</mat-icon>&nbsp; {{esp ? 'Borrar Rubro' : 'Delete Category'}}
+                </button>
+            </div>
+            &nbsp;
 
         </div>
     </ng-container>
@@ -124,9 +139,12 @@
                             <input type="text" class="form-control" formControlName="usuario" id="usuario"
                                 [readOnly]="this.strTipo == 'B'">
                             <!-- Error -->
-                            <!-- <div *ngIf="f.controls.usuario.errors && f.controls.usuario.dirty" class="alert alert-danger mt-0">
-                            <div *ngIf="f.controls.usuario.errors.required">Required</div>
-                        </div> -->
+                            <div *ngIf="f.controls.usuario.errors && f.controls.usuario.dirty" class="alert alert-danger mt-0">
+                                <div *ngIf="f.controls.usuario.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+                                <div *ngIf="f.controls.usuario.errors.pattern">
+                                  {{esp ? 'Solo Mayúsculas sin espacios (Max=10)' : 'Only Uppercase Characters whitout spaces (Max=10)'}}
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -216,4 +234,78 @@
 
     </ng-template>
 
+    <ng-template #addBrandModal let-modal>
+        <div class="modal-header">
+            <h5 class="modal-title" *ngIf="this.strTipo == 'AG'">{{esp ? 'Agregar Robro' : 'Add Category'}}</h5>
+            <h5 class="modal-title" *ngIf="this.strTipo == 'BG'">{{esp ? 'Borrar Rubro' : 'Delete Category'}}</h5>
+            <button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <form [formGroup]="f" (ngSubmit)="onSubmitGrupo()">
+                <ng-container *ngIf="cuenta.perfil==0">
+                    <div class="form-group row">
+                        <label for="usuario" class="col-sm-3 col-form-label">{{esp ? 'Empresa' : 'Brand'}}</label>
+                        <div class="col-sm-9">
+                            <!-- <input type="text" class="form-control" formControlName="usuario" id="usuario"> -->
+                            <select class="custom-select" formControlName="usuario" id="usuario" required="required"
+                                (change)="changeSupplier($event)">
+                                <option [value]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
+                                <option [value]="supplier.usuario" *ngFor="let supplier of suppliers">{{supplier.usuario}}</option>
+                            </select>
+                            <!-- Error -->
+                            <div *ngIf="f.controls.usuario.errors && f.controls.usuario.dirty" class="alert alert-danger mt-0">
+                                <div *ngIf="f.controls.usuario.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+                                <div *ngIf="f.controls.usuario.errors.pattern">
+                                  {{esp ? 'Solo Mayúsculas sin espacios (Max=10)' : 'Only Uppercase Characters whitout spaces (Max=10)'}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="rubro" class="col-sm-3 col-form-label">{{esp ? 'Rubro' : 'Category'}}</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" formControlName="rubro" id="rubro">
+                            <!-- Error -->
+                            <div *ngIf="f.controls.rubro.errors && f.controls.rubro.dirty" class="alert alert-danger mt-0">
+                                <div *ngIf="f.controls.rubro.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+                                <div *ngIf="f.controls.rubro.errors.pattern">
+                                    {{esp ? 'Solo Mayusculas (Max 30)' : 'Only Uppercase Characters (Max 30)'}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                </ng-container>
+
+                <div class="modal-footer">
+                    <div *ngIf="this.strTipo === 'BG'">
+                        <button type="submit" class="btn btn-primary"
+                            [disabled]="f.controls.usuario.value=='' || f.controls.rubro.value==''">{{esp ? 'Borrar' : 'Delete'}}</button>
+                    </div>
+                    <div *ngIf="this.strTipo !== 'BG'">
+                        <button type="submit" class="btn btn-primary"
+                            [disabled]="f.controls.usuario.value=='' || f.controls.rubro.value==''">{{esp ? 'Agregar' : 'Save'}}</button>
+                    </div>
+                    <button type="button" class="btn btn-secondary"
+                        (click)="modal.dismiss()">{{esp ? 'Cancelar' : 'Cancel'}}</button>
+                </div>
+
+                <!-- <hr>
+                    <pre>{{f.controls.usuario.value | json}}</pre>
+                <hr>
+                <hr>
+                    <pre>{{f.controls.usuario.errors | json}}</pre>
+                <hr>
+                <hr>
+                    <pre>{{f.errors | json}}</pre>
+                <hr> -->
+
+            </form>
+        </div>
+
+    </ng-template>
 </div>

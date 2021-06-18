@@ -161,7 +161,7 @@ constructor(
 
     this.usuariosService.register(this.f.value)
     .subscribe( respuesta => {
-      // console.log(respuesta)
+      console.log(respuesta)
 
       if (respuesta.dataUser) {
           // const accessToken = respuesta.dataUser.accessToken
@@ -179,6 +179,7 @@ constructor(
       }
         else {
           switch (respuesta.message) {
+            case 'Usuario already exists': { this.msgAlert = this.esp ? 'Empresa ya existente' : 'Brand already exists'; break }
             case 'Email already exists': { this.msgAlert = this.esp ? 'Email ya existente' : 'Email already exists'; break }
             default: {this.msgAlert = this.esp ? 'Error de Registro' : 'Register Error'; break}
           }

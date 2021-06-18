@@ -30,7 +30,7 @@ export class ProductosComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<Productos> = new MatTableDataSource<Productos>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['codigo', 'descrip', 'unidad', 'rubro', 'subrubro', 'historico', 'activo', 'actions']
+  displayedColumns: string[] = ['codigo', 'descrip', 'unidad', 'rubro', 'subrubro', 'historico', 'rankcontrib', 'activo', 'actions']
 
   strTipo: string
   idIdx: string
@@ -107,7 +107,8 @@ export class ProductosComponent implements AfterViewInit, OnInit {
           Validators.pattern(this.urubrPattern)
         ])],
         caracteris: [''],
-        caracteriseng: ['']
+        caracteriseng: [''],
+        rankcontrib: [0]
       })
 
       this.languageService.esp$.subscribe((lang: Language) => {
@@ -223,7 +224,8 @@ export class ProductosComponent implements AfterViewInit, OnInit {
         rubroeng: '',
         subrubeng: '',
         caracteris: '',
-        caracteriseng: ''
+        caracteriseng: '',
+        rankcontrib: 0,
       })
     } else {
       this.f.patchValue({
@@ -244,7 +246,8 @@ export class ProductosComponent implements AfterViewInit, OnInit {
         rubroeng: producto.rubroeng,
         subrubeng: producto.subrubeng,
         caracteris: producto.caracteris,
-        caracteriseng: producto.caracteriseng
+        caracteriseng: producto.caracteriseng,
+        rankcontrib: producto.rankcontrib
       })
     }
 
@@ -281,7 +284,8 @@ export class ProductosComponent implements AfterViewInit, OnInit {
       rubroeng: this.f.controls.rubroeng.value,
       subrubeng: this.f.controls.subrubeng.value,
       caracteris: this.f.controls.caracteris.value,
-      caracteriseng: this.f.controls.caracteriseng.value
+      caracteriseng: this.f.controls.caracteriseng.value,
+      rankcontrib: this.f.controls.rankcontrib.value
   }
 
     switch (this.strTipo) {

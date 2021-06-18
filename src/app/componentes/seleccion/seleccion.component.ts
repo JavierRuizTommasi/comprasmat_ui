@@ -324,27 +324,20 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   alertMsg(msg: string): void {
+    let strConfMsg = ''
     // console.log('Aviso')
     if (msg=='Grabo') {
-      let strConfMsg = this.esp ? 'Selección Guardada!' : 'Selection Saved!' 
-      const dialogRef = this.dialog.open(AlertMessagesComponent, {
-        width: '300px',
-        data: {tipo: 'Aviso', mensaje: strConfMsg}
-      })
+      strConfMsg = this.esp ? 'Selección Guardada!' : 'Selection Saved!' 
     } else if (msg=='Filtro') {
-      let strConfMsg = this.esp ? 'Debe filtrar un Rubro!' : 'Must to filter by Category!' 
-      const dialogRef = this.dialog.open(AlertMessagesComponent, {
-        width: '300px',
-        data: {tipo: 'Aviso', mensaje: strConfMsg}
-      })
+      strConfMsg = this.esp ? 'Debe filtrar un Rubro!' : 'Must filter by Category!' 
     } else {
-      let strConfMsg = this.esp ? 'Nada sellecionado!' : 'None Selected!' 
-      const dialogRef = this.dialog.open(AlertMessagesComponent, {
-        width: '300px',
-        data: {tipo: 'Aviso', mensaje: strConfMsg}
-      })
+      strConfMsg = this.esp ? 'Nada sellecionado!' : 'None Selected!' 
     }
   
+    const dialogRef = this.dialog.open(AlertMessagesComponent, {
+      width: '300px',
+      data: {tipo: 'Aviso', mensaje: strConfMsg}
+    })
   }
 
   openModal(targetModal, prod, strTipoParam) {

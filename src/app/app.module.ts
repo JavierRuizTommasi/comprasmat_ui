@@ -34,7 +34,8 @@ import { ScoringsComponent } from './componentes/scorings/scorings.component'
 import { MailsToSuppliersComponent } from './componentes/mailsToSuppliers/mailsToSuppliers.component'
 import { FooterComponent } from './componentes/footer/footer.component'
 import { MyProdsAdmComponent } from './componentes/myprodsadm/myprodsadm.component'
-import { HelpComponent } from './componentes/help/help.component';
+import { HelpComponent } from './componentes/help/help.component'
+import { ContactoComponent } from './componentes/contacto/contacto.component'
 
 import { AlertMessagesComponent } from './componentes/alert-messages/alert-messages.component'
 
@@ -88,7 +89,8 @@ import Rutas from './routes';
     MailsToSuppliersComponent,
     FooterComponent,
     MyProdsAdmComponent,
-    HelpComponent
+    HelpComponent,
+    ContactoComponent
   ],
   imports: [
     CommonModule,

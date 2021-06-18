@@ -122,7 +122,6 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         correspondencia: [''],
         CUIT: ['',
           Validators.compose([
-          Validators.required,
           Validators.pattern(this.cuitPattern)
         ])],
         constCUIT: [''],
@@ -161,6 +160,12 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
           name: 'NOMBRE',
           nameeng: 'NAME',
           columnProp: 'nombre',
+          options: []
+        },
+        {
+          name: 'CUIT/RUC',
+          nameeng: 'CUIT/RUC',
+          columnProp: 'CUIT',
           options: []
         }
       ]

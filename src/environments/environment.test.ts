@@ -3,8 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: true,
-  baseUrl: 'https://proagrocompras.herokuapp.com/api/',
+  production: false,
+  baseUrl: 'https://proagrocomprastest.herokuapp.com/api/',
   enableDebug: false
 }
 

@@ -70,6 +70,20 @@ input:-webkit-autofill:active {
     cursor: pointer;
 }
 
+#addgroupbutton {
+    margin-bottom: 1rem; 
+    /* width: 90%; */
+    /* margin: auto; */
+    cursor: pointer;
+}
+
+#deletegroupbutton {
+    margin-bottom: 1rem; 
+    /* width: 90%; */
+    /* margin: auto; */
+    cursor: pointer;
+}
+
 .my_checkbox {
     width:5vw;
     height:5vh;

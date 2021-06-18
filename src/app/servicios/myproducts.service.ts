@@ -48,4 +48,8 @@ export class MyProductsService {
     return this.http.post<any>(this.url.baseApiUrl + 'insertmyproducts', myprod, this.getHttpOptions())
   }
 
+  deleteMyProductsGroup(query: any) {
+    return this.http.put<any>(this.url.baseApiUrl + 'deletemyproducts', query, this.getHttpOptions())
+  }
+
 }
