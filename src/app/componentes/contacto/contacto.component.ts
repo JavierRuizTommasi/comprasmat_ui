@@ -8,6 +8,8 @@ import { Language } from 'src/app/models/Language'
 import { LanguageService } from 'src/app/servicios/language.service'
 import { MatDialog } from '@angular/material/dialog'
 import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
+import { MailsService } from 'src/app/servicios/mails.service'
+import { Mails } from 'src/app/models/Mails'
 
 @Component({
   selector: 'app-contacto',
@@ -20,6 +22,8 @@ export class ContactoComponent implements OnInit {
   updtUser: IUsuUtp
 
   public cuenta: Cuenta
+  @Output() actualizaCuenta = new EventEmitter()
+
   esp: boolean
   public lang: Language = {esp: true}
   @Output() actualizaLang = new EventEmitter()
@@ -31,57 +35,53 @@ export class ContactoComponent implements OnInit {
   emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   passPattern = '((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,20})'
 
+  mail: Mails
   constructor(
     private fb: FormBuilder,
     private usuariosService: UsuariosService,
     private comunicacionService: ComunicacionService,
     private languageService: LanguageService,
     private router: Router,
-    public dialog: MatDialog) {
-      this.f = fb.group({
-        id: [''],
-        usuario: ['',
-          Validators.compose([
-          Validators.required,
-          Validators.pattern(this.userPattern)
-        ])],
-        nombre: ['',
-          Validators.compose([
-          Validators.required,
-          Validators.pattern(this.nombPattern)
-        ])],
-        email: ['',
-          Validators.compose([
-          Validators.required,
-          Validators.pattern(this.emailRegex)
-        ])],
-        pass: [''],
-        perfil: [4],
-        proveedor: [0],
-        contacto: [''],
-        direccion: [''],
-        ciudad: [''],
-        pais: [''],
-        telefono: [''],
-        activo: [true],
-        language: [''],
-        contacto2: [''],
-        email2: [''],
-        contacto3: [''],
-        email3: [''],
-        contacto4: [''],
-        email4: ['']
-      })
-
+    public dialog: MatDialog,
+    private mailsService: MailsService) {
       if (this.usuariosService.isLogin()) {
           this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
           this.cuenta = cuenta
         })
-      }
-      else{
+      } else{
         this.router.navigateByUrl('/inicio')
       }
- }
+
+      this.f = fb.group({
+        id: [''],
+        usuario: ['',
+          Validators.compose([
+          Validators.required
+        ])],
+        nombre: ['',
+          Validators.compose([
+          Validators.required
+        ])],
+        email: ['',
+          Validators.compose([
+          Validators.required
+        ])],
+        language: [''],
+        titulo: ['',
+          Validators.compose([
+          Validators.required
+        ])],
+        mensaje: ['',
+          Validators.compose([
+          Validators.required
+        ])]
+      })
+
+      this.languageService.esp$.subscribe((lang: Language) => {
+        this.esp = lang.esp
+      })
+
+    }
 
   ngOnInit(): void {
         this.pedirCuenta()
@@ -99,34 +99,21 @@ export class ContactoComponent implements OnInit {
 
           this.usuariosService.getUsuario(this.cuenta.id)
           .subscribe(rescta => {
-            // console.log('rescta:', rescta.User.usuario)
+            // console.log('rescta:', rescta.User)
 
             this.f.patchValue({
-                    id: rescta.User.id,
+                    id: rescta.User._id,
                     usuario: rescta.User.usuario,
                     nombre: rescta.User.nombre,
-                    pass: rescta.User.pass,
-                    proveedor: rescta.User.proveedor,
-                    contacto: rescta.User.contacto,
-                    direccion: rescta.User.direccion,
-                    ciudad: rescta.User.ciudad,
-                    pais: rescta.User.pais,
-                    telefono: rescta.User.telefono,
-                    perfil: rescta.User.perfil,
                     email: rescta.User.email,
-                    activo: rescta.User.activo,
-                    language: (rescta.User.language === 'es') ? 'es' : 'en',
-                    contacto2: rescta.User.contacto2,
-                    email2: rescta.User.email2,
-                    contacto3: rescta.User.contacto3,
-                    email3: rescta.User.email3,
-                    contacto4: rescta.User.contacto4,
-                    email4: rescta.User.email4
+                    language: rescta.User.language,
+                    titulo: '',
+                    mensaje: ''
                   })
 
             // console.log(this.f.controls.id.value)
 
-            switch (this.f.controls.language.value) {
+            switch (rescta.User.language) {
               case 'en': { this.esp = false; break }
               case 'es': { this.esp = true; break }
               default: {this.esp = true; break}
@@ -141,18 +128,20 @@ export class ContactoComponent implements OnInit {
         }
         else {
           this.usuariosService.removeToken()
+          this.router.navigateByUrl('/login')
         }
       })
   }
 
   onSubmit() {
-    this.idIdx = this.cuenta.id
-    // console.log('idIdx:', this.idIdx)
+    this.mail = this.f.value
+
+    // console.log(this.mail)
     // console.log('updtUser:', this.updtUser)
 
-    this.usuariosService.putUsuarios(this.idIdx, this.f.value)
-      .subscribe((user: IUsuario) => {
-      if (user) {
+    this.mailsService.sendMail(this.mail)
+      .subscribe((resp: any) => {
+      if (resp) {
           this.alertMsg()
       }
 
@@ -168,7 +157,7 @@ export class ContactoComponent implements OnInit {
 
   alertMsg(): void {
 
-    let strConfMsg = this.esp ? 'Cuenta Actualizada!' : 'Account Updated!'
+    let strConfMsg = this.esp ? 'Mail Enviado!' : 'Email Sent!'
     
     const dialogRef = this.dialog.open(AlertMessagesComponent, {
       width: '300px',

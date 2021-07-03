@@ -77,8 +77,7 @@ export class CuentaComponent implements OnInit {
           this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
           this.cuenta = cuenta
         })
-      }
-      else{
+      } else{
         this.router.navigateByUrl('/inicio')
       }
  }
@@ -141,6 +140,7 @@ export class CuentaComponent implements OnInit {
         }
         else {
           this.usuariosService.removeToken()
+          this.router.navigateByUrl('/login')
         }
       })
   }

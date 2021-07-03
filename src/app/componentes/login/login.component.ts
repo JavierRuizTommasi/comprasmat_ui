@@ -125,10 +125,9 @@ export class LoginComponent implements OnInit {
       } else {
         this.router.navigateByUrl('/inicio')
       }
-
-    }
-    else {
+    } else {
       this.usuariosService.removeToken()
+      this.router.navigateByUrl('/login')
     }
   }
 

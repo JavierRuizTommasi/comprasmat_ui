@@ -8,6 +8,7 @@ import { Language } from 'src/app/models/Language'
 import { LanguageService } from 'src/app/servicios/language.service'
 import { Router } from '@angular/router'
 import { UsuariosService } from 'src/app/servicios/usuarios.service'
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-navbar',
@@ -23,6 +24,7 @@ export class NavbarComponent implements OnInit {
     shareReplay()
   );
 
+  public prod = false
   public cuenta: Cuenta
 
   public esp: boolean
@@ -35,7 +37,9 @@ export class NavbarComponent implements OnInit {
     private languageService: LanguageService,
     private usuariosService: UsuariosService,
     private router: Router,
-  ) {}
+  ) {
+    this.prod = environment.production
+  }
 
   ngOnInit(): void {
     this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
@@ -64,6 +68,8 @@ export class NavbarComponent implements OnInit {
       this.actualizaLang.emit(this.lang)
     })
     // console.log(this.cuenta)
+
+    console.log(environment.production)
   }
 
   async changeLang() {

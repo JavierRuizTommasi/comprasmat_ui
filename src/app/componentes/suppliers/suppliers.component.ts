@@ -91,8 +91,12 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
     public dialog: MatDialog,
     public uploadsService: UploadsService
     ) {
-      if (!this.usuariosService.isLogin()) {
-        this.router.navigateByUrl('/login')
+      if (this.usuariosService.isLogin()) {
+          this.comunicacionService.cuenta$.subscribe((cuenta: Cuenta) => {
+          this.cuenta = cuenta
+        })
+      } else{
+        this.router.navigateByUrl('/inicio')
       }
   
       this.f = fb.group({

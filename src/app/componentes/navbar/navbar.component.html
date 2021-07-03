@@ -102,7 +102,7 @@
                 </a>
                 <a mat-menu-item routerLink="/contacto" (click)="drawer.close()">
                   <i class="mdi mdi-email"></i>
-                  {{esp ? 'Contacto' : 'Contact'}}
+                  {{esp ? 'Contacto' : 'Contact us'}}
                 </a>
                 <div class="dropdown-divider"></div>
                 <a mat-menu-item routerLink="/logout" (click)="drawer.close()">
@@ -129,7 +129,7 @@
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
-      <mat-toolbar color="primary">
+      <mat-toolbar [color]="prod ? 'primary' : 'black'">
         <mat-toolbar-row fxLayoutAlign="space-between center">
           <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
             *ngIf="deviceXs">
@@ -245,7 +245,7 @@
                     </button>
                     <button mat-menu-item routerLink="/contacto">
                       <i class="mdi mdi-email"></i>
-                      {{esp ? 'Contacto' : 'Contact'}}
+                      {{esp ? 'Contacto' : 'Contact us'}}
                     </button>
                     <div class="dropdown-divider"></div>
                     <button mat-menu-item routerLink="/logout">

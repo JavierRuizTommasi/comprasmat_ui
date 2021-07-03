@@ -4,7 +4,7 @@
         <div class="d-flex justify-content-center ">
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
-                    <h5>{{esp ? 'Cuenta' : 'My Account'}}</h5>
+                    <h5>{{esp ? 'Contacto' : 'Contact us'}}</h5>
                 </div>
                 <div class="card-body">
                     <form [formGroup]="f">
@@ -12,7 +12,7 @@
                             <div class="form-group row">
                                 <label for="usuario" class="col-sm-2 col-form-label">{{esp ? 'Empresa' : 'Brand'}}</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" formControlName="usuario" id="usuario" placeholder="" required="required"/>
+                                    <input type="text" class="form-control" formControlName="usuario" id="usuario" readonly/>
                                     <!-- Error -->
                                     <div *ngIf="f.controls.usuario.errors && f.controls.usuario.dirty" class="alert alert-danger mt-0">
                                         <div *ngIf="f.controls.usuario.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
@@ -23,7 +23,7 @@
                             <div class="form-group row">
                                 <label for="nombre" class="col-sm-2 col-form-label">{{esp ? 'Nombre' : 'Name'}}</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" formControlName="nombre" id="nombre" placeholder="" required="required"/>
+                                    <input type="text" class="form-control" formControlName="nombre" id="nombre" readonly/>
                                     <!-- Error -->
                                     <div *ngIf="f.controls.nombre.errors && f.controls.nombre.dirty" class="alert alert-danger mt-0">
                                         <div *ngIf="f.controls.nombre.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
@@ -32,15 +32,9 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="contacto" class="col-sm-2 col-form-label">{{esp ? 'Contacto' : 'Contact'}}</label>
+                                <label for="email" class="col-sm-2 col-form-label">{{esp ? 'Email desde' : 'Email from'}}</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" formControlName="contacto" id="contacto" placeholder=""/>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="email" class="col-sm-2 col-form-label">Email</label>
-                                <div class="col-sm-10">
-                                    <input type="email" class="form-control" formControlName="email" id="email" placeholder="" required="required"/>
+                                    <input type="email" class="form-control" formControlName="email" id="email" readonly/>
                                     <!-- Error -->
                                     <div *ngIf="f.controls.email.errors && f.controls.email.dirty" class="alert alert-danger mt-0">
                                         <div *ngIf="f.controls.email.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
@@ -49,62 +43,23 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="contacto2" class="col-sm-2 col-form-label">{{esp ? 'Contacto 2' : 'Contact 2'}}</label>
+                                <label for="titulo" class="col-sm-2 col-form-label">{{esp ? 'Titulo' : 'Subject'}}</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" formControlName="contacto2" id="contacto2" placeholder=""/>
+                                    <input type="titulo" class="form-control" formControlName="titulo" id="titulo"/>
+                                    <!-- Error -->
+                                    <div *ngIf="f.controls.titulo.errors && f.controls.titulo.dirty" class="alert alert-danger mt-0">
+                                        <div *ngIf="f.controls.titulo.errors.required">{{esp ? 'Requerido' : 'Required'}}</div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="email2" class="col-sm-2 col-form-label">Email 2</label>
+                                <label for="mensaje" class="col-sm-2 col-form-label">{{esp ? 'Mensaje' : 'Message'}}</label>
                                 <div class="col-sm-10">
-                                    <input type="email" class="form-control" formControlName="email2" id="email2" placeholder=""/>
+                                    <textarea class="form-control" formControlName="mensaje" id="mensaje" rows="10"></textarea>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label for="contacto3" class="col-sm-2 col-form-label">{{esp ? 'Contacto 3' : 'Contact 3'}}</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" formControlName="contacto3" id="contacto3" placeholder=""/>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="email3" class="col-sm-2 col-form-label">Email 3</label>
-                                <div class="col-sm-10">
-                                    <input type="email" class="form-control" formControlName="email3" id="email3" placeholder=""/>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="contacto4" class="col-sm-2 col-form-label">{{esp ? 'Contacto 4' : 'Contact 4'}}</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" formControlName="contacto4" id="contacto4" placeholder=""/>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="email4" class="col-sm-2 col-form-label">Email 4</label>
-                                <div class="col-sm-10">
-                                    <input type="email" class="form-control" formControlName="email4" id="email4" placeholder=""/>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                
-                                <label for="language" class="col-sm-2 col-form-label">{{esp ? 'Idioma' : 'Language'}}</label>
-                                <div class="col-sm-10">
-                                    <!-- <input type="text" class="form-control" formControlName="language" id="language" required="required"/> -->
-                                    <select class="custom-select" formControlName="language" id="language" required="required">
-                                        <option selected>{{esp ? 'Elija...' : 'Choose...'}}</option>
-                                        <option value="es">{{esp ? 'Español' : 'Spanish'}}</option>
-                                        <option value="en">{{esp ? 'Ingles' : 'English'}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!-- <div class="form-group row">
-                                <label for="activo" class="col-sm-2 col-form-label">{{esp ? 'Activo' : 'Active'}}</label>
-                                <div class="ml-2 mt-1">
-                                    <input type="checkbox" class="my_checkbox" formControlName="activo" id="activo" required="required"/>
-                                </div>
-                            </div> -->
-
                             <div class="d-flex justify-content-end">
-                                <button type="button" class="btn btn-primary mr-2" [disabled]="!f.valid" (click)="onSubmit()">{{esp ? 'Aceptar' : 'Save'}}</button>
+                                <button type="button" class="btn btn-primary mr-2" [disabled]="!f.valid" (click)="onSubmit()">{{esp ? 'Enviar' : 'Send'}}</button>
                                 <button type="button" class="btn btn-secondary" (click)="onCancel()">{{esp ? 'Cancelar' : 'Cancel'}}</button>
                             </div>
                         </div>

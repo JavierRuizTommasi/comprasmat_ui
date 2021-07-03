@@ -84,10 +84,9 @@ export class ChangepassComponent implements OnInit {
 
        if (resp.user) {
          this.cuenta = resp.user
-
-        }
-        else {
+        } else {
           this.usuariosService.removeToken()
+          this.router.navigateByUrl('/login')
         }
      })
  }
