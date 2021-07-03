@@ -133,7 +133,7 @@ a + input {
 }
 
 .cellRight {
-    text-align: right;
+    /* text-align: right; */
 }
 
 th.mat-column-position, td.mat-column-position {

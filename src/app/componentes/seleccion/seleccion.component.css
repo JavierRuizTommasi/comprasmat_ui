@@ -17,3 +17,7 @@
     background-color: lemonchiffon;
     padding: .5rem;
 }
+
+th.mat-header-cell {
+    text-align: center;
+}
