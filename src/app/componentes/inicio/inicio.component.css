@@ -35,4 +35,5 @@
   
 .boton {
     word-wrap: normal;
+    display: inline-block;
 }
