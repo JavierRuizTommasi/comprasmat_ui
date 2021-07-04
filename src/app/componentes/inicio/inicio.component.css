@@ -34,6 +34,8 @@
 }
   
 .boton {
-    word-wrap: normal;
+    /* word-wrap: normal;
     display: inline-block;
+    width: 120px; */
+    font-size: 20px;
 }

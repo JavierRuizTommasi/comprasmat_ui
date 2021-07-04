@@ -115,8 +115,12 @@
                                     </div>
                                 </ng-container>
                             </div>
-                            <a class="btn btn-primary mb-3 mr-3 ml-auto boton" routerLink="/licitaciones/:activas"
-                                routerLinkActive="active">{{esp ? 'Cotizar' : 'Quote'}}</a>
+                            <button class="m-3 ml-auto boton" mat-raised-button color="primary" routerLink="/licitaciones/:activas"
+                                routerLinkActive="active">
+                                {{esp ? 'Cotizar' : 'Quote'}}&nbsp;<mat-icon>arrow_forward_ios</mat-icon>
+                            </button>
+                            <!-- <a class="btn btn-primary mb-3 mr-3 ml-auto boton" routerLink="/licitaciones/:activas"
+                                routerLinkActive="active">{{esp ? 'Cotizar' : 'Quote'}}</a> -->
                         </div>
                     </div>
                     <ng-container *ngIf="cuenta">
@@ -140,8 +144,12 @@
                                     </div>
                                     <!-- <img class="card-img-top embed-responsive-item img-fluid" src="../../assets/img/cards/productos.jpg" alt="..."> -->
                                     <img class="card-img-top embed-responsive-item img-fluid" src="../../assets/img/cards/insumos.jpg" alt="...">
-                                    <a class="btn btn-primary m-3 ml-auto stretched-link boton" routerLink="/seleccion"
-                                        routerLinkActive="active">{{esp ? 'Seleccionar' : 'Select'}}</a>
+                                    <button class="m-3 ml-auto stretched-link boton" mat-raised-button color="primary" routerLink="/seleccion"
+                                        routerLinkActive="active">
+                                        {{esp ? 'Seleccionar' : 'Select'}}&nbsp;<mat-icon>arrow_forward_ios</mat-icon>
+                                    </button>
+                                    <!-- <a class="btn btn-primary m-3 ml-auto stretched-link boton" routerLink="/seleccion"
+                                        routerLinkActive="active">{{esp ? 'Seleccionar' : 'Select'}}</a> -->
                                 </div>
                             </div>
                         </ng-container>
@@ -163,8 +171,11 @@
                             <!-- <img class="card-img-top embed-responsive-item img-fluid" src="../../assets/img/cards/descuentos.jpg" alt="..."> -->
                             <img class="card-img-top embed-responsive-item img-fluid" 
                                 src="../../assets/img/cards/cotizacion.jpg" alt="...">
-                            <a class="btn btn-primary m-3 ml-auto stretched-link" routerLink="/ofertas"
-                                routerLinkActive="active">{{esp ? 'Ver mas' : 'See more'}}</a>
+                            <button class="m-3 ml-auto stretched-link boton" mat-raised-button color="primary" routerLink="/ofertas"
+                                routerLinkActive="active">{{esp ? 'Ver m&aacute;s' : 'See more'}}&nbsp;<mat-icon>arrow_forward_ios</mat-icon>
+                            </button>
+                            <!-- <a class="btn btn-primary m-3 ml-auto stretched-link boton" routerLink="/ofertas"
+                                routerLinkActive="active">{{esp ? 'Ver mas' : 'See more'}}</a> -->
                         </div>
                     </div>
                 </div>
