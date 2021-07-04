@@ -101,3 +101,25 @@
     padding: 0 0 0 5px;
     font-size: large;
   }
+
+  .mat-nav-list .mat-list-item:hover {
+    border-bottom: 2px solid black;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  a:hover {
+    border-bottom: 2px solid black;
+  }
+
+  ::ng-deep .mat-menu-content:not(:empty) {
+    width: 200px;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  ::ng-deep .mat-menu-panel {
+    margin-left: 10px;
+  }

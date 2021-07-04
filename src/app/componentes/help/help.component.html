@@ -58,7 +58,7 @@
             <ng-container *ngIf="cuenta">
                 <ng-container *ngIf="cuenta.perfil==0">
                     <ng-container matColumnDef="actions">
-                        <th mat-header-cell *matHeaderCellDef>{{esp ? 'Acciones' : 'Acctions'}}</th>
+                        <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let row">
                             <button mat-icon-button color="primary" (click)="openModal(editHelpModal, row, 'M')">
                                 <mat-icon>edit</mat-icon>
