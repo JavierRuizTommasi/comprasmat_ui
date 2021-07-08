@@ -1,125 +1,123 @@
 .jumbotron {
-    background-color: white;
-    color: black;
-    padding-top: 0px;
-    padding-bottom:0px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding-left: 5px;
-  }
-  
-  .sidenav-container {
-    width: 100%;
-    margin-top: 15px;
-  }
-  
+  width: 100%;
+  background-color: white;
+  color: black;
+  padding: 0px;
+  margin: 0px;
+}
+
+.sidenav-container {
+  width: 100%;
+  /* margin-top: 15px; */
+}
+
+.sidenav {
+  width: 200px;
+  box-shadow: 3px 0 6px black;
+}
+
+
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.logo {
+  padding: 0px 0px;
+  font-size: 25px;
+}
+
+/* .hidden {
+  display: none;
+} */
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.mat-toolbar a {
+  display: inline-block;
+  margin: 0 10px;
+  color: white;
+  text-decoration: none;
+}
+
+.mat-toolbar-row {
+  padding: 0px;
+}
+
+.mat-button {
+  font-size: 20px;
+  vertical-align: middle;
+  line-height: initial;
+}
+
+.iconright {
+  font-size: 20px;
+  vertical-align: middle;
+  min-width: 36px;
+  padding: 0px;
+}
+
+button:focus { 
+  outline: 0px; 
+}
+
+.material-icons.yellow { 
+  color: yellow; 
+}
+
+.mdi.yellow { 
+  color: yellow; 
+  /* vertical-align: top; */
+  position: relative;
+  top: -6px; /*Change this to adjust the icon*/
+}
+
+.mdi.white { 
+  position: relative;
+  top: -2px; /*Change this to adjust the icon*/
+}
+
+/* @media (min-width: 600px) {
   .sidenav {
-    width: 200px;
-    box-shadow: 3px 0 6px blue;
-  }
-  
-  
-  .sidenav .mat-toolbar {
-    background: inherit;
-  }
-  
-  .mat-toolbar.mat-primary {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-  }
-  
-  .logo {
-    padding: 0px 0px;
-    font-size: 25px;
-  }
-  
-  /* .hidden {
     display: none;
-  } */
-  
-  .spacer {
-    flex: 1 1 auto;
-  }
-  
-  .mat-toolbar a {
-    display: inline-block;
-    margin: 0 10px;
-    color: white;
-    text-decoration: none;
-  }
-  
-  .mat-toolbar-row {
-    padding: 0px;
-  }
-  
-  .mat-button {
-    font-size: 20px;
-    vertical-align: middle;
-    line-height: initial;
-  }
-  
-  .iconright {
-    font-size: 20px;
-    vertical-align: middle;
-    min-width: 36px;
-    padding: 0px;
-  }
-  
-  button:focus { 
-    outline: 0px; 
-  }
-  
-  .material-icons.yellow { 
-    color: yellow; 
   }
 
-  .mdi.yellow { 
-    color: yellow; 
-    /* vertical-align: top; */
-    position: relative;
-    top: -6px; /*Change this to adjust the icon*/
-  }
+  /* .mat-icon {
+    display: none;
+  } 
+} */
 
-  .mdi.white { 
-    position: relative;
-    top: -2px; /*Change this to adjust the icon*/
-  }
+.inicio {
+  line-height: initial;
+  padding: 0 0 0 5px;
+  font-size: large;
+}
 
-  /* @media (min-width: 600px) {
-    .sidenav {
-      display: none;
-    }
-  
-    /* .mat-icon {
-      display: none;
-    } 
-  } */
+.mat-nav-list .mat-list-item:hover {
+  border-bottom: 2px solid black;
+}
 
-  .inicio {
-    line-height: initial;
-    padding: 0 0 0 5px;
-    font-size: large;
-  }
+a {
+  text-decoration: none;
+}
 
-  .mat-nav-list .mat-list-item:hover {
-    border-bottom: 2px solid black;
-  }
+a:hover {
+  border-bottom: 2px solid black;
+}
 
-  a {
-    text-decoration: none;
-  }
+::ng-deep .mat-menu-content:not(:empty) {
+  width: 200px;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
 
-  a:hover {
-    border-bottom: 2px solid black;
-  }
-
-  ::ng-deep .mat-menu-content:not(:empty) {
-    width: 200px;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
-  ::ng-deep .mat-menu-panel {
-    margin-left: 10px;
-  }
+::ng-deep .mat-menu-panel {
+  margin-left: 10px;
+}
