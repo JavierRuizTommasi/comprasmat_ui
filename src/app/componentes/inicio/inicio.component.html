@@ -1,156 +1,147 @@
-<div class="jumbotron">
-    <div class="welcome">
-        <div class="card">
-            <div class="card-body">
-                <h3 class="card-title">{{esp ? 'Bienvenidos al Portal de Proveedores de Proagro' :
-                    'Welcome to the Proagro&prime;s Supplier Portal'}}</h3>
-                <p class="card-text">{{esp ? 'Usted ha ingresado al Portal de Proveedores del laboratorio
-                    Proagro. Este ser&aacute; el medio a trav&eacute;s del cual usted podr&aacute; enterarse de
-                    nuestras necesidades de insumos actuales, postularse a distintos rubros de insumos que usted
-                    puede proveer y realizar su oferta en respuesta a las Solicitudes de Cotizaci&oacute;n que
-                    hubieran vigentes. Le sugerimos que complete bien sus datos de registraci&oacute;n y
-                    actualice el listado de insumos que usted puede proveer para recibir nuestras notificaciones.' : 
-                    'You are entered to the Proagro&prime;s Suppier Portal. This is the way where you will be notice about 
-                    our actual supplies needs, select between the different supplie categories that you can provide 
-                    and make your offer to the current Request for quotations. We suggest you to fulfill your 
-                    Supplier Profile and select your supllies list in order to recive our notifications.'}}</p>
-            </div>
+<div class="hero">
+    <div class="container welcome">
+        <div class="container_textos">
+            <h1 class="titulo">{{esp ? 'Bienvenidos al Portal de Proveedores de Proagro' :
+                'Welcome to the Proagro&prime;s Supplier Portal'}}</h1>
+            <p class="texto">{{esp ? 'Usted ha ingresado al Portal de Proveedores del laboratorio
+                Proagro. Este ser&aacute; el medio a trav&eacute;s del cual usted podr&aacute; enterarse de
+                nuestras necesidades de insumos actuales, postularse a distintos rubros de insumos que usted
+                puede proveer y realizar su oferta en respuesta a las Solicitudes de Cotizaci&oacute;n que
+                hubieran vigentes. Le sugerimos que complete bien sus datos de registraci&oacute;n y
+                actualice el listado de insumos que usted puede proveer para recibir nuestras notificaciones.' : 
+                'You are entered to the Proagro&prime;s Suppier Portal. This is the way where you will be notice about 
+                our actual supplies needs, select between the different supplie categories that you can provide 
+                and make your offer to the current Request for quotations. We suggest you to fulfill your 
+                Supplier Profile and select your supllies list in order to recive our notifications.'}}</p>
         </div>
+        <img src="../../assets/img/cards/evaluation.svg" alt="..." class="mockup">
     </div>
-    <div class="activas">
-        <div class="card">
-            <!-- <div class="card mb-4 mr-4" style="width:800px"> -->
-            <!-- <img class="card-img-top embed-responsive-item img-fluid" src="../../assets/img/cards/licitaciones.jpg" alt="..."> -->
-            <!-- <h5 class="card-header bg-primary text-white">{{esp ? 'Licitaciones' : 'Tenders'}}</h5> -->
-            <div class="card-body overflow-auto">
-                <h3 class="card-title">{{esp ? 'Solicitudes Activas' : 'Active Requests'}}</h3>
-                <!-- <div class="flex-container"> -->
-                <p class="card-text mb-3">{{esp ? 'Consulte la lista de Solicitudes de Cotizaci&oacute;n Activas y elija 
-                    en la que quiera hacer su cotizaci&oacute;n.' : 'Check the list of Actives Requests for Quotationn and 
-                    choose the one you want to make your quote.'}}
-                </p>
-                <!-- <a class="btn btn-primary ml-auto" routerLink="/licitaciones/:activas" routerLinkActive="active">{{esp ? 'Cotizar' : 'Quote'}}</a> -->
-                <!-- </div> -->
-                <!-- <p class="card-text mt-2">
-                    Usted ha ingresado al portal de proveedores del laboratorio Proagro. Este será el medio a través del cual usted podrá enterarse de nuestras necesidades de insumos actuales, postularse a distintos rubros de insumos que usted puede proveer y realizar su oferta en respuesta a las Solicitudes de Cotización  que hubieran vigentes. Le sugerimos que complete bien sus datos de registración y actualice el listado de insumos que usted puede proveer.    
-                </p> -->
+    <div class="container activas">
+        <div class="activas_grid">
+            <div class="mat-elevation-z8 table-responsive">
+                <table mat-table [dataSource]='dataSource' matSort aria-label="Elements">
+                    <ng-container matColumnDef="licitacion">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Solicitud' :
+                            'Request'}}</th>
+                        <td mat-cell *matCellDef="let row">{{row.licitacion}}</td>
+                    </ng-container>
 
-                <div class="mat-elevation-z8 table-responsive">
-                    <table mat-table [dataSource]='dataSource' matSort aria-label="Elements">
-                        <ng-container matColumnDef="licitacion">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Solicitud' :
-                                'Request'}}</th>
-                            <td mat-cell *matCellDef="let row">{{row.licitacion}}</td>
-                        </ng-container>
+                    <ng-container matColumnDef="descrip">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Insumo' :
+                            'Supplie'}}</th>
+                        <td mat-cell *matCellDef="let row">{{row.descrip}}</td>
+                    </ng-container>
 
-                        <ng-container matColumnDef="descrip">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Insumo' :
-                                'Supplie'}}</th>
-                            <td mat-cell *matCellDef="let row">{{row.descrip}}</td>
-                        </ng-container>
+                    <ng-container matColumnDef="cantidad">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Cantidad' :
+                            'Quantity'}}</th>
+                        <td mat-cell *matCellDef="let row">{{row.cantidad}}</td>
+                    </ng-container>
 
-                        <ng-container matColumnDef="cantidad">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Cantidad' :
-                                'Quantity'}}</th>
-                            <td mat-cell *matCellDef="let row">{{row.cantidad}}</td>
-                        </ng-container>
+                    <ng-container matColumnDef="unidad">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Unidad' :
+                            'Unity'}}</th>
+                        <td mat-cell *matCellDef="let row">{{row.unidad}}</td>
+                    </ng-container>
 
-                        <ng-container matColumnDef="unidad">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Unidad' :
-                                'Unity'}}</th>
-                            <td mat-cell *matCellDef="let row">{{row.unidad}}</td>
-                        </ng-container>
+                    <ng-container matColumnDef="fecha">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Inicio' :
+                            'Start'}}</th>
+                        <!-- <td mat-cell *matCellDef="let row">{{row.fecha ? row.fecha.substring(0,10) :
+                            ''}}</td> -->
+                        <td mat-cell *matCellDef="let row">{{row.fecha ? showFecha(row.fecha) :
+                            ''}}</td>
+                    </ng-container>
 
-                        <ng-container matColumnDef="fecha">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Inicio' :
-                                'Start'}}</th>
-                            <!-- <td mat-cell *matCellDef="let row">{{row.fecha ? row.fecha.substring(0,10) :
-                                ''}}</td> -->
-                            <td mat-cell *matCellDef="let row">{{row.fecha ? showFecha(row.fecha) :
-                                ''}}</td>
-                        </ng-container>
+                    <ng-container matColumnDef="finaliza">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Fin' :
+                            'End'}}</th>
+                        <td mat-cell *matCellDef="let row">{{row.finaliza ?
+                            showFecha(row.finaliza) : ''}}</td>
+                    </ng-container>
 
-                        <ng-container matColumnDef="finaliza">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Fin' :
-                                'End'}}</th>
-                            <td mat-cell *matCellDef="let row">{{row.finaliza ?
-                                showFecha(row.finaliza) : ''}}</td>
-                        </ng-container>
+                    <ng-container matColumnDef="historico">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Ultimo Precio'
+                            : 'Last Price'}}</th>
+                        <td mat-cell *matCellDef="let row">U$S {{row.historico}}</td>
+                    </ng-container>
 
-                        <ng-container matColumnDef="historico">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Ultimo Precio'
-                                : 'Last Price'}}</th>
-                            <td mat-cell *matCellDef="let row">U$S {{row.historico}}</td>
-                        </ng-container>
+                    <!-- <ng-container matColumnDef="estado">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Estado' :
+                            'State'}}</th>
+                        <td mat-cell *matCellDef="let row">{{esp ?
+                            estadosLicitaciones[row.estado].estadoesp :
+                            estadosLicitaciones[row.estado].estadoeng}}</td>
+                    </ng-container> -->
 
-                        <!-- <ng-container matColumnDef="estado">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{esp ? 'Estado' :
-                                'State'}}</th>
-                            <td mat-cell *matCellDef="let row">{{esp ?
-                                estadosLicitaciones[row.estado].estadoesp :
-                                estadosLicitaciones[row.estado].estadoeng}}</td>
-                        </ng-container> -->
-
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                    </table>
-                </div>
-
-                <mat-paginator class="mat-elevation-z8" #paginator [length]="dataSource.data?.length"
-                    [pageIndex]="0" [pageSize]="5" [pageSizeOptions]="[5, 25, 50, 100, 250]">
-                </mat-paginator>
-
-                <ng-container *ngIf="notDone">
-                    <div class="d-flex justify-content-center">
-                        <div class="spinner-border m-5" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
             </div>
-            <button class="m-3 ml-auto boton" mat-raised-button color="primary" routerLink="/licitaciones/:activas"
-                routerLinkActive="active">
-                {{esp ? 'Cotizar' : 'Quote'}}&nbsp;<mat-icon>arrow_forward_ios</mat-icon>
-            </button>
-            <!-- <a class="btn btn-primary mb-3 mr-3 ml-auto boton" routerLink="/licitaciones/:activas"
-                routerLinkActive="active">{{esp ? 'Cotizar' : 'Quote'}}</a> -->
-        </div>
-    </div>
-    <div class="seleccion">
-        <ng-container *ngIf="cuenta">
-            <ng-container *ngIf="cuenta.perfil!=2">
-                <div class="card">
-                    <!--<div class="card" style="width:500px"> -->
-                    <div class="card-body">
-                        <h3 class="card-title">{{esp ? 'Seleccionar Insumos que puedo proveer' : 'Select
-                            Supplies than I can provide'}}</h3>
-                         <p class="card-text">{{esp ? 'Seleccione los Insumos sobre los que desee recibir
-                            notificaciones de nuevas Cotizaciones.' : 'Select the Supplies on which you want to receive
-                            new Requests for Quotation.'}}
-                        </p>
+
+            <mat-paginator class="mat-elevation-z8" #paginator [length]="dataSource.data?.length"
+                [pageIndex]="0" [pageSize]="5" [pageSizeOptions]="[5, 25, 50, 100, 250]">
+            </mat-paginator>
+
+            <ng-container *ngIf="notDone">
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border m-5" role="status">
+                        <span class="sr-only">Loading...</span>
                     </div>
-                    <img class="card-img-top embed-responsive-item img-fluid" src="../../assets/img/cards/insumos.jpg" alt="...">
-                    <button class="m-3 ml-auto stretched-link boton" mat-raised-button color="primary" routerLink="/seleccion"
-                        routerLinkActive="active">
-                        {{esp ? 'Seleccionar' : 'Select'}}&nbsp;<mat-icon>arrow_forward_ios</mat-icon>
-                    </button>
                 </div>
             </ng-container>
-        </ng-container>
-    </div>
-    <div class="cotiza">
-        <div class="card">
-            <div class="card-body">
-                <h3 class="card-title">{{esp ? 'Mis Cotizaciones' : 'My Quoted'}}</h3>
-                <p class="card-text">{{esp ? 'Verifique el estado de las Cotizaciones realizas y controle su
-                    ranking.' : 'Check the status of your Quotations and control your ranking.'}}
-                </p>
+        </div>
+        <div class="container_textos">
+            <h3 class="titulo">{{esp ? 'Solicitudes Activas' : 'Active Requests'}}</h3>
+            <p class="texto">{{esp ? 'Consulte la lista de Solicitudes de Cotizaci&oacute;n Activas y elija 
+                en la que quiera hacer su cotizaci&oacute;n.' : 'Check the list of Actives Requests for Quotationn and 
+                choose the one you want to make your quote.'}}
+            </p>
+            <div class="boton_container">
+                <button class="boton" mat-raised-button color="primary" routerLink="/licitaciones/:activas"
+                    routerLinkActive="active">
+                    {{esp ? 'Cotizar' : 'Quote'}}&nbsp;<mat-icon>arrow_forward_ios</mat-icon>
+                </button>
             </div>
-            <img class="card-img-top embed-responsive-item img-fluid" 
-                src="../../assets/img/cards/cotizacion.jpg" alt="...">
-            <button class="m-3 ml-auto stretched-link boton" mat-raised-button color="primary" routerLink="/ofertas"
-                routerLinkActive="active">{{esp ? 'Ver m&aacute;s' : 'See more'}}&nbsp;<mat-icon>arrow_forward_ios</mat-icon>
-            </button>
+        </div>
+    </div>
+    <ng-container *ngIf="cuenta">
+        <ng-container *ngIf="cuenta.perfil!=2">
+            <div class="container seleccion">
+                <div class="container_textos">
+                    <h3 class="titulo">{{esp ? 'Seleccionar Insumos que puedo proveer' : 'Select
+                        Supplies than I can provide'}}
+                    </h3>
+                    <p class="texto">{{esp ? 'Seleccione los Insumos sobre los que desee recibir
+                        notificaciones de nuevas Cotizaciones.' : 'Select the Supplies on which you want to receive
+                        new Requests for Quotation.'}}
+                    </p>
+                    <div class="boton_container">
+                        <button class="boton" mat-raised-button color="primary" routerLink="/seleccion"
+                            routerLinkActive="active">
+                            {{esp ? 'Seleccionar' : 'Select'}}&nbsp;<mat-icon>arrow_forward_ios</mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <!-- <img class="card-img-top embed-responsive-item img-fluid" src="../../assets/img/cards/insumos.jpg" alt="..."> -->
+                <!-- <img class="imagen" src="../../assets/img/cards/insumos.jpg" alt="..."> -->
+                <img class="imagen" src="../../assets/img/cards/selection.svg" alt="...">
+            </div>
+        </ng-container>
+    </ng-container>
+    <div class="container cotiza">
+        <!-- <img class="imagen" src="../../assets/img/cards/cotizacion.jpg" alt="..."> -->
+        <img class="imagen" src="../../assets/img/cards/offers.svg" alt="...">
+        <div class="container_textos">
+            <h3 class="titulo">{{esp ? 'Mis Cotizaciones' : 'My Quoted'}}</h3>
+            <p class="texto">{{esp ? 'Verifique el estado de las Cotizaciones realizas y controle su
+                ranking.' : 'Check the status of your Quotations and control your ranking.'}}
+            </p>
+            <div class="boton_container">
+                <button class="boton" mat-raised-button color="primary" routerLink="/ofertas"
+                    routerLinkActive="active">{{esp ? 'Ver m&aacute;s' : 'See more'}}&nbsp;<mat-icon>arrow_forward_ios</mat-icon>
+                </button>
+            </div>
         </div>
     </div>
 </div>

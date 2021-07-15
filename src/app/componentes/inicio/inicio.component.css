@@ -1,35 +1,89 @@
-.jumbotron {
+.hero {
     background-color: white;
     color: black;
     width: 100%;
-    margin: auto;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+
+    /* margin: auto; */
     /* margin: 1rem 10px; */
-    padding: 10px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-start;
-    align-content: flex-start;
+    /* padding: 10px; */
+    /* display: flex; */
+    /* gap: 10px; */
+    /* flex-wrap: wrap; */
+    /* justify-content: space-between; */
+    /* align-items: flex-start; */
+    /* align-content: flex-start; */
+}
+
+.container {
+    /* width: 90%; */
+    max-width: 1600px;
+    margin: 0 auto;
+    overflow: hidden;
+    padding-bottom: 40px;
+    height: auto;
 }
 
 .welcome {
+    height: calc(100vh - 70px);
+    display: flex;
     width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    /* height: inherit; */
+    /* padding: 0; */
+}
+
+.container_textos {
+    align-items: center;
+    padding: 0;
+    margin: 20px 20px;
+}
+
+.titulo {
     text-align: center;
 }
 
-.activas {
-    max-width: 60%;
+.texto {
+    text-align: justify;
 }
 
-.seleccion {
+.mockup {
+    height: calc(100vh - 70px);
+    width: 50%;
+    /* object-fit: cover; */
+}
+
+.activas, .seleccion, .cotiza {
+    /* max-width: 60%; */
+    height: inherit;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.activas_grid {
+    overflow: auto;
+    width: 80%;
+}
+
+.imagen {
+    width: 50%;
+    height: 50%;
+    object-fit: cover;
+}
+
+/* .seleccion {
     max-width: 39%;
 }
 
 .cotiza {
     width: 538px;
     max-width: 38%;
-}
+} */
 
 .card {
     padding: 0 0;
@@ -49,6 +103,11 @@
     text-align: center;
 }
   
+.boton_container {
+    display: flex;
+    justify-content: space-around;
+}
+
 .boton {
     /* word-wrap: normal;
     display: inline-block;
@@ -56,25 +115,53 @@
     font-size: 20px;
 }
 
-@media (max-width: 1036px) {
+@media screen and (max-width: 1180px) {
+    .welcome {
+        flex-direction: column-reverse;
+        justify-content: flex-end;
+    }
+
+    .mockup {
+        width: 80%;
+        height: 400px;
+        margin: 40px;
+    }
+
     .activas {
         width: 100%;
-        max-width: none;
+        flex-direction: column; 
     }
 
     .seleccion {
-        width: 50%;
-        max-width: none;
+        width: 100%;
+        flex-direction: column-reverse;
+        justify-content: flex-end;
+        /* max-width: none; */
     }
 
     .cotiza {
-        width: 48%;
-        max-width: none;
+        width: 100%;
+        flex-direction: column; 
+        /* max-width: none; */
     }
    
+    .imagen {
+        flex-direction: column-reverse;
+        justify-content: flex-end;
+        width: 100%;
+        height: 50%;
+    }
 }
 
-@media (max-width: 700px) {
+@media screen and (max-width: 900px) {
+    .container {
+        padding: 10px 10px;
+        /* margin: 20px; */
+    }
+
+}
+
+@media screen and (max-width: 700px) {
     .seleccion {
         width: 100%;
         max-width: none;
