@@ -1,8 +1,8 @@
 <div class="jumbotron">
     <ng-container *ngIf="cuenta">
         <div class="flex-container">
-            <h3 class="mt-2" *ngIf="cuenta.perfil < 4">{{esp ? 'Cotizaciones' : 'Quoted'}}</h3>
-            <h3 class="mt-2" *ngIf="cuenta.perfil >= 4">{{esp ? 'Mis Cotizaciones' : 'My Quoted'}}</h3>
+            <h3 class="mt-2" *ngIf="cuenta.perfil < 4">{{esp ? 'Cotizaciones' : 'Quotations'}}</h3>
+            <h3 class="mt-2" *ngIf="cuenta.perfil >= 4">{{esp ? 'Mis Cotizaciones' : 'My Quotations'}}</h3>
             <a class="btn btn-link mt-2" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                 {{esp ? 'Ver m&aacute;s' : 'See more'}}
             </a>

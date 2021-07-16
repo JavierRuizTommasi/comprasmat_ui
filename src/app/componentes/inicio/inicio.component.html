@@ -9,10 +9,11 @@
                     nuestras necesidades de insumos actuales, postularse a distintos rubros de insumos que usted
                     puede proveer y realizar su oferta en respuesta a las Solicitudes de Cotizaci&oacute;n que
                     hubieran vigentes. Le sugerimos que complete bien sus datos de registraci&oacute;n y
-                    actualice el listado de insumos que usted puede proveer para recibir nuestras notificaciones.' : 
-                    'You are entered to the Proagro&prime;s Suppier Portal. This is the way where you will be notice about 
-                    our actual supplies needs, select between the different supplie categories that you can provide 
-                    and make your offer to the current Request for quotations. We suggest you to fulfill your 
+                    actualice el listado de insumos que usted puede proveer para recibir nuestras notificaciones.' :
+                    'You are entered to the Proagro&prime;s Suppier Portal. This is the way where you will be notice
+                    about
+                    our actual supplies needs, select between the different supplie categories that you can provide
+                    and make your offer to the current Request for quotations. We suggest you to fulfill your
                     Supplier Profile and select your supllies list in order to recive our notifications.'}}</p>
             </div>
         </div>
@@ -25,9 +26,10 @@
             <div class="card-body overflow-auto">
                 <h3 class="card-title">{{esp ? 'Solicitudes Activas' : 'Active Requests'}}</h3>
                 <!-- <div class="flex-container"> -->
-                <p class="card-text mb-3">{{esp ? 'Consulte la lista de Solicitudes de Cotizaci&oacute;n Activas y elija 
-                    en la que quiera hacer su cotizaci&oacute;n.' : 'Check the list of Actives Requests for Quotationn and 
-                    choose the one you want to make your quote.'}}
+                <p class="card-text mb-3">{{esp ? 'Consulte la lista de Solicitudes de Cotizaci&oacute;n Activas y elija
+                    en la que quiera hacer su cotizaci&oacute;n. Cargue su Cotizaci&oacute;n y luego verifique su estado
+                    y ranking en Cotizaciones' : 'Check the list of Actives Requests for Quotationn and choose the one you 
+                    want to make your quote. Fill your quote and then verify the state and ranking in My Quotations'}}
                 </p>
                 <!-- <a class="btn btn-primary ml-auto" routerLink="/licitaciones/:activas" routerLinkActive="active">{{esp ? 'Cotizar' : 'Quote'}}</a> -->
                 <!-- </div> -->
@@ -96,8 +98,8 @@
                     </table>
                 </div>
 
-                <mat-paginator class="mat-elevation-z8" #paginator [length]="dataSource.data?.length"
-                    [pageIndex]="0" [pageSize]="5" [pageSizeOptions]="[5, 25, 50, 100, 250]">
+                <mat-paginator class="mat-elevation-z8" #paginator [length]="dataSource.data?.length" [pageIndex]="0"
+                    [pageSize]="5" [pageSizeOptions]="[5, 25, 50, 100, 250]">
                 </mat-paginator>
 
                 <ng-container *ngIf="notDone">
@@ -124,14 +126,18 @@
                     <div class="card-body">
                         <h3 class="card-title">{{esp ? 'Seleccionar Insumos que puedo proveer' : 'Select
                             Supplies than I can provide'}}</h3>
-                         <p class="card-text">{{esp ? 'Seleccione los Insumos sobre los que desee recibir
-                            notificaciones de nuevas Cotizaciones.' : 'Select the Supplies on which you want to receive
-                            new Requests for Quotation.'}}
+                        <p class="card-text">{{esp ? 'Seleccione los Insumos sobre los que desee recibir
+                            notificaciones de nuevas Solicitudes de Cotizaci&oacute;n. El sistema le enviar&aacute; un mail cada 
+                            vez que se genere una nueva Solicit&uacute;d de estos insumos as&iacute; como tambi&eacute;n cuando 
+                            est&eacute; por finalizar la misma.' : 'Select the Supplies on which you want to receive
+                            new Requests for Quotation. The system will send you an email on every new Request related the supplies 
+                            you select as well as when the request will finalize.'}}
                         </p>
                     </div>
-                    <img class="card-img-top embed-responsive-item img-fluid" src="../../assets/img/cards/insumos.jpg" alt="...">
-                    <button class="m-3 ml-auto stretched-link boton" mat-raised-button color="primary" routerLink="/seleccion"
-                        routerLinkActive="active">
+                    <img class="card-img-top embed-responsive-item img-fluid" src="../../assets/img/cards/insumos.jpg"
+                        alt="...">
+                    <button class="m-3 ml-auto stretched-link boton" mat-raised-button color="primary"
+                        routerLink="/seleccion" routerLinkActive="active">
                         {{esp ? 'Seleccionar' : 'Select'}}&nbsp;<mat-icon>arrow_forward_ios</mat-icon>
                     </button>
                 </div>
@@ -141,15 +147,18 @@
     <div class="cotiza">
         <div class="card">
             <div class="card-body">
-                <h3 class="card-title">{{esp ? 'Mis Cotizaciones' : 'My Quoted'}}</h3>
-                <p class="card-text">{{esp ? 'Verifique el estado de las Cotizaciones realizas y controle su
-                    ranking.' : 'Check the status of your Quotations and control your ranking.'}}
+                <h3 class="card-title">{{esp ? 'Mis Cotizaciones' : 'My Quotations'}}</h3>
+                <p class="card-text">{{esp ? 'Aqu&iacute; encontrar&aacute; sus Cotizaciones realizas, podr&aacute; verificar
+                    su estado y el ranking. Tambi&eacute;n podr&aacute; modificarlas para mejorar la calificaci&oacute;n.' : 'Here 
+                    you will find your Quotations already made, You can verify their status and ranking. You can also modify them 
+                    and increase ther scoring.'}}
                 </p>
             </div>
-            <img class="card-img-top embed-responsive-item img-fluid" 
-                src="../../assets/img/cards/cotizacion.jpg" alt="...">
+            <img class="card-img-top embed-responsive-item img-fluid" src="../../assets/img/cards/cotizacion.jpg"
+                alt="...">
             <button class="m-3 ml-auto stretched-link boton" mat-raised-button color="primary" routerLink="/ofertas"
-                routerLinkActive="active">{{esp ? 'Ver m&aacute;s' : 'See more'}}&nbsp;<mat-icon>arrow_forward_ios</mat-icon>
+                routerLinkActive="active">{{esp ? 'Ver m&aacute;s' : 'See more'}}&nbsp;<mat-icon>arrow_forward_ios
+                </mat-icon>
             </button>
         </div>
     </div>

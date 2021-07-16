@@ -18,7 +18,7 @@
               <a mat-menu-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Solicitudes Cotizadas' : 'Quotated Requests'}}</a>
             </ng-container>
             <ng-container *ngIf="cuenta.perfil>=4">
-              <a mat-menu-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Mis Solicitudes Cotizadas' : 'My Quoted Requests'}}</a>
+              <a mat-menu-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Mis Solicitudes Cotizadas' : 'My Quotations Requests'}}</a>
             </ng-container>
           </mat-menu> -->
     
@@ -28,13 +28,13 @@
               <a mat-menu-item routerLink="/licitaciones/:activas" (click)="drawer.close()">{{esp ? 'Solicitudes Activas' : 'Active Requests'}}</a>
               <a mat-menu-item routerLink="/licitaciones" (click)="drawer.close()">{{esp ? 'Solicitudes' : 'Requests'}}</a>
             </mat-menu>
-            <a mat-list-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Cotizaciones' : 'Quoted'}}</a>
+            <a mat-list-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Cotizaciones' : 'Quotations'}}</a>
           </ng-container>
 
           <ng-container *ngIf="cuenta.perfil>=4 || cuenta.perfil==2">
             <a mat-list-item routerLink="/licitaciones/:activas" (click)="drawer.close()">{{esp ? 'Solicitudes Activas' : 'Active Requests'}}</a>
-            <a *ngIf="cuenta.perfil==2" mat-list-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Cotizaciones' : 'Quoted'}}</a>
-            <a *ngIf="cuenta.perfil!=2" mat-list-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Mis Cotizaciones' : 'My Quoted'}}</a>
+            <a *ngIf="cuenta.perfil==2" mat-list-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Cotizaciones' : 'Quotations'}}</a>
+            <a *ngIf="cuenta.perfil!=2" mat-list-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Mis Cotizaciones' : 'My Quotations'}}</a>
           </ng-container>
           
           <!-- <a mat-list-item [matMenuTriggerFor]="menuMuestras">{{esp ? 'Muestras' : 'Samples'}}</a>
@@ -152,10 +152,10 @@
                 <button mat-menu-item routerLink="/licitaciones/:activas">{{esp ? 'Solicitudes Activas' : 'Active Requests'}}</button>
                 <ng-container *ngIf="cuenta.perfil<3">
                   <button mat-menu-item *ngIf="cuenta.perfil==0" routerLink="/licitaciones">{{esp ? 'Solicitudes' : 'Requests'}}</button>
-                  <button mat-menu-item routerLink="/ofertas">{{esp ? 'Cotizaciones' : 'Quoted'}}</button>
+                  <button mat-menu-item routerLink="/ofertas">{{esp ? 'Cotizaciones' : 'Quotations'}}</button>
                 </ng-container>
                 <!-- <ng-container *ngIf="cuenta.perfil>=4">
-                  <button mat-menu-item routerLink="/ofertas">{{esp ? 'Mis Cotizadas' : 'My Quoted'}}</button>
+                  <button mat-menu-item routerLink="/ofertas">{{esp ? 'Mis Cotizadas' : 'My Quotations'}}</button>
                 </ng-container> -->
                 <!-- <ng-container *ngIf="cuenta.perfil==0">
                   <button mat-menu-item routerLink="/test">{{esp ? 'Test' : 'Test'}}</button>
@@ -168,13 +168,13 @@
                   <button mat-menu-item routerLink="/licitaciones/:activas">{{esp ? 'Solicitudes Activas' : 'Active Requests'}}</button>
                   <button mat-menu-item routerLink="/licitaciones">{{esp ? 'Solicitudes' : 'Requests'}}</button>
                 </mat-menu>
-                <button mat-button routerLink="/ofertas">{{esp ? 'Cotizaciones' : 'Quoted'}}</button>
+                <button mat-button routerLink="/ofertas">{{esp ? 'Cotizaciones' : 'Quotations'}}</button>
               </ng-container>
 
               <ng-container *ngIf="cuenta.perfil>=4 || cuenta.perfil==2">
                 <button mat-button routerLink="/licitaciones/:activas">{{esp ? 'Solicitudes Activas' : 'Active Requests'}}</button>
-                <button *ngIf="cuenta.perfil==2" mat-button routerLink="/ofertas">{{esp ? 'Cotizaciones' : 'Quoted'}}</button>
-                <button *ngIf="cuenta.perfil!=2" mat-button routerLink="/ofertas">{{esp ? 'Mis Cotizaciones' : 'My Quoted'}}</button>
+                <button *ngIf="cuenta.perfil==2" mat-button routerLink="/ofertas">{{esp ? 'Cotizaciones' : 'Quotations'}}</button>
+                <button *ngIf="cuenta.perfil!=2" mat-button routerLink="/ofertas">{{esp ? 'Mis Cotizaciones' : 'My Quotations'}}</button>
               </ng-container>
               
               <!-- <button mat-button [matMenuTriggerFor]="menuMuestras">{{esp ? 'Muestras' : 'Samples'}}</button>
