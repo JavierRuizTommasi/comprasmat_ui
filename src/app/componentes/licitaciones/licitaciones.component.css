@@ -21,14 +21,25 @@
     color: black;
 }
 
-.modal-dialog.modal-800 {
+.modal-dialog {
+  max-width: 600px;
+  margin: .5rem auto;
+}
+
+/* .modal-dialog.modal-800 {
   max-width: 600px;
   margin: 1.75rem auto;
-}
+} */
 
 .modal {
     display:inherit;
     /* width: 125%; */
+}
+
+@media (max-width: 576px) {
+  .modal-dialog {
+      max-width: 375px;
+  }
 }
 
 /* .mmodal-content {
@@ -71,4 +82,8 @@
 
 .acciones {
   white-space: nowrap;
+}
+
+.tabla-modal {
+  height: auto;
 }

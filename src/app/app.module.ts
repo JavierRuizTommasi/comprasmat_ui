@@ -60,8 +60,6 @@ import { UploadsService } from './servicios/uploads.service'
 import { CotizacionesService } from './servicios/cotizaciones.service'
 import { MailsService } from './servicios/mails.service'
 
-import { AngularFileUploaderModule } from "angular-file-uploader"
-
 import Rutas from './routes';
 
 @NgModule({
@@ -103,8 +101,7 @@ import Rutas from './routes';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule.forRoot(Rutas.config()),
-    AngularFileUploaderModule
+    RouterModule.forRoot(Rutas.config())
   ],
   entryComponents: [    
     AlertMessagesComponent

@@ -110,16 +110,27 @@ a + input {
     color: white;
 }
 
-.modal-dialog.modal-800 {
+.modal-dialog {
+    max-width: 600px;
+    margin: .5rem auto;
+}
+
+/* .modal-dialog.modal-800 {
     max-width: 600px;
     margin: 1.75rem auto;
-}
+} */
 
 .modal {
     display:inherit;
     /* width: 125%; */
 }
   
+@media (max-width: 576px) {
+    .modal-dialog {
+        max-width: 375px;
+    }
+}
+
 .offer-th {
     background-color: lightcyan;
 }
@@ -147,3 +158,7 @@ th.mat-column-position, td.mat-column-position {
 /* .custom-select {
     padding: .2rem 1rem;
 } */
+
+.tabla-modal {
+    height: auto;
+}
