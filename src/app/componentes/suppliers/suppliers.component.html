@@ -108,7 +108,7 @@
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
     </div>
@@ -339,7 +339,7 @@
             </div>
 
             <div class="mt-0 pt-0 col-9">
-              <table class="table table-responsive">
+              <table class="table table-responsive tabla-modal">
                 <tr *ngFor="let file of getFile('constCUIT');index as i">
                   <td class="upfiles" (click)="onPreviewFile(file)">{{file.originalName}}</td>
                   <td>
@@ -371,7 +371,7 @@
             </div>
 
             <div class="mt-0 pt-0 col-9">
-              <table class="table table-responsive">
+              <table class="table table-responsive tabla-modal">
                 <tr *ngFor="let file of getFile('F1276');index as i">
                   <td class="upfiles" (click)="onPreviewFile(file)">{{file.originalName}}</td>
                   <td>
@@ -412,7 +412,7 @@
             </div>
 
             <div class="mt-0 pt-0 col-9">
-              <table class="table table-responsive">
+              <table class="table table-responsive tabla-modal">
                 <tr *ngFor="let file of getFile('constIIBB');index as i">
                   <td class="upfiles" (click)="onPreviewFile(file)">{{file.originalName}}</td>
                   <td>
@@ -466,7 +466,7 @@
                   [disabled]="this.strTipo == 'B'">
               </div>
               <div class="mt-0 pt-0 col-9">
-                <table class="table table-responsive">
+                <table class="table table-responsive tabla-modal">
                   <tr *ngFor="let file of getFile('constexenIIBBSF');index as i">
                     <td class="upfiles" (click)="onPreviewFile(file)">{{file.originalName}}</td>
                     <td>
@@ -529,7 +529,7 @@
               </div>
 
               <div class="mt-0 pt-0 col-9">
-                <table class="table table-responsive">
+                <table class="table table-responsive tabla-modal">
                   <tr *ngFor="let file of getFile('constexenIIBBMI');index as i">
                     <td class="upfiles" (click)="onPreviewFile(file)">{{file.originalName}}</td>
                     <td>
@@ -592,7 +592,7 @@
                   (change)="onFileSelected($event, 'constGAN')" [disabled]="this.strTipo == 'B'">
               </div>
               <div class="mt-0 pt-0 col-9">
-                <table class="table table-responsive">
+                <table class="table table-responsive tabla-modal">
                   <tr *ngFor="let file of getFile('constGAN');index as i">
                     <td class="upfiles" (click)="onPreviewFile(file)">{{file.originalName}}</td>
                     <td>

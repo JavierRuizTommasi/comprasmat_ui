@@ -514,7 +514,11 @@ export class OfertasComponent implements AfterViewInit, OnInit {
      backdrop: 'static'
     })
 
-    // console.log(offer)
+    console.log(offer.incoterm)
+    console.log(this.incoterms)
+
+    console.log(offer.lugarEntrega)
+    console.log(this.lugaresEntrega)
 
     if (strTipoParam === 'A') {
       this.f.patchValue({
@@ -590,7 +594,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         upload: offer.upload,
         sugerida: this.traerSugerida(offer.licitacion),
         observacion: offer.observacion,
-        lugarEntrega: offer.lugraEntrega
+        lugarEntrega: offer.lugarEntrega
         // total: this.calcTotal(offer.precio,offer.precioPesos,offer.cantidad)
       })
     }

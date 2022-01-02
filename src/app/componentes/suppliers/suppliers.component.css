@@ -56,3 +56,7 @@ a + input {
     margin-bottom: 1rem; 
     color: red;
 }
+
+.tabla-modal {
+    height: auto;
+}

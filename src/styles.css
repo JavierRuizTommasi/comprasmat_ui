@@ -16,6 +16,7 @@ input:-webkit-autofill:active {
     display: block;
     width: 100%;
     overflow-x: auto;
+    height: 60vh;
 }
 
 .mat-table {

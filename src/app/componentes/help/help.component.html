@@ -85,7 +85,7 @@
     
             <ng-container *ngIf="cuenta">
                 <ng-container *ngIf="cuenta.perfil==0">
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                 </ng-container>
             </ng-container>
             
@@ -96,7 +96,7 @@
             </tr>
             <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
     
-            <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> -->
           </table>
       </div>
