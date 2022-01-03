@@ -22,7 +22,7 @@
             </ng-container>
           </mat-menu> -->
     
-          <ng-container *ngIf="cuenta.perfil<=1">
+          <ng-container *ngIf="cuenta.perfil<=2">
             <a mat-list-item [matMenuTriggerFor]="menuLicita">{{esp ? 'Solicitudes' : 'Requests'}}</a>
             <mat-menu #menuLicita="matMenu" yPosition="below">
               <a mat-menu-item routerLink="/licitaciones/:activas" (click)="drawer.close()">{{esp ? 'Solicitudes Activas' : 'Active Requests'}}</a>
@@ -31,10 +31,9 @@
             <a mat-list-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Cotizaciones' : 'Quotations'}}</a>
           </ng-container>
 
-          <ng-container *ngIf="cuenta.perfil>=4 || cuenta.perfil==2">
+          <ng-container *ngIf="cuenta.perfil>=4">
             <a mat-list-item routerLink="/licitaciones/:activas" (click)="drawer.close()">{{esp ? 'Solicitudes Activas' : 'Active Requests'}}</a>
-            <a *ngIf="cuenta.perfil==2" mat-list-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Cotizaciones' : 'Quotations'}}</a>
-            <a *ngIf="cuenta.perfil!=2" mat-list-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Mis Cotizaciones' : 'My Quotations'}}</a>
+            <a mat-list-item routerLink="/ofertas" (click)="drawer.close()">{{esp ? 'Mis Cotizaciones' : 'My Quotations'}}</a>
           </ng-container>
           
           <!-- <a mat-list-item [matMenuTriggerFor]="menuMuestras">{{esp ? 'Muestras' : 'Samples'}}</a>
@@ -62,19 +61,19 @@
           </mat-menu>
           
           <ng-container *ngIf="cuenta.perfil<=2">
-              <a mat-list-item [matMenuTriggerFor]="menuComunica">{{esp ? 'Mails' : 'Mails'}}</a>
-              <mat-menu #menuComunica="matMenu" yPosition="below"> 
-                  <!-- <a mat-menu-item routerLink="/mensajes" (click)="drawer.close()">{{esp ? 'Mis Mails' : 'My Mails'}}</a> -->
-                  <!-- <ng-container *ngIf="cuenta.perfil<=2"> -->
-                    <a mat-menu-item routerLink="/mailsToSuppliers" (click)="drawer.close()">{{esp ? 'Mails a Proveedores' : 'Mails to Suppliers'}}</a>
-                  <!-- </ng-container> -->
-              </mat-menu>
+            <a mat-list-item [matMenuTriggerFor]="menuComunica">{{esp ? 'Mails' : 'Mails'}}</a>
+            <mat-menu #menuComunica="matMenu" yPosition="below"> 
+                <!-- <a mat-menu-item routerLink="/mensajes" (click)="drawer.close()">{{esp ? 'Mis Mails' : 'My Mails'}}</a> -->
+                <ng-container *ngIf="cuenta.perfil<=2">
+                  <a mat-menu-item routerLink="/mailsToSuppliers" (click)="drawer.close()">{{esp ? 'Mails a Proveedores' : 'Mails to Suppliers'}}</a>
+                </ng-container>
+            </mat-menu>
           </ng-container>
 
           <ng-container *ngIf="cuenta.perfil<=2">
             <a mat-list-item [matMenuTriggerFor]="menuAnexo">{{esp ? 'Anexo' : 'Other'}}</a>
             <mat-menu #menuAnexo="matMenu" yPosition="below"> 
-              <a *ngIf="cuenta.perfil!=2" mat-menu-item routerLink="/usuarios" (click)="drawer.close()">{{esp ? 'Usuarios' : 'Users'}}</a>
+              <a mat-menu-item routerLink="/usuarios" (click)="drawer.close()">{{esp ? 'Usuarios' : 'Users'}}</a>
               <a mat-menu-item routerLink="/proveedores" (click)="drawer.close()">{{esp ? 'Proveedores' : 'Suppliers'}}</a>
               <a mat-menu-item routerLink="/scorings" (click)="drawer.close()">{{esp ? 'Scoring' : 'Scoring'}}</a>
             </mat-menu>
@@ -164,7 +163,7 @@
                 </ng-container> 
               </mat-menu> -->
     
-              <ng-container *ngIf="cuenta.perfil<=1">
+              <ng-container *ngIf="cuenta.perfil<=2">
                 <button mat-button [matMenuTriggerFor]="menuLicita">{{esp ? 'Solicitudes' : 'Requests'}}</button>
                 <mat-menu #menuLicita="matMenu" yPosition="below">
                   <button mat-menu-item routerLink="/licitaciones/:activas">{{esp ? 'Solicitudes Activas' : 'Active Requests'}}</button>
@@ -173,10 +172,9 @@
                 <button mat-button routerLink="/ofertas">{{esp ? 'Cotizaciones' : 'Quotations'}}</button>
               </ng-container>
 
-              <ng-container *ngIf="cuenta.perfil>=4 || cuenta.perfil==2">
+              <ng-container *ngIf="cuenta.perfil>=4">
                 <button mat-button routerLink="/licitaciones/:activas">{{esp ? 'Solicitudes Activas' : 'Active Requests'}}</button>
-                <button *ngIf="cuenta.perfil==2" mat-button routerLink="/ofertas">{{esp ? 'Cotizaciones' : 'Quotations'}}</button>
-                <button *ngIf="cuenta.perfil!=2" mat-button routerLink="/ofertas">{{esp ? 'Mis Cotizaciones' : 'My Quotations'}}</button>
+                <button mat-button routerLink="/ofertas">{{esp ? 'Mis Cotizaciones' : 'My Quotations'}}</button>
               </ng-container>
               
               <!-- <button mat-button [matMenuTriggerFor]="menuMuestras">{{esp ? 'Muestras' : 'Samples'}}</button>
@@ -205,7 +203,7 @@
   
               <button *ngIf="cuenta.perfil<=2" mat-button [matMenuTriggerFor]="menuComunica">{{esp ? 'Mails' : 'Mails'}}</button>
               <mat-menu #menuComunica="matMenu" yPosition="below"> 
-                  <button mat-menu-item routerLink="/mensajes">{{esp ? 'Mis Mails' : 'My Mails'}}</button>
+                  <!-- <button mat-menu-item routerLink="/mensajes">{{esp ? 'Mis Mails' : 'My Mails'}}</button> -->
                   <ng-container *ngIf="cuenta.perfil<=2">
                     <button mat-menu-item routerLink="/mailsToSuppliers">{{esp ? 'Mails a Proveedores' : 'Mails to Suppliers'}}</button>
                   </ng-container>
@@ -214,7 +212,7 @@
               <ng-container *ngIf="cuenta.perfil<=2">
                 <button mat-button [matMenuTriggerFor]="menuAnexo">{{esp ? 'Anexo' : 'Other'}}</button>
                 <mat-menu #menuAnexo="matMenu" yPosition="below"> 
-                    <button *ngIf="cuenta.perfil!=2" mat-menu-item routerLink="/usuarios">{{esp ? 'Usuarios' : 'Users'}}</button>
+                    <button mat-menu-item routerLink="/usuarios">{{esp ? 'Usuarios' : 'Users'}}</button>
                     <button mat-menu-item routerLink="/proveedores">{{esp ? 'Proveedores' : 'Suppliers'}}</button>
                     <button mat-menu-item routerLink="/scorings">{{esp ? 'Scoring' : 'Scoring'}}</button>
                 </mat-menu>

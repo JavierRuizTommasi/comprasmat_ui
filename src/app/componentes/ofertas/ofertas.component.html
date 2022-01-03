@@ -215,7 +215,7 @@
                 </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns sticky: true"></tr>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
     </div>
@@ -607,8 +607,12 @@
                 </div>
 
                 <!-- <hr>
+                    <pre>{{f.controls.incoterm.value}}</pre>
+                    <pre>{{f.controls.lugarEntrega.value}}</pre>
+                <hr> -->
+                <!-- <hr>
                     <pre>{{f.controls.pass.errors | json}}</pre>
-                    <hr>
+                <hr>
                 <hr>
                     <pre>{{f.control.errors | json}}</pre>
                 <hr> -->

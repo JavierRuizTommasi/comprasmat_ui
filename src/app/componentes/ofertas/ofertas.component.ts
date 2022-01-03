@@ -514,7 +514,11 @@ export class OfertasComponent implements AfterViewInit, OnInit {
      backdrop: 'static'
     })
 
-    // console.log(offer)
+    // console.log(offer.incoterm)
+    // console.log(this.incoterms)
+
+    // console.log(offer.lugarEntrega)
+    // console.log(this.lugaresEntrega)
 
     if (strTipoParam === 'A') {
       this.f.patchValue({
