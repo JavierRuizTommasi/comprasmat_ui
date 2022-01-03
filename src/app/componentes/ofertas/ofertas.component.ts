@@ -590,7 +590,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         upload: offer.upload,
         sugerida: this.traerSugerida(offer.licitacion),
         observacion: offer.observacion,
-        lugarEntrega: offer.lugraEntrega
+        lugarEntrega: offer.lugarEntrega
         // total: this.calcTotal(offer.precio,offer.precioPesos,offer.cantidad)
       })
     }
