@@ -218,19 +218,20 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
+
+        <ng-container *ngIf="notDone">
+            <div class="d-flex justify-content-center">
+                <div class="spinner-border m-5" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </ng-container>
+    
     </div>
 
     <mat-paginator class="mat-elevation-z8 mb-3" #paginator [length]="dataSource.data?.length" [pageIndex]="0"
         [pageSize]="25" [pageSizeOptions]="[25, 50, 100, 250]">
     </mat-paginator>
-
-    <ng-container *ngIf="notDone">
-        <div class="d-flex justify-content-center">
-            <div class="spinner-border m-5" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-    </ng-container>
 
     <ng-template #editOfferModal let-modal>
         <div class="modal-header">
@@ -632,10 +633,34 @@
     
         <div class="modal-body p-0">
           <form [formGroup]="f" (ngSubmit)="onSubmit()">
-            <div class="descrip">{{esp ? 'Insumo: ' + producto.descrip : 'Supplie: ' + producto.detaeng}}</div>
+            <!-- <div class="descrip">{{esp ? 'Insumo: ' + producto.descrip : 'Supplie: ' + producto.detaeng}}</div>
             <div class="descrip">{{esp ? 'Rubro: ' + producto.rubro : 'Category: ' + producto.rubroeng}}</div>
             <div class="descrip">{{esp ? 'SubRubro: ' + producto.subrubro : 'SubCategory: ' + producto.subrubeng}}</div>
-            <p class="descrip p-2" [innerHTML]="esp ? producto.caracteris : producto.caracteriseng"></p>
+            <p class="descrip p-2" [innerHTML]="esp ? producto.caracteris : producto.caracteriseng"></p> -->
+            <table class="table">
+                <tbody>
+                  <tr>
+                    <td>{{esp ? 'Insumo' : 'Supplie'}}</td>
+                    <td>{{esp ? producto.descrip : producto.detaeng}}</td>
+                  </tr>
+                  <tr>
+                    <td>{{esp ? 'Rubro' : 'Category'}}</td>
+                    <td>{{esp ? producto.rubro : producto.rubroeng}}</td>
+                  </tr>
+                  <tr>
+                    <td>{{esp ? 'SubRubro' : 'SubCat.'}}</td>
+                    <td>{{esp ? producto.subrubro : producto.subrubeng}}</td>
+                  </tr>
+                  <tr>
+                    <td>{{esp ? 'Caract.' : 'Charact.'}}</td>
+                    <td [innerHTML]="esp ? producto.caracteris : producto.caracteriseng"></td>
+                  </tr>
+                  <tr *ngIf="producto.link">
+                    <td>{{esp ? 'Muestra' : 'Sample'}}</td>
+                    <td><a href="{{producto.link}}" target="_blank">Link</a></td>
+                  </tr>
+                </tbody>
+              </table>
           </form>
         </div>
     </ng-template>

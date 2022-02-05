@@ -19,4 +19,5 @@ export class Productos {
     public caracteris: string
     public caracteriseng: string
     public rankcontrib: number
+    public link: string
 }

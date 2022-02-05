@@ -108,7 +108,8 @@ export class ProductosComponent implements AfterViewInit, OnInit {
         ])],
         caracteris: [''],
         caracteriseng: [''],
-        rankcontrib: [0]
+        rankcontrib: [0],
+        link: ['']
       })
 
       this.languageService.esp$.subscribe((lang: Language) => {
@@ -205,6 +206,8 @@ export class ProductosComponent implements AfterViewInit, OnInit {
      backdrop: 'static'
     })
 
+    // console.log(producto)
+
     if (strTipoParam === 'A') {
       this.f.patchValue({
         id: '',
@@ -226,6 +229,7 @@ export class ProductosComponent implements AfterViewInit, OnInit {
         caracteris: '',
         caracteriseng: '',
         rankcontrib: 0,
+        link: ''
       })
     } else {
       this.f.patchValue({
@@ -247,9 +251,12 @@ export class ProductosComponent implements AfterViewInit, OnInit {
         subrubeng: producto.subrubeng,
         caracteris: producto.caracteris,
         caracteriseng: producto.caracteriseng,
-        rankcontrib: producto.rankcontrib
+        rankcontrib: producto.rankcontrib,
+        link: producto.link
       })
     }
+
+    // console.log(this.f.controls)
 
     if (strTipoParam === 'B') {
       this.f.disable()
@@ -285,8 +292,11 @@ export class ProductosComponent implements AfterViewInit, OnInit {
       subrubeng: this.f.controls.subrubeng.value,
       caracteris: this.f.controls.caracteris.value,
       caracteriseng: this.f.controls.caracteriseng.value,
-      rankcontrib: this.f.controls.rankcontrib.value
-  }
+      rankcontrib: this.f.controls.rankcontrib.value,
+      link: this.f.controls.link.value
+    }
+
+    // console.log(this.updtProd)
 
     switch (this.strTipo) {
       case 'A':
@@ -336,12 +346,12 @@ export class ProductosComponent implements AfterViewInit, OnInit {
 
     this.productosService.putProductos(this.idIdx, this.updtProd)
       .subscribe((prod: Productos) => {
-      console.log('Modif:', prod)
-      if (prod) {
-        this.alertMsg()
-      }
-      this.pedirDatos()
-    })
+        console.log('Modif:', prod)
+        if (prod) {
+          this.alertMsg()
+        }
+        this.pedirDatos()
+      })
 
   }
 

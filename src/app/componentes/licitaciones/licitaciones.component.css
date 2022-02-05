@@ -7,9 +7,17 @@
     padding: 0;
 }
 
+.titulo {
+  background-color: lemonchiffon;
+  padding: .5rem;
+  font-weight: bold;
+}
+
 .descrip {
     background-color: lemonchiffon;
     padding: .5rem;
+    font-style: italic;
+    font-weight: normal;
 }
 
 .offer-th {

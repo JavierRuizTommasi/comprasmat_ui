@@ -99,7 +99,16 @@
             <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> -->
           </table>
-      </div>
+
+          <ng-container *ngIf="notDone">
+            <div class="d-flex justify-content-center">
+              <div class="spinner-border m-5" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+          </ng-container>
+
+        </div>
   
       <mat-paginator class="mat-elevation-z8 mb-3"
         #paginator [length]="dataSource.data?.length" 
@@ -107,14 +116,6 @@
         [pageSize]="25"
         [pageSizeOptions]="[25, 50, 100, 250]">
       </mat-paginator>
-  
-      <ng-container *ngIf="notDone">
-        <div class="d-flex justify-content-center">
-          <div class="spinner-border m-5" role="status">
-            <span class="sr-only">Loading...</span>
-          </div>
-        </div>
-      </ng-container>
   
       <!-- Modal Help Nuevo-->
       <ng-template #editHelpModal let-modal>
