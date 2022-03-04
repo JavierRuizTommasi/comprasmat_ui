@@ -630,8 +630,11 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
       if (this.cuenta.perfil === 2) {
         this.f.disable()
-        this.f.get('estado').enable({ onlySelf: true })
-        this.f.get('detalle').enable({ onlySelf: true })
+        if (offer.estado == 0) {
+          // solo cuando está en estado 0 Evaluación
+          this.f.get('estado').enable({ onlySelf: true })
+          this.f.get('detalle').enable({ onlySelf: true })
+        }
       } else {
         this.f.enable()
       }
@@ -1024,20 +1027,22 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   calcTotal(pre, pes, can) {
     let ret = 0
-    // console.log(pes)
-    // console.log(pre)
-    // console.log(can)
+    // console.log('Pes', pes)
+    // console.log('Pre', pre)
+    // console.log('Can', can)
+    // console.log(this.f.value)
     if (!pes) pes = 0
-    if (pes != 0) {
-      if (this.cotiza != 0) {
+    if (pes !== 0) {
+      if (this.cotiza !== 0) {
         // console.log(pre)
-        if (this.f.controls.precio && pes !== 0) {
+        // if (this.f.controls.precio) {
           pre = this.round(pes / this.cotiza, 2)
-          // console.log(pre)
+          // console.log('Pes', pes)
+          // console.log('Pre', pre)
           // this.f.get('precio').setValue(pre, {onlySelf: true})
           // this.f.patchValue({precio: pre})
           // console.log('precio', this.f.controls.precio.value)
-        }
+        // }
       } else {
         pre = 0
         // console.log(pre)
@@ -1120,7 +1125,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     resp = await this.cotizacionesService.getCotizacionBNA().toPromise()
     // .subscribe((resp: any) => {
       console.log(resp)
-      this.cotiza = resp.compra
+      this.cotiza = resp.venta
     // })
     // this.cotizacionesService.getCotizacionBNA()
     // .subscribe((resp: any) => {
@@ -1293,6 +1298,11 @@ export class OfertasComponent implements AfterViewInit, OnInit {
       return 0
     })
     
+    newOff.forEach(off => {
+      if (off.precio == 0 && off.cotizacion !== 0) {
+        off.precio = this.round((off.precioPesos/off.cotizacion),5)
+      }
+    })
     // console.log(newOff)
 
     // return this.offers.filter( x => x.licitacion_id == tender)

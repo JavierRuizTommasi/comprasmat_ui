@@ -507,6 +507,11 @@ export class LicitacionesComponent implements AfterViewInit, OnInit {
       return 0
     })
     
+    newOff.forEach(off => {
+      if (off.precio == 0 && off.cotizacion !== 0) {
+        off.precio = this.round((off.precioPesos/off.cotizacion),5)
+      }
+    })
     // console.log(newOff)
 
     // return this.offers.filter( x => x.licitacion_id == tender)
