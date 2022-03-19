@@ -9,4 +9,7 @@ export class MailsToSuppliers {
     public proveedor: number
     public provenom: string
     public email: string
+    public tipo: string
+    public to: string
+    public subject: string
 }

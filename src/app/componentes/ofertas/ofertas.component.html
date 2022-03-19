@@ -268,8 +268,9 @@
                         <select class="custom-select" formControlName="licitacion" id="licitacion" required="required"
                             (change)="changeTender($event)">
                             <option [value]="null">{{esp ? 'Elija una opcion...' : 'Choose...'}}</option>
-                            <option [value]="tender.licitacion" *ngFor="let tender of tenders">{{tender.licitacion}}
-                                {{tender.descrip}} {{tender.cantidad}} {{tender.unidad}}</option>
+                            <option [value]="tender.licitacion" *ngFor="let tender of tenders">
+                                {{tender.licitacion}} - {{tender.descrip}} - {{tender.cantidad}} {{tender.unidad}}
+                            </option>
                         </select>
                         <!-- Error -->
                         <div *ngIf="f.controls.licitacion.errors && f.controls.licitacion.dirty"
@@ -360,8 +361,7 @@
                         <!-- <input type="number" class="form-control" formControlName="producto" id="producto"
                             [readOnly]="true"> -->
                         <select class="custom-select" formControlName="producto" id="producto" required="required">
-                            <option [value]="product.codigo" *ngFor="let product of products">{{product.codigo}}
-                                {{product.descrip}}</option>
+                            <option [value]="product.codigo" *ngFor="let product of products">{{product.codigo}} - {{product.descrip}}</option>
                         </select>
                         <!-- Error -->
                         <div *ngIf="f.controls.producto.errors && f.controls.producto.dirty"
@@ -465,8 +465,8 @@
                 <div class="form-group row">
                     <label for="precio" class="col-sm-3 col-form-label">{{esp ? 'Precio' : 'Price'}} U$S</label>
                     <div class="col-sm-4">
-                        <input type="number" class="form-control" formControlName="precio" id="precio"
-                            [readOnly]="this.strTipo == 'B'">
+                        <label *ngIf="f.controls.precioPesos.value" class="pt-2 pl-2">{{traerPrecio(f.controls.precioPesos.value,0).toFixed(2)}}</label>
+                        <input *ngIf="!f.controls.precioPesos.value" type="number" class="form-control" formControlName="precio" id="precio" [readOnly]="this.strTipo == 'B'">
                     </div>
                     <label for="costo" class="col-sm-2 col-form-label pl-0 pr-0">{{esp ? 'Precio Hist.' : 'Hist. Price'}}</label>
                     <div class="col-sm-3">

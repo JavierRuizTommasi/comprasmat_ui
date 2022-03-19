@@ -31,7 +31,7 @@ export class MailsToSuppliersComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<MailsToSuppliers> = new MatTableDataSource<MailsToSuppliers>()
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['licitacion', 'producto', 'fecha', 'usuario', 'proveedor', 'email']
+  displayedColumns: string[] = ['tipo', 'licitacion', 'producto', 'fecha', 'usuario', 'proveedor', 'to', 'subject']
 
   strTipo: string
   idIdx: string
@@ -156,8 +156,8 @@ export class MailsToSuppliersComponent implements AfterViewInit, OnInit {
         this.dataSource.paginator = this.paginator
         this.table.dataSource = this.dataSource
 
+        // console.log(resp.MailsToSuppliers)
         this.mailsToSuppliers = resp.MailsToSuppliers
-        // this.MailsToSuppliers = resp.MailsToSuppliers        
         this.notDone = false
       })
     }

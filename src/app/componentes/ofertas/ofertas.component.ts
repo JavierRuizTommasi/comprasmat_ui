@@ -866,6 +866,7 @@ export class OfertasComponent implements AfterViewInit, OnInit {
 
   getFilterObject(fullObj, key) {
     const uniqChk = []
+    // console.log(key, fullObj)
     fullObj.filter((obj) => {
       if (!uniqChk.includes(obj[key])) {
         uniqChk.push(obj[key])
@@ -874,10 +875,18 @@ export class OfertasComponent implements AfterViewInit, OnInit {
     })
     return uniqChk.sort((a, b) => {
         if (a > b) {
-            return 1;
+          if (key === 'licitacion') {
+            return -1
+          } else {
+            return 1
+          } 
         }
         if (a < b) {
-            return -1;
+          if (key === 'licitacion') {
+            return 1
+          } else {
+            return -1
+          }
         }
         return 0;
       }) 

@@ -143,10 +143,6 @@ a + input {
     white-space: nowrap;
 }
 
-.cellRight {
-    /* text-align: right; */
-}
-
 th.mat-column-position, td.mat-column-position {
     padding-left: 8px;
 }
