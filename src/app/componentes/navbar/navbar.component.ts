@@ -69,7 +69,7 @@ export class NavbarComponent implements OnInit {
     })
     // console.log(this.cuenta)
 
-    console.log(environment.production)
+    // console.log(environment.production)
   }
 
   async changeLang() {
@@ -91,12 +91,12 @@ export class NavbarComponent implements OnInit {
 
     let resp: any = await this.usuariosService.checkUsuario().toPromise()
     // console.log(resp)
-    if (!resp) {
+    if (!resp.user) {
       this.router.navigateByUrl('/login')
     } else {
       resp.user.language = this.esp ? 'es' : 'en'
       let respLang: any = await this.usuariosService.language(resp.user.id, resp.user).toPromise()
-      console.log(respLang)
+      // console.log(respLang)
     }
   }
 }

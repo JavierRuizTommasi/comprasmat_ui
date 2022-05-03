@@ -320,7 +320,7 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
         localidad: '',
         provincia: '',
         pais: '',
-        desempeno: 0,
+        desempeno: 100,
         ultcompra: '',
         fantasia: '',
         actividad: '',

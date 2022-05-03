@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, OnDestroy, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
@@ -15,7 +15,6 @@ import { LanguageService } from 'src/app/servicios/language.service'
 import { MensajesService } from 'src/app/servicios/mensajes.service'
 import { MatDialog } from '@angular/material/dialog'
 import { AlertMessagesComponent } from 'src/app/componentes/alert-messages/alert-messages.component'
-import { Observable } from 'rxjs'
 import { trigger, state, style, animate, transition } from '@angular/animations'
 
 @Component({
@@ -71,9 +70,10 @@ export class HelpComponent implements OnInit, AfterViewInit {
     private router: Router,
     public dialog: MatDialog)
     { 
-      if (!this.usuariosService.isLogin()) {
-        this.router.navigateByUrl('/login')
-      }
+      // // Debe estar habilitado aunque no esté logueado
+      // if (!this.usuariosService.isLogin()) {
+      //   this.router.navigateByUrl('/login')
+      // }
   
       this.f = fb.group({
         id: [''],
@@ -103,20 +103,30 @@ export class HelpComponent implements OnInit, AfterViewInit {
           } else {
             this.displayedColumns = ['pregunta']
           }
+        } else {
+          this.displayedColumns = ['pregunta']
         }
       })
-
     }
 
   ngOnInit(): void {
     this.pedirDatos()
   }
 
-    ngAfterViewInit() {
+  ngAfterViewInit() {
     // console.log(this.dataSource)
     // this.dataSource.sort = this.sort;
     // this.dataSource.paginator = this.paginator;
     // this.table.dataSource = this.dataSource;
+  }
+
+  ngOnDestroy(): void {
+    // this.comunicacionService.cuenta$.unsubscribe()
+    // this.languageService.esp$.unsubscribe()
+    // this.helpService.getHelps.unsubscribe()
+    // this.usuariosService.checkUsuario().unsubscribe()
+    // this.mensajesService.unsubscribe()
+
   }
 
   async getUserData() {
@@ -131,7 +141,7 @@ export class HelpComponent implements OnInit, AfterViewInit {
     // checkCuenta() Avisa al Navbar sino 
     // pedirHelp() Trae datos del Servicio Help
 
-    console.log('pedirDatos')
+    // console.log('pedirDatos')
     const user = await this.getUserData()
     this.checkCuenta(user)
 
@@ -142,21 +152,22 @@ export class HelpComponent implements OnInit, AfterViewInit {
     // esta funcion verifica si el usuario esta logeado y asigna 
     // los datos del user a un objeto cuenta[] y tambien la variable esp
     // si no lo encuentra deberia devolver cuenta como undefined
-    console.log('checkUser')
+    // console.log('checkUser')
     // console.log(user)
     if (user) {
       // console.log(user)
       this.cuenta = user
       this.esp = (this.cuenta.language === 'es')
     }
-    else {
-      this.router.navigateByUrl('/login')
-    }
+    // else {
+    //   this.router.navigateByUrl('/login')
+    // }
 
     this.comunicacionService.cuenta$.next(this.cuenta)
     this.actualizaCuenta.emit(this.cuenta)
     // console.log(user)
-  
+    // console.log(this.cuenta)
+    
     this.lang = {esp: this.esp}
     this.languageService.esp$.next(this.lang)
     this.actualizaLang.emit(this.lang)
@@ -164,7 +175,7 @@ export class HelpComponent implements OnInit, AfterViewInit {
   }
   
   async pedirHelp(user) {
-    if (user) {
+    // if (user) {
       this.helpService.getHelps()
       .subscribe((resp: any) => {
         this.dataSource.data = resp.Helps
@@ -177,7 +188,7 @@ export class HelpComponent implements OnInit, AfterViewInit {
         this.notDone = false
         // console.log(this.table.dataSource)
       })
-    }
+    // }
   }
 
   applyFilter(filterValue: string): void {

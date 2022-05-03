@@ -10,7 +10,7 @@ export class MensajesService {
   public msgSuccess = new Subject<string>()
 
   constructor() {
-    console.log('funcionando servicio Mensajes')
+    // console.log('funcionando servicio Mensajes')
   }
 
   mensaje(staticAlertClosed: boolean, successMessage: string): void {
