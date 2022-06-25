@@ -859,10 +859,14 @@ export class SuppliersComponent implements AfterViewInit, OnInit {
             // });
             if (data[col]) {
               if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
-                  found = true
+                found = true
+              } else {
+                found = false
+                break
               }
             } else {
               found = false
+              break
             }
           }
           return found

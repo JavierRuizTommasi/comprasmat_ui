@@ -46,16 +46,19 @@
             </ng-container>
           </mat-menu> -->
   
-          <a *ngIf="cuenta.perfil!=2" mat-list-item [matMenuTriggerFor]="menuProductos">{{esp ? 'Insumos' : 'Supplies'}}</a>
+          <!-- <a *ngIf="cuenta.perfil!=2" mat-list-item [matMenuTriggerFor]="menuProductos">{{esp ? 'Insumos' : 'Supplies'}}</a> -->
+          <a mat-list-item [matMenuTriggerFor]="menuProductos">{{esp ? 'Insumos' : 'Supplies'}}</a>
           <mat-menu #menuProductos="matMenu" yPosition="below"> 
-            <ng-container *ngIf="cuenta.perfil<2 || cuenta.perfil==3"> <!--Solo Administrador, Auditoria y Laboratorio-->
+            <!-- <ng-container *ngIf="cuenta.perfil<2 || cuenta.perfil==3"> Solo Administrador, Auditoria y Laboratorio -->
+            <ng-container *ngIf="cuenta.perfil<=2"> <!--Solo Administrador, Auditoria, Compras y Laboratorio-->
               <a mat-menu-item routerLink="/productos" (click)="drawer.close()">{{esp ? 'Insumos' : 'Supplies'}}</a>
             </ng-container>
             <ng-container *ngIf="cuenta.perfil!=2 && cuenta.perfil!=3"> <!--Sin Compras y Laboratorio-->
               <a mat-menu-item routerLink="/seleccion" (click)="drawer.close()">{{esp ? 'Seleccionar Insumos que puedo proveer' : 'Select Supplies than I can provide'}}</a>
               <a mat-menu-item routerLink="/myproducts" (click)="drawer.close()">{{esp ? 'Insumos que puedo proveer' : 'Supplies than I can provide'}}</a>
             </ng-container>
-            <ng-container *ngIf="cuenta.perfil<2 || cuenta.perfil==3"> <!--Solo Administrador, Auditoria y Laboratorio-->
+            <!-- <ng-container *ngIf="cuenta.perfil<2 || cuenta.perfil==3"> Solo Administrador, Auditoria y Laboratorio -->
+            <ng-container *ngIf="cuenta.perfil<=2"> <!--Solo Administrador, Auditoria, Compras y Laboratorio-->
               <a mat-menu-item routerLink="/myProdsAdm" (click)="drawer.close()">{{esp ? 'Seleccionar Insumos Administración' : 'Select Supplies Administration'}}</a>
             </ng-container>
           </mat-menu>
@@ -187,16 +190,19 @@
                 </ng-container>
               </mat-menu> -->
   
-              <button *ngIf="cuenta.perfil!=2" mat-button [matMenuTriggerFor]="menuProductos">{{esp ? 'Insumos' : 'Supplies'}}</button>
+              <!-- <button *ngIf="cuenta.perfil!=2" mat-button [matMenuTriggerFor]="menuProductos">{{esp ? 'Insumos' : 'Supplies'}}</button> -->
+              <button mat-button [matMenuTriggerFor]="menuProductos">{{esp ? 'Insumos' : 'Supplies'}}</button>
               <mat-menu #menuProductos="matMenu" yPosition="below"> 
-                <ng-container *ngIf="cuenta.perfil<2 || cuenta.perfil==3"> <!--Solo Administrador, Auditoria y Laboratorio-->
+                <!-- <ng-container *ngIf="cuenta.perfil<2 || cuenta.perfil==3"> Solo Administrador, Auditoria y Laboratorio -->
+                <ng-container *ngIf="cuenta.perfil<=3"> <!--Solo Administrador, Auditoria, Compras y Laboratorio-->
                   <button mat-menu-item routerLink="/productos">{{esp ? 'Insumos' : 'Supplies'}}</button>
                 </ng-container>
                 <ng-container *ngIf="cuenta.perfil!=2 && cuenta.perfil!=3"> <!--Sin Compras y Laboratorio-->
                   <button mat-menu-item routerLink="/seleccion">{{esp ? 'Seleccionar Insumos que puedo proveer' : 'Select Supplies than I can provide'}}</button>
                   <button mat-menu-item routerLink="/myproducts">{{esp ? 'Insumos que puedo proveer' : 'Supplies than I can provide'}}</button>
                 </ng-container>
-                <ng-container *ngIf="cuenta.perfil<2 || cuenta.perfil==3"> <!--Solo Administrador, Auditoria y Laboratorio-->
+                <!-- <ng-container *ngIf="cuenta.perfil<2 || cuenta.perfil==3"> Solo Administrador, Auditoria y Laboratorio -->
+                <ng-container *ngIf="cuenta.perfil<=2"> <!--Solo Administrador, Auditoria, Compras y Laboratorio-->
                   <button mat-menu-item routerLink="/myProdsAdm">{{esp ? 'Seleccionar Insumos Administración' : 'Select Supplies Administration'}}</button>
                 </ng-container>
               </mat-menu>
@@ -228,7 +234,7 @@
                   title="{{esp ? 'Complete la Ficha de Proveedor' : 'Complete your profile account'}}"></i>
                 </ng-container>
                 <i class="mdi mdi-account white"></i>
-                {{cuenta.nombre}}
+                <p class="nombre">{{cuenta.nombre}}</p>
               </button>
               <mat-menu #menuCuenta="matMenu" yPosition="below"> 
                     <button mat-menu-item routerLink="/cuenta">

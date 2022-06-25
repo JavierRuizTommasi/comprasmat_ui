@@ -536,6 +536,7 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
     } else {
       this.filterValues[filter.columnPropEng] = event.target.value.trim().toLowerCase()
     }
+    // console.log(this.filterValues)
     this.dataSource.filter = JSON.stringify(this.filterValues)
   }
 
@@ -552,6 +553,8 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
         }
       }
 
+      // console.log(searchTerms)
+      // console.log(isFilterSet)
       let nameSearch = () => {
         let found = false;
         if (isFilterSet) {
@@ -564,13 +567,17 @@ export class MyProdsAdmComponent implements AfterViewInit, OnInit {
             // });
 
             // console.log(searchTerms[col]);
-            // console.log(data[col].toString().toLowerCase())
+            // console.log(col, data[col].toString().toLowerCase())
             if(data[col]) {
               if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
-                    found = true
+                found = true
+              } else {
+                found = false
+                break
               }
             } else {
               found = false
+              break
             }
           }
 

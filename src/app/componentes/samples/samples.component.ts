@@ -508,14 +508,20 @@ export class SamplesComponent implements AfterViewInit, OnInit {
             //     found = true
             //   }
             // });
-            console.log(searchTerms[col]);
-            console.log(data[col].toString().toLowerCase())
-            if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
+            // console.log(searchTerms[col]);
+            // console.log(data[col].toString().toLowerCase())
+            if(data[col]) {
+              if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
                 found = true
+              } else {
+                found = false
+                break
+              }
+            } else {
+              found = false
+              break
             }
           }
-
-          console.log(found)
           return found
         } else {
           return true;

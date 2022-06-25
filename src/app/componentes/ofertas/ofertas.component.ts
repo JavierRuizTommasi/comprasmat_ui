@@ -916,8 +916,6 @@ export class OfertasComponent implements AfterViewInit, OnInit {
         }
       }
 
-      // console.log(searchTerms);
-
       let nameSearch = () => {
         let found = false;
         if (isFilterSet) {
@@ -929,10 +927,14 @@ export class OfertasComponent implements AfterViewInit, OnInit {
             // });
             if(data[col]) {
               if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
-                    found = true
+                found = true
+              } else {
+                found = false
+                break
               }
             } else {
               found = false
+              break
             }
           }
           return found

@@ -413,10 +413,14 @@ export class SeleccionComponent implements AfterViewInit, OnInit, OnDestroy {
             // console.log(data[col])
             if(data[col]) {
               if (searchTerms[col].trim().toLowerCase() == data[col].toString().trim().toLowerCase() && isFilterSet) {
-                    found = true
+                found = true
+              } else {
+                found = false
+                break
               }
             } else {
               found = false
+              break
             }
           }
           return found

@@ -91,9 +91,9 @@ export class NavbarComponent implements OnInit {
 
     let resp: any = await this.usuariosService.checkUsuario().toPromise()
     // console.log(resp)
-    if (!resp.user) {
-      this.router.navigateByUrl('/login')
-    } else {
+    if (resp.user) {
+      // this.router.navigateByUrl('/login')
+    // } else {
       resp.user.language = this.esp ? 'es' : 'en'
       let respLang: any = await this.usuariosService.language(resp.user.id, resp.user).toPromise()
       // console.log(respLang)

@@ -133,7 +133,7 @@
 
         <div class="modal-body">
             <form [formGroup]="f" (ngSubmit)="onSubmit()">
-                <ng-container *ngIf="cuenta.perfil==0">
+                <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2">
                     <div class="form-group row">
                         <label for="usuario" class="col-sm-3 col-form-label">{{esp ? 'Empresa' : 'Brand'}}</label>
                         <div class="col-sm-9">
@@ -246,7 +246,7 @@
 
         <div class="modal-body">
             <form [formGroup]="f" (ngSubmit)="onSubmitGrupo()">
-                <ng-container *ngIf="cuenta.perfil==0">
+                <ng-container *ngIf="cuenta.perfil==0 || cuenta.perfil==2">
                     <div class="form-group row">
                         <label for="usuario" class="col-sm-3 col-form-label">{{esp ? 'Empresa' : 'Brand'}}</label>
                         <div class="col-sm-9">

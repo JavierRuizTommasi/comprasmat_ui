@@ -465,7 +465,7 @@
                 <div class="form-group row">
                     <label for="precio" class="col-sm-3 col-form-label">{{esp ? 'Precio' : 'Price'}} U$S</label>
                     <div class="col-sm-4">
-                        <label *ngIf="f.controls.precioPesos.value" class="pt-2 pl-2">{{traerPrecio(f.controls.precioPesos.value,0).toFixed(2)}}</label>
+                        <label *ngIf="f.controls.precioPesos.value" class="pt-2 pl-2">{{traerPrecio(f.controls.precioPesos.value,0).toFixed(5)}}</label>
                         <input *ngIf="!f.controls.precioPesos.value" type="number" class="form-control" formControlName="precio" id="precio" [readOnly]="this.strTipo == 'B'">
                     </div>
                     <label for="costo" class="col-sm-2 col-form-label pl-0 pr-0">{{esp ? 'Precio Hist.' : 'Hist. Price'}}</label>
